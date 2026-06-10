@@ -1,0 +1,26 @@
+{
+  "skill_name": "kickstart-vault",
+  "evals": [
+    {
+      "id": 1,
+      "name": "cto-scaleup",
+      "prompt": "Ça y est, j'ai bouclé l'interview de cartographie — le plan est dans 00-Inbox/plan-vault.md avec la matière première à côté. Monte-moi la structure du vault à partir de ça.",
+      "expected_output": "Vault PARA scaffolté in-place : dossiers du plan + _personas/, _Meta/Schema.md, _Meta/governance.md (reprend l'isolation du plan), CLAUDE.md racine, 7 shells Area + 3 shells Project avec frontmatter valide, renvois 🔒 dans references-externes, persona Chief of Staff par défaut dans _personas/cos/ (identité + skill brief-du-jour embarqué dans .claude/skills/ + raccourci cos), compte-rendu-installation. Aucun contenu métier inventé.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "consultante",
+      "prompt": "J'ai mon plan de vault dans 00-Inbox/plan-vault.md. Tu peux me créer toute l'arborescence et les fichiers de base pour démarrer mon second cerveau ?",
+      "expected_output": "Vault PARA scaffolté : 4 Areas + 1 Project en shells, Resources par domaine, _Meta/Schema.md, _Meta/governance.md SYNTHÉTISÉ par défaut (le plan n'a pas de section gouvernance) et marqué à valider, CLAUDE.md racine, persona Chief of Staff par défaut (_personas/cos/ avec brief-du-jour + alias cos). Aucune identité de l'auteur du skill, tout dérivé du plan de Camille.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "edge-trap",
+      "prompt": "Voilà mon plan-vault.md dans 00-Inbox/. Initialise mon vault avec.",
+      "expected_output": "Vault scaffolté ; le skill SIGNALE le piège Area-as-Project (lancement-boutique-en-ligne a une date de fin) sans trancher d'autorité, et génère un Schema.md par défaut (section Conventions frontmatter absente du plan) marqué à valider. Shells créés, persona Chief of Staff par défaut posée (_personas/cos/), rien d'inventé.",
+      "files": []
+    }
+  ]
+}

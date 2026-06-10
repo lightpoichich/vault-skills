@@ -1,0 +1,61 @@
+{
+  "skill_name": "kickstart-persona",
+  "evals": [
+    {
+      "id": 1,
+      "name": "cos-generic",
+      "prompt": "Je voudrais ajouter un Chief of Staff à mon vault. Son rôle : trier mes mails, suivre mes projets transverses et me préparer des drafts à valider. Il lit mes projets (10-Projects/) et mes areas de gouvernance (20-Areas/gouvernance/), et il écrit uniquement des brouillons dans 00-Inbox/_drafts/. Monte-moi cette persona.",
+      "expected_output": "Persona cos créée dans le vault : dossier _personas/cos/ avec un CLAUDE.md (rôle + zones lit/écrit reprises de la demande) et un dossier .claude/skills/ vide. Un alias 'cos' ajouté au fichier shell rc, pointant vers le chemin ABSOLU du vault détecté (jamais ~/exemple-vault ni un chemin de l'auteur). Aucune capacité métier écrite, aucun contenu inventé.",
+      "files": [],
+      "expectations": [
+        "Un dossier _personas/cos/ a été créé dans le vault",
+        "_personas/cos/.claude/skills/ existe et est vide (aucun fichier de skill métier créé)",
+        "_personas/cos/CLAUDE.md existe et contient une section Rôle et des zones de lecture/écriture cohérentes avec la demande (lecture projets + gouvernance, écriture drafts)",
+        "L'alias 'cos' a été ajouté à un fichier shell rc (.zshrc ou .bashrc) et sa cible cd pointe vers le chemin absolu du vault détecté (le chemin contient le nom du dossier vault du sandbox)",
+        "Aucun chemin codé en dur étranger (par ex. ~/exemple-vault, ou un chemin propre à l'auteur du skill) n'apparaît dans l'alias ni dans le CLAUDE.md généré",
+        "Le CLAUDE.md ne contient aucun contenu inventé : pas de projets, contacts, ou compétences fictifs que l'utilisateur n'a pas mentionnés"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "rh-non-tech",
+      "prompt": "J'aimerais un assistant RH dans mon vault, mais franchement je sais pas trop quels dossiers il devrait lire ni où il devrait écrire. Tu peux me proposer quelque chose de cohérent et le créer ?",
+      "expected_output": "Le skill lit la carte du vault et PROPOSE un périmètre cohérent pour un RH (zones existantes du vault), puis crée _personas/rh/ avec CLAUDE.md (zones issues de la proposition) et .claude/skills/ vide, plus un alias 'rh' avec le chemin absolu du vault. Les zones renseignées correspondent à des dossiers réellement présents — rien d'inventé.",
+      "files": [],
+      "expectations": [
+        "Un dossier _personas/rh/ avec un CLAUDE.md a été créé",
+        "Les zones de lecture/écriture inscrites dans le CLAUDE.md correspondent à des dossiers réellement présents dans le vault (proposées depuis la carte), et non à des dossiers inventés",
+        "L'alias 'rh' a été ajouté à un fichier shell rc et pointe vers le chemin absolu du vault détecté",
+        "_personas/rh/.claude/skills/ existe et est vide (identité seulement, aucune capacité métier écrite)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "edge-prereq-missing",
+      "prompt": "Crée-moi une persona Veille réglementaire dans mon vault, elle suivra les évolutions de la réglementation environnementale.",
+      "expected_output": "Le skill détecte que le dossier courant n'est pas un vault prêt (il manque _Meta/Schema.md) et s'ARRÊTE sans rien créer, en orientant l'utilisateur vers kickstart-vault pour scaffolder le vault d'abord. Aucune persona, aucun alias.",
+      "files": [],
+      "expectations": [
+        "Le skill détecte que le vault n'est pas prêt (Schema.md absent / racine de vault introuvable) et ne crée aucune persona",
+        "Aucun dossier _personas/<slug>/ n'a été créé",
+        "Aucun alias n'a été ajouté au fichier shell rc",
+        "La réponse explique clairement qu'il faut d'abord scaffolder le vault (kickstart-vault) avant de créer une persona"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "discovery-vague-director",
+      "prompt": "Je voudrais un assistant qui m'aide à m'organiser, je suis un peu débordée en ce moment. Tu peux me créer ça dans mon vault ?",
+      "expected_output": "Au lieu de créer une persona générique sur la demande vague, le skill mène une vraie découverte (plusieurs tours, creuse, reformule) qui fait émerger la réalité métier de la dirigeante : triage matinal de ~150 mails, relances des 8 missions clients, prépa du point COMEX bimensuel, structuration des réponses aux AO. Il en dérive un rôle net (bras droit opérationnel), un périmètre ancré (lit 10-Projects/, 20-Areas/gouvernance/, 30-Resources/ ; écrit 00-Inbox/_drafts/), crée le shell (CLAUDE.md + .claude/skills/ vide + alias absolu), et liste un backlog de capacités (triage, relances, COMEX, AO) sans les coder — à construire ensuite via skill-creator.",
+      "files": [],
+      "expectations": [
+        "Une persona a été créée dans _personas/ avec un CLAUDE.md, un dossier .claude/skills/ vide, et un alias pointant vers le chemin absolu du vault détecté",
+        "Le rôle inscrit dans le CLAUDE.md est concret et reformulé à partir de la réalité métier (triage mails / suivi missions / COMEX / AO), pas la demande vague de départ ('assistant qui aide à s'organiser')",
+        "Le périmètre de lecture couvre les dossiers réels où vivent les infos nécessaires (10-Projects/, 20-Areas/gouvernance/, 30-Resources/) et l'écriture est limitée à 00-Inbox/_drafts/",
+        "Un backlog des tâches récurrentes (2 à 4 : triage inbox, relances missions, prépa COMEX, structuration AO) est persisté dans _personas/<slug>/capacites-a-construire.md ET rappelé dans le résumé, présenté comme des skills à créer via skill-creator dans .claude/skills/ — sans les coder maintenant",
+        "Aucune capacité métier n'est écrite (.claude/skills/ vide) et aucun contenu PARA n'est inventé (pas de fiche projet/contact fictive)",
+        "La conversation a réellement creusé et reformulé (le transcript montre des questions de découverte sur le quotidien, pas une création directe sur la demande vague)"
+      ]
+    }
+  ]
+}

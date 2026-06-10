@@ -1,0 +1,32 @@
+# OS
+.DS_Store
+
+# Logs / scratch
+*.log
+*.bak
+*.bak.zip
+
+# Python (eval harnesses)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (eval-viewer)
+node_modules/
+
+# Distribution artifacts (régénérés par make-bundle)
+dist/
+*.zip
+
+# Éval : artefacts de run régénérables (on ne versionne que le harnais + les résumés)
+# Gardé : grade*.py, fixtures/, inputs/, benchmark.md, benchmark.json
+# Ignoré : les bras de run (vaults générés, sandbox, outputs, journaux de grading)
+dev/evals/**/with_skill/
+dev/evals/**/without_skill/
+dev/evals/**/sandbox/
+dev/evals/**/outputs/
+dev/evals/**/*.db
+dev/evals/**/eval_metadata.json
+dev/evals/**/grading.json
+dev/evals/**/timing.json

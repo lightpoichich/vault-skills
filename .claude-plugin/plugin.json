@@ -1,0 +1,12 @@
+{
+  "name": "second-cerveau",
+  "description": "Pack « Claude Code + second cerveau » pour dirigeants. Monte un vault Obsidian PARA, le fait vivre, et le garde vrai. Trois familles de skills, un seul plugin — le cycle de vie du vault (Amorcer → Faire vivre → Entretenir). Famille 1 — Amorçage (create) : interview-vault → kickstart-vault → kickstart-persona → vault-skill-creator (le plan → le squelette → les agents → les compétences). kickstart-vault pose en plus une persona Chief of Staff par défaut, livrée avec le skill brief-du-jour — le vault est utilisable et exemplifié dès le scaffold. Famille 2 — Faire vivre (run) : import-note (l'entrée de contenu transverse) et nouveau-projet (fait naître un projet sur un vault déjà vivant), source-agnostiques via _Meta/sources.md ; le battement quotidien brief-du-jour est persona-porté (livré avec le Chief of Staff, pas un skill global). Famille 3 — Entretenir (maintain) : sync-vault (curateur autonome à deux couches — réconcilie et consolide les fiches du vault ET alimente la mémoire native de Claude Code (auto-recall), sans validation, anti append-only).",
+  "version": "2.3.0",
+  "author": {
+    "name": "Lucas Clément",
+    "email": "lucas@devlc.co"
+  },
+  "homepage": "https://github.com/lightpoichich/vault-skills",
+  "repository": "https://github.com/lightpoichich/vault-skills",
+  "keywords": ["obsidian", "vault", "second-cerveau", "para", "scaffolding", "coaching", "brief", "pkm"]
+}
