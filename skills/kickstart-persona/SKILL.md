@@ -51,9 +51,12 @@ d'écrire la procédure d'une tâche dans le `CLAUDE.md` de la persona — sa pl
   on **ne pré-écrit aucun skill métier** : si on se surprend à coder un `triage-mails.md` à la
   main, c'est le signal qu'il faut lancer `skill-creator`, pas écrire un fichier.
 - **Tout agent vit dans `_personas/{slug}/`.** Une persona est un **outil**, pas de la mémoire :
-  elle agit sur le vault, elle n'y stocke pas de connaissance. Donc jamais de fiche dans
-  `20-Areas/`, jamais d'agent « résident » d'une Area. La règle d'or du vault — *tout ce qui a
-  valeur de mémoire vit dans le vault, les personas le produisent ou le consomment* — en dépend.
+  elle agit sur le vault, elle n'y stocke pas de connaissance. Donc jamais de fiche persona ni de
+  dossier persona **logé** dans `20-Areas/`. En revanche, une persona peut très bien avoir une Area
+  comme **périmètre principal** (un RH qui lit et documente surtout `20-Areas/rh/`) : c'est son
+  ancrage fonctionnel, pas son lieu de stockage — et il se justifie par des routines récurrentes,
+  pas par l'existence du dossier. La règle d'or du vault — *tout ce qui a valeur de mémoire vit
+  dans le vault, les personas le produisent ou le consomment* — en dépend.
 - **Le `CLAUDE.md` de la persona est un minimum, pas un doublon.** Claude Code remonte
   l'arborescence et charge le `CLAUDE.md` racine du vault (la carte, les conventions, le Schema,
   **et le ton**) **automatiquement**. La persona n'a donc qu'à porter ce qui lui est propre : son

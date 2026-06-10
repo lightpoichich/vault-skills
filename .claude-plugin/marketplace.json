@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Pack « Claude Code + second cerveau » — skills d'amorçage (create), d'opération (run) et d'entretien (maintain) d'un vault Obsidian pour dirigeants.",
-    "version": "2.3.0"
+    "version": "2.3.1"
   },
   "plugins": [
     {
       "name": "second-cerveau",
       "source": "./",
       "description": "Un seul plugin, trois familles (Amorcer → Faire vivre → Entretenir) : Famille 1 — Amorçage (create) monte le vault et pose une persona Chief of Staff par défaut (livrée avec le brief du jour, vault utilisable dès le scaffold) ; Famille 2 — Faire vivre (run) le fait vivre (import de notes + création de projets, transverses) ; Famille 3 — Entretenir (maintain) le garde vrai et sobre (sync-vault, curateur autonome qui cure le vault et alimente la mémoire native de Claude Code). Pensé pour des dirigeants non-tech.",
-      "version": "2.3.0"
+      "version": "2.3.1"
     }
   ]
 }

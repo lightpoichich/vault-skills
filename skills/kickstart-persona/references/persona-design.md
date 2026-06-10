@@ -36,6 +36,14 @@ y compris les agents. Une seule source de vérité, pas de repos éparpillés.
 agissent sur cette mémoire sans la stocker. C'est pourquoi une persona n'a jamais de fiche dans
 `20-Areas/` : elle n'est pas un sujet à documenter, c'est un outil qui documente.
 
+Attention à ne pas confondre **lieu de stockage** et **périmètre fonctionnel**. La règle ci-dessus
+porte sur le stockage : pas de dossier ni de fiche persona dans `20-Areas/`. Elle n'interdit en
+rien une persona **ancrée sur une Area** — un RH dont la lentille principale est `20-Areas/rh/`
+(il y lit, il y documente) est même le cas d'usage typique : il *produit* de la mémoire dans
+l'Area, il n'en stocke pas dans `_personas/rh/`. Ce qui justifie une telle persona, ce sont des
+**routines récurrentes** sur cette Area (triage, synthèses de PV, relances), jamais la simple
+existence du dossier : on ne crée pas mécaniquement une persona par Area.
+
 ## Les 3 emplacements de skills (et pourquoi ça compte)
 
 Claude Code charge les skills de projet **hiérarchiquement** : depuis le dossier de lancement en
