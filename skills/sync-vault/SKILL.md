@@ -99,6 +99,13 @@ Les drafts sont des **livrables externes** en attente (mail, courrier, propositi
 - **Garde-fou** : ne **jamais** passer un draft `en-attente → validé` ni `validé → envoyé` (décisions
   humaines), ne **jamais** archiver un livrable encore en attente de validation.
 
+### 5bis. Veiller sur `30-Resources/` (voir `references/curation.md`)
+Tenue de registre **autonome** : `_index.md` cochés quand la ressource existe, wikilinks cassés
+réparés, liens bidirectionnels maintenus sur les ressources touchées par la session. Le reste se
+**signale au compte-rendu, jamais traité seul** : formes répétées (candidates à `extraire-trame` —
+l'extraction reste un geste humain), ressources orphelines (candidates archive), renvois externes
+possiblement périmés.
+
 ### 6. Alimenter la mémoire native de Claude Code (voir `references/memoire-claude-code.md`)
 - **L'activer si besoin** : s'assurer que la mémoire auto est active (`autoMemoryEnabled: true` dans
   `settings.json`) et l'activer sinon — sans ça, ce qui est écrit ne sera pas rappelé.
@@ -111,9 +118,9 @@ Les drafts sont des **livrables externes** en attente (mail, courrier, propositi
   fiches. Jamais de 🔒 en mémoire.
 
 ### 7. Rendre compte
-Résumer **après coup** ce qui a été mis à jour, consolidé et élagué — **fiches du vault, drafts curés
-et entrées de mémoire Claude Code** (chemins + nature des changements), pour que le dirigeant garde la
-visibilité.
+Résumer **après coup** ce qui a été mis à jour, consolidé et élagué — **fiches du vault, drafts curés,
+signalements Resources (candidats à trame, orphelines, renvois à vérifier) et entrées de mémoire
+Claude Code** (chemins + nature des changements), pour que le dirigeant garde la visibilité.
 
 ## Références
 - `references/curation.md` — quoi intégrer, quoi garder, quoi élaguer/réécrire ; et les garde-fous.

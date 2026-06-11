@@ -212,10 +212,12 @@ Ce sont des **nudges + auto-fix inertes** : jamais de blocage d'action, jamais d
   livrable, parties-prenantes, wikilink vers l'Area liée si le plan le précise).
 
 ### 8. Resources (légère)
-- Créer les sous-dossiers de `30-Resources/` du plan. Optionnellement, dans chaque sous-zone,
-  un `_index.md` qui **liste les items prévus du plan en cases à cocher** (TODO de
-  capitalisation) — utile car le plan note souvent ces trames comme « à créer ». Pas de
-  contenu, juste la liste à remplir par l'usage.
+- Créer les sous-dossiers de `30-Resources/` du plan. Dans chaque sous-zone, un `_index.md` qui
+  **liste les items du plan en cases à cocher** (TODO de capitalisation). Pour un item **existant
+  ailleurs** (un PDF sur Drive, des CGV, une charte), reporter son emplacement tel que le plan le
+  donne : `- [ ] {nom} — {usage} — vit aujourd'hui : {emplacement}`. Pour un item « à créer »,
+  case simple. Pas de contenu, jamais de copie : la liste se remplit par l'usage (entrée **une par
+  une** via l'import, jamais de migration en masse).
 
 ### 9. Renvois externes (si mapping sources présent)
 - Dans `30-Resources/references-externes/` (le créer si besoin), poser des **renvois-shells**
@@ -264,7 +266,10 @@ existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` po
   *ne pas remplir les fiches à la main → le contenu entre au fil des besoins ; donner ses
   **compétences** au Chief of Staff via `vault-skill-creator` (en partant des compétences listées au
   plan) ; ne créer une **nouvelle persona** (`kickstart-persona`) que si une compétence réclame ses
-  propres zones, sa propre voix ou ses propres garde-fous.* C'est la règle clé : **une compétence
+  propres zones, sa propre voix ou ses propres garde-fous ; les **documents de référence repérés à
+  l'interview** sont listés (avec leur emplacement) dans les `_index.md` de `30-Resources/` — les
+  faire entrer **un par un, au moment où on en a besoin**, avec `import-note`, jamais tout d'un
+  coup.* C'est la règle clé : **une compétence
   s'ajoute à une persona existante ; on ne crée pas une persona par compétence.**
 - **Persona Chief of Staff posée** (étape 10bis) : l'indiquer clairement, avec le **mode d'emploi
   immédiat** — recharger le terminal (`source ~/.zshrc`, ou nouvel onglet) puis taper `cos` et demander

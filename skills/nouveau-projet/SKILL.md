@@ -75,6 +75,10 @@ puis lier le résultat depuis la fiche projet en `[[wikilinks]]`. Rien d'invent�
 ### 6. Raccrocher au vault
 - Wikilink **bidirectionnel** : la fiche projet pointe vers `[[{area}]]`, et la fiche de l'Area parente
   (ou son MOC) gagne un lien vers le projet.
+- **Ressources pertinentes** : balayer `30-Resources/` (noms de fichiers + `_index.md` des
+  sous-zones), **proposer** 1-3 `[[wikilinks]]` vers ce qui sert ce projet — une trame, un runbook,
+  un doc de référence (CGV, design system…). Proposer seulement ce qui résonne — jamais de liste
+  déversée, zéro lien vaut mieux qu'un lien décoratif.
 - Mettre à jour un MOC/index de projets s'il en existe un.
 
 ### 7. Confirmer

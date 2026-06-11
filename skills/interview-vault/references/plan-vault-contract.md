@@ -59,7 +59,7 @@ _Meta/
 ## Resources
 
 ### {sous-zone-1}/  *(état : surtout à créer / à constituer / existant)*
-- {nom} — {usage}
+- {nom} — {usage} — {où il vit aujourd'hui | « à créer »}
 
 ### {sous-zone-2}/
 - ...
@@ -130,7 +130,9 @@ _Meta/
   interne un assistant a le droit de nommer — c'est lui qui calibre la narration. Si la passe n'a pas
   eu lieu, laisser la section telle quelle : `kickstart-vault` posera un défaut marqué « à valider ».
 - **Resources** : toujours des **sous-zones** (pas une liste à plat) + la ligne **« Logique
-  d'organisation retenue »** + une sous-zone `references-externes/`.
+  d'organisation retenue »** + une sous-zone `references-externes/`. **Chaque document existant
+  porte son emplacement actuel** (Drive, Notion, PDF, papier…) — il alimentera les `_index.md` de
+  `kickstart-vault` et l'entrée une par une via l'import. Un item « à créer » reste sans emplacement.
 - **Conventions frontmatter** : ne lister que les types qui **correspondent à l'activité**. Toujours
   inclure `project`, `area`, `meeting`. Ajouter `adr` si décisions techniques à tracer, `incident`
   si prod/oncall, `brief` si agent de point quotidien, `contact` si partenaires/clients récurrents,

@@ -12,6 +12,7 @@ on lui invente un faux brief.
 | La réunion où le projet a été décidé | cascade `_Meta/sources.md` (Granola/agenda si `actif`), sinon collage → `import-note` |
 | Un fil d'emails, un doc, une URL | `import-note` (acquisition adaptée à l'entrée) |
 | Une Area parente / un projet voisin déjà dans le vault | `[[wikilink]]` direct, pas de copie |
+| Une trame ou un doc de référence déjà dans `30-Resources/` | `[[wikilink]]` direct depuis la fiche projet (proposer 1-3, pas déverser) |
 
 ## La cascade (source-agnostique)
 

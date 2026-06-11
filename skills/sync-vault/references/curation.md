@@ -34,7 +34,29 @@ Le vault sert de **contexte** aux personas et aux sessions futures. On préserve
 **Règle du doute** : si on hésite sur l'importance d'un élément → **garder**. Un curateur préserve le
 signal ; il n'élague que ce qui est clairement redondant ou mort.
 
-## 4. Curer le sas `00-Inbox/_drafts/` (livrables sortants)
+## 4. Veiller sur `30-Resources/` (curer le registre, signaler le reste)
+
+`30-Resources/` est le référentiel — trames, docs bruts (PDF, CGV, design system…), renvois
+externes. Il dérive en silence si personne ne le regarde. `sync-vault` y sépare strictement deux
+gestes.
+
+**Ce qu'il fait seul (tenue de registre, autonome) :**
+- `_index.md` des sous-zones : cocher un item dont la ressource existe désormais, réparer un
+  wikilink cassé par un renommage.
+- Une ressource touchée par la session (trame utilisée dans un projet, doc consulté) : poser ou
+  maintenir le wikilink bidirectionnel (la fiche d'usage pointe la ressource, et inversement).
+
+**Ce qu'il signale au compte-rendu (jamais d'action seul) :**
+- **Candidat à trame** : une forme répétée dans ≥ 2 Projects/Areas (même structure de document, même
+  checklist refaite, même déroulé) → « candidate à `extraire-trame` ». L'extraction est un jugement
+  de généralisation : elle appartient au dirigeant, jamais au curateur.
+- **Ressource orpheline durable** : zéro wikilink entrant et aucun usage repérable → candidate à
+  l'archive. **Ne jamais déplacer une Resource vers `40-Archive/` seul** : rien ne distingue une
+  trame dormante d'une trame morte (règle du doute → garder, signaler).
+- **Renvoi externe possiblement périmé** : un renvoi de `references-externes/` dont la source a
+  manifestement bougé (lien mort évoqué en session, outil abandonné) → à vérifier.
+
+## 5. Curer le sas `00-Inbox/_drafts/` (livrables sortants)
 
 Les fiches `type: draft` ne sont **pas du savoir** : ce sont des **livrables externes** (mail,
 courrier, proposition, post) qui attendent la main de l'humain. `sync-vault` ne touche **jamais** à

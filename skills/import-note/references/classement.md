@@ -16,6 +16,13 @@ La première décision, avant de ranger quoi que ce soit :
 Un **renvoi** va dans `30-Resources/references-externes/` : un titre, le lien, une ligne de contexte,
 tag 🔒 si sensible. C'est la matérialisation de **renvoi-jamais-copie** (`governance.md`).
 
+**Cas particulier — le doc brut** (PDF, CGV, design system, plaquette…) : quand le document
+**lui-même** est le référentiel — pas un contenu à transformer en fiche — l'import se fait en deux
+pièces : le **fichier posé tel quel** dans `30-Resources/{sous-zone}/` (ou laissé à sa source s'il
+y vit et y évolue → renvoi), et une **fiche compagnon** markdown à côté (`type: resource`, résumé
+en 2-3 lignes de ce que c'est et quand s'en servir, `source:` → le fichier, `[[wikilinks]]`). Sans
+fiche compagnon, un PDF est invisible : rien ne le wikilinke, rien ne le retrouve au bon moment.
+
 Le reste de cette page concerne le cas **import**.
 
 ## 2. Choisir la zone PARA
@@ -54,6 +61,10 @@ Si l'utilisateur a déjà nommé la cible (« ajoute ça à mon projet X »), la
 
 - Relier en **`[[wikilinks]]`** vers les fiches déjà présentes que le contenu mentionne ou prolonge
   (le projet concerné, l'area parente, une ressource voisine).
+- **Boucle de retour** : quand l'import naît d'un contexte précis (« pour le projet X », import
+  pendant qu'on travaille une Area) et atterrit en `30-Resources/`, le lien est **bidirectionnel** —
+  la ressource pointe vers `[[{projet/area}]]`, ET la fiche du projet/area gagne le lien
+  `[[{ressource}]]`. Une ressource que rien ne pointe sera invisible au moment où on en aura besoin.
 - Un import bien classé **se raccroche** au reste du vault : il n'est pas une île.
 
 ## 6. Confirmer

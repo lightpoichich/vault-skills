@@ -22,7 +22,7 @@ Sections (titres indicatifs — repérer par le sens) :
 | **Arborescence proposée** | l'arbre de dossiers exact (Areas, sous-zones Resources) | étape 3 — création des dossiers |
 | **Projects (avec deadline)** | un projet par ligne : nom — deadline — livrable — parties prenantes | étape 7 — shells de Projects |
 | **Areas (responsabilités continues)** | par Area : objets récurrents, fréquence/cadence, outils actuels | étape 6 — shells d'Areas |
-| **Resources** | sous-zones + items prévus + logique (par type / par domaine) | étapes 3 & 8 |
+| **Resources** | sous-zones + items prévus (avec **emplacement actuel** pour l'existant — champ optionnel, un plan ancien sans emplacement reste valide) + logique (par type / par domaine) | étapes 3 & 8 |
 | **Conventions frontmatter suggérées** | les types de fiches et leurs champs (project, area, meeting, adr…) | étape 4 — `_Meta/Schema.md` |
 | **Mapping sources existantes → vault** | quelle source alimente quelle zone (Notion, Slack, DataDog, Gmail…) | étape 9 — renvois externes |
 | **Compétences à construire (skills) → personas** | par compétence : ce qu'elle lit / écrit (`type`), regroupée par persona | étape 4 — types au Schema + politique d'accès |

@@ -146,9 +146,13 @@ inventer une Area qui ne parle pas à l'utilisateur. Viser 4 à 7 Areas au total
 > (Projects + Areas identifiés), la montrer, laisser l'utilisateur corriger / compléter / supprimer.
 > N'avancer qu'une fois validée.
 
-**Phase 3 — Resources (3-4 questions).** Quelles méthodos, trames, runbooks, ADR, frameworks,
+**Phase 3 — Resources (4-5 questions).** Quelles méthodos, trames, runbooks, ADR, frameworks,
 benchmarks réutilise-t-il d'un chantier à l'autre ? Quels documents de référence sont consultés sans
-bouger ? À partir des réponses, proposer une **sous-arborescence** pour `30-Resources/` (2-4
+bouger — y compris les docs bruts (CGV, contrats types, plaquettes, charte graphique) ? **Pour
+chaque document existant : où vit-il aujourd'hui** (un dossier Drive, une page Notion, un PDF qui
+circule par mail, un classeur papier) ? Le plan listera ces documents **avec leur emplacement
+actuel** — c'est ce qui permettra de les faire entrer un par un, au fil des besoins, sans migration
+en masse. À partir des réponses, proposer une **sous-arborescence** pour `30-Resources/` (2-4
 sous-dossiers) et **choisir avec l'utilisateur** la logique — **par type** (`methodologies/`,
 `runbooks/`, `adr/`, `benchmarks/`) ou **par domaine** — selon son volume et son usage réels (heuristique
 dans le guide). Prévoir `references-externes/` pour les renvois (jamais de copie).

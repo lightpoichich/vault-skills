@@ -68,7 +68,12 @@ Suivre `references/classement.md` :
 - **Chercher une fiche existante** pertinente (`Glob`/`Grep`) avant d'en créer une : enrichir plutôt
   que dupliquer.
 - Lire `_Meta/Schema.md`, poser le frontmatter du type adéquat (souvent `resource`), un titre
-  **kebab-case**, et des `[[wikilinks]]` vers les fiches liées. Renseigner `source:` avec l'origine.
+  **kebab-case**, et des `[[wikilinks]]` vers les fiches liées — **bidirectionnels** quand l'import
+  est motivé par un projet/area : la fiche d'accueil gagne aussi le lien. Renseigner `source:` avec
+  l'origine.
+- **Doc brut** (PDF, CGV, design system…) dont le fichier *est* le référentiel → le poser tel quel
+  dans `30-Resources/{sous-zone}/` avec une **fiche compagnon** markdown (voir
+  `references/classement.md`) — jamais un fichier orphelin sans fiche.
 
 ### 6. Écrire et confirmer
 Écrire la fiche (ou l'ajout). **Non destructif** : pas d'écrasement sans demander. Confirmer le chemin
