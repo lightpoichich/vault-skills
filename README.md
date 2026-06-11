@@ -15,7 +15,7 @@ bas ne sont pas théoriques, ce sont ceux qui ont survécu au contact des utilis
 Dans Claude Code :
 
 ```
-/plugin marketplace add lightpoichich/vault-skills
+/plugin marketplace add https://github.com/lightpoichich/vault-skills
 /plugin install second-cerveau@vault-skills
 ```
 
