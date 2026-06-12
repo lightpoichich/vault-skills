@@ -64,13 +64,28 @@ connecteur, le vault suffit toujours à produire un résultat utile.
 - **nouveau-projet** fait naître un projet sur un vault vivant : le dossier
   `10-Projects/{slug}/`, la fiche liée à son Area, puis le rattachement du contexte réel
   existant via `import-note`. Il n'invente aucun contenu.
+- **extraire-trame** fait émerger le savoir qui existe en creux : quand une pratique
+  revient (au moins deux occurrences réelles), il la capitalise en trame réutilisable
+  dans `30-Resources/`, avec les `[[wikilinks]]` vers les cas fondateurs. Chaque section
+  vient d'un cas réel, rien d'inventé, et la généralisation est validée avant écriture.
+- **gerer-area** gère l'épine dorsale du vault : faire naître une Area, compléter un
+  shell, renommer, scinder, fusionner, archiver. Les gestes multi-fichiers suivent un
+  plan validé avant exécution, et l'archivage a des pré-checks bloquants (projets actifs,
+  contenu à promouvoir en Resource).
 
 ### Famille 3 — Entretenir (*maintain*)
+
+Les skills qui gardent le vault vrai et propre dans la durée.
 
 - **sync-vault** est le curateur du vault. Il réconcilie les fiches avec la réalité du
   travail en cours (décisions, statuts, todos) et les garde concises : il consolide et
   élague au lieu d'empiler. Il alimente aussi la mémoire native de Claude Code pour le
   rappel en début de session.
+- **audit-vault** est le contrôle technique périodique : il détecte (intégrité
+  structurelle, fraîcheur, squelette des Areas et personas), produit un rapport
+  `00-Inbox/audit-vault-{date}.md` avec sévérités, et n'agit que sur validation — les
+  fixes mécaniques en un oui global, les gestes de structure délégués à `gerer-area`,
+  les décisions de fond laissées à l'humain.
 
 ## Principes de conception
 
