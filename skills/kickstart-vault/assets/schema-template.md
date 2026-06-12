@@ -86,6 +86,14 @@ sensibilité: { normal | confidentiel }
 Cycle de vie : `en-attente` → `validé` (humain) → `envoyé` (humain) → **archivé** comme trace sur
 `lien`, ou **abandonné** si périmé. `_drafts/` ne garde jamais un état terminal — `sync-vault` l'en sort.
 
+### `audit` — rapport d'audit du vault (éphémère)
+Produit par `audit-vault` dans `00-Inbox/`, écrasé au jour le jour, purgé par les audits suivants.
+```yaml
+type: audit
+date: {YYYY-MM-DD}
+findings: { critical: N, warnings: N, infos: N }
+```
+
 <!-- Types optionnels selon le plan : `brief` (date, priorités, alertes, agenda, todos),
      `incident` (date, sévérité, services, statut, timeline, post-mortem), `moc` (index). -->
 

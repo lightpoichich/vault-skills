@@ -263,7 +263,10 @@ existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` po
 ### 11. Écrire le compte-rendu d'installation
 - Créer `00-Inbox/compte-rendu-installation.md` : l'arbre créé, ce qui a été **généré par défaut à
   valider**, les points où le plan disait « à creuser », et les **prochaines étapes** :
-  *ne pas remplir les fiches à la main → le contenu entre au fil des besoins ; donner ses
+  *ne pas remplir les fiches à la main → le contenu entre au fil des besoins (les shells de Projects
+  se complètent au fil de l'eau avec `nouveau-projet` : invariants manquants + contexte réel
+  rattaché ; les Areas évoluent ensuite — naître, compléter, renommer, scinder, archiver — avec
+  `gerer-area`) ; donner ses
   **compétences** au Chief of Staff via `vault-skill-creator` (en partant des compétences listées au
   plan) ; ne créer une **nouvelle persona** (`kickstart-persona`) que si une compétence réclame ses
   propres zones, sa propre voix ou ses propres garde-fous ; les **documents de référence repérés à

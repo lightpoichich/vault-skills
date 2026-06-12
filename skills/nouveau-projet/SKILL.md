@@ -1,28 +1,30 @@
 ---
 name: nouveau-projet
 description: >-
-  Crée un nouveau projet dans un vault Obsidian **déjà vivant** : génère le dossier
-  `10-Projects/{slug}/` et sa fiche `{slug}.md` (frontmatter `type: project` conforme au Schema du
-  vault, wikilink vers l'Area parente), puis **nourrit** le projet en y rattachant le contexte réel
-  existant (note d'inbox, réunion, fil d'emails) via `import-note` — sans rien inventer. Utilise ce
-  skill dès que l'utilisateur veut « lancer un nouveau projet », « créer le projet X », « ajouter un
-  projet », « démarrer un dossier projet », « ouvrir un chantier » dans son vault. **Transverse**
-  (depuis n'importe quelle persona) et **source-agnostique** (lit `_Meta/sources.md`, dégrade
-  proprement). NE PAS l'utiliser pour scaffolder le vault entier (`kickstart-vault`, qui pose les
-  Projects au moment de l'amorçage), pour faire entrer une note externe déjà existante
-  (`import-note`), pour créer une persona (`kickstart-persona`), ni pour répercuter une session dans
-  le vault (`sync-vault`).
+  Crée **ou complète** un projet dans un vault Obsidian **déjà vivant** : génère
+  `10-Projects/{slug}/{slug}.md` (frontmatter `type: project` conforme au Schema, wikilink vers
+  l'Area parente), puis **nourrit** le projet du contexte réel existant (note d'inbox, réunion, fil
+  d'emails) via `import-note` — sans rien inventer. Sur un shell déjà posé (par `kickstart-vault`
+  au scaffold), même geste : invariants manquants + nourrir, sans écraser l'existant. Utilise ce
+  skill dès que l'utilisateur veut « lancer un nouveau projet », « créer le projet X », « ouvrir un
+  chantier », ou dit « complète / initialise / remplis le projet X », « le projet X est vide ».
+  **Transverse** et **source-agnostique** (lit `_Meta/sources.md`, dégrade proprement). NE PAS
+  l'utiliser pour scaffolder le vault entier (`kickstart-vault` pose les shells une fois — ce skill
+  les complète ensuite), pour faire entrer une note externe isolée (`import-note`), pour créer une
+  persona (`kickstart-persona`), ni pour répercuter une session (`sync-vault`).
 ---
 
 # Nouveau projet
 
-Faire **naître** un projet dans un vault déjà vivant. Le jumeau d'`import-note` : import-note fait
-*entrer* un contenu qui existe déjà ; `nouveau-projet` fait *naître* un effort neuf, lui pose son foyer
-(dossier + fiche), puis le raccroche au contexte réel.
+Faire **naître** un projet dans un vault déjà vivant — ou **compléter** un projet qui n'est encore
+qu'un shell. Le jumeau d'`import-note` : import-note fait *entrer* un contenu qui existe déjà ;
+`nouveau-projet` fait *naître* un effort neuf, lui pose son foyer (dossier + fiche), puis le raccroche
+au contexte réel. Le même geste, appliqué à une fiche déjà posée, la complète.
 
 C'est un geste de **Famille 2 (faire vivre)**, pas d'amorçage : `kickstart-vault` génère les shells de
-Projects une seule fois, au scaffold. Ici on ajoute un projet *après*, à la demande, sans relancer
-l'interview de cartographie.
+Projects une seule fois, au scaffold — des coquilles volontairement vides. Ici on ajoute un projet
+*après*, à la demande, sans relancer l'interview de cartographie — et c'est aussi ici que ces shells
+se remplissent, au fil de l'eau.
 
 ## Principe à garder en tête
 
@@ -41,6 +43,9 @@ l'interview de cartographie.
 Remonter depuis le dossier courant jusqu'à la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`).
 
 ### 2. Recueillir les invariants (court, interactif)
+Si la demande vise un projet existant (« complète le projet X », « X est vide »), passer directement
+à l'étape 3 : on ne demandera que les trous.
+
 Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: project` :
 - **nom** du projet (→ titre + slug `kebab-case`) ;
 - **livrable + critère de fin** (ce qui dira « c'est terminé ») ;
@@ -49,9 +54,16 @@ Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: pr
 - **Area parente** : la responsabilité continue à laquelle le projet se rattache (proposer parmi les
   `20-Areas/` existants ; un projet sans area est possible, mais le signaler).
 
-### 3. Vérifier le non-doublon
-`Glob` sur `10-Projects/` et `Grep` un terme clé du nom (penser aussi à `40-Archive/`). Si un projet
-proche existe → proposer de **l'enrichir** (ou de désarchiver) plutôt que de recréer.
+### 3. Chercher l'existant — l'aiguillage naître / compléter
+`Glob` sur `10-Projects/` et `Grep` un terme clé du nom (penser aussi à `40-Archive/` → proposer de
+**désarchiver** plutôt que recréer). Trois cas :
+- **Introuvable** → mode **naître** : dérouler les étapes 4 à 7.
+- **Trouvé** (shell scaffoldé par `kickstart-vault`, ou fiche maigre) → mode **compléter** : lire la
+  fiche et la comparer au contrat `project` de `_Meta/Schema.md`, demander **seulement les invariants
+  manquants** (étape 2 réduite aux trous), puis reprendre aux étapes 5-7 (nourrir, raccrocher,
+  confirmer). **Non destructif** : remplir uniquement les champs et sections vides — ne jamais
+  réécrire ce qui est déjà renseigné.
+- **Projet proche mais distinct** → le signaler et confirmer avant de créer, pour éviter le doublon.
 
 ### 4. Scaffolder le shell
 - **Lire `_Meta/Schema.md`** pour le contrat `project` de **ce** vault (les champs peuvent varier d'un
