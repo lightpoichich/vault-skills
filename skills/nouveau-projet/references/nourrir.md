@@ -13,6 +13,7 @@ on lui invente un faux brief.
 | Un fil d'emails, un doc, une URL | `import-note` (acquisition adaptée à l'entrée) |
 | Une Area parente / un projet voisin déjà dans le vault | `[[wikilink]]` direct, pas de copie |
 | Une trame ou un doc de référence déjà dans `30-Resources/` | `[[wikilink]]` direct depuis la fiche projet (proposer 1-3, pas déverser) |
+| L'endroit permanent où vit le corpus du projet (dossier Drive, workspace Notion, dossier Granola) | **renvoi d'emplacement** nommant le connecteur (cf. `import-note/references/classement.md`), wikilinké au projet |
 
 ## La cascade (source-agnostique)
 
@@ -27,6 +28,13 @@ source non déclarée            → sauter, le proposer comme amélioration
 
 Le **vault est toujours joignable** : même sans aucun connecteur, on peut rattacher une note d'inbox
 existante. C'est la valeur plancher.
+
+**Repuiser étroit avant de balayer large.** Si le projet porte déjà un **renvoi d'emplacement** (un
+dossier/workspace nommant son connecteur, cf. `governance.md`), le **lire d'abord** : aller chercher au
+bon endroit via le connecteur cité de `_Meta/sources.md`, plutôt qu'une recherche globale ou un collage.
+Et **dans l'autre sens** : si nourrir fait découvrir un emplacement permanent (« tout le projet vit dans
+ce dossier Drive »), le **poser comme renvoi d'emplacement** (délégué à `import-note`) — une fois, pour
+que les prochaines sessions y repuisent seules. Cascade habituelle si l'emplacement est injoignable.
 
 ## Déléguer, ne pas dupliquer
 

@@ -7,9 +7,9 @@
 
 ## Le contrat
 
-| source | type | statut | usage |
-|--------|------|--------|-------|
-| Projects + Areas actifs | vault | toujours | priorités, deadlines, contexte |
+| source | type | statut | usage | accès |
+|--------|------|--------|-------|-------|
+| Projects + Areas actifs | vault | toujours | priorités, deadlines, contexte | read direct |
 {lignes dérivées du *Mapping sources* du plan-vault, une par source nommée — voir ci-dessous}
 
 ## Comment lire ce tableau
@@ -29,6 +29,12 @@
   - `renvoi 🔒` : source sensible. **Jamais copiée** dans le vault, seulement référencée. Voir
     `governance.md`.
 - **`usage`** — à quel « slot » d'un skill la source répond (agenda, todos, meetings, messages…).
+- **`accès`** *(optionnel)* — l'**heuristique** pour requêter cette source **étroit** plutôt que de tout
+  rapatrier : `read direct`, `scoper par date`, `filtrer par projet/personne`, `payload long → toujours
+  borner`, `jamais copié 🔒`. C'est un **comment-requêter-bien**, **jamais le schéma** de la source
+  (champs, tables) : le schéma est *live* (un MCP est auto-descriptif, on le découvre à l'appel), le
+  figer ici le ferait **dériver**. Vide / `—` = pas d'heuristique connue. Une source `actif` sans `accès`
+  marche très bien — la colonne se remplit **par l'usage**, quand un skill apprend la bonne requête.
 
 ## La règle de résolution (pour les skills qui lisent ce fichier)
 
@@ -43,9 +49,12 @@ source non déclarée            → sauter le slot, le proposer comme améliora
 GÉNÉRATION (kickstart-vault) :
 - Toujours poser la ligne `vault` (socle). Ne jamais l'inventer : Projects/Areas existent par construction.
 - Pour CHAQUE source nommée dans le *Mapping sources* du plan-vault, ajouter une ligne :
-  `| {source} | {cloud|local} | {statut} | {usage déduit du plan} |`
+  `| {source} | {cloud|local} | {statut} | {usage déduit du plan} | {accès ou vide} |`
   statut = `à brancher` PAR DÉFAUT ; `actif` UNIQUEMENT si le plan atteste que le connecteur est
   déjà branché et joignable (source nommée ≠ connecteur en place). Au moindre doute → `à brancher`.
+- `accès` = laisser VIDE (`—`) sauf si le plan donne une heuristique d'accès explicite (« scoper par
+  date », « filtrer par projet »…). Ne JAMAIS inventer le schéma de la source ; cette colonne se remplit
+  par l'usage (un skill qui sonde la source y consigne ce qu'il apprend). 🔒 → `jamais copié 🔒`.
 - Source marquée sensible dans le plan / la gouvernance → statut `renvoi 🔒`.
 - Generate-don't-write : n'inscrire AUCUNE source que le dirigeant n'a pas nommée. Pas de catalogue
   d'exemples en dur dans le fichier généré. Si le plan n'a pas de *Mapping sources*, ne poser que la

@@ -20,7 +20,9 @@ séparé ».}
 - `30-Resources/` — référentiel réutilisable + `references-externes/` (renvois).
 - `40-Archive/` — clôturé (on déplace, on ne supprime pas).
 - `_Meta/` — `Schema.md` (contrat frontmatter), `governance.md` (règles d'accès & isolation),
-  `sources.md` (registre des connecteurs : d'où les compétences tirent leurs informations).
+  `sources.md` (registre des connecteurs : d'où les compétences tirent leurs informations),
+  `derivation.md` (le **pourquoi** : à lire si tu te demandes pourquoi l'espace est rangé ainsi,
+  ou avant d'en changer la structure).
 - `_personas/` — les personas, tes assistants spécialisés (vides au départ) ; chacun déclare son
   périmètre lecture/écriture.
 - `.claude/` — réglages techniques du vault (les garde-fous ci-dessous). Rien à y toucher.

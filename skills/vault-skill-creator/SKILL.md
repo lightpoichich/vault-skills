@@ -178,7 +178,12 @@ confirmer ; si elle ne répond pas, la traiter comme injoignable (collage manuel
 sa ligne en `à brancher` dans le registre. Si la procédure a besoin d'une source absente du registre,
 **ajouter la ligne correspondante dans `_Meta/sources.md`** (statut `à brancher`) au lieu de la coder en
 dur dans le SKILL.md : le
-registre reste la source de vérité, et les autres skills en profitent. Le skill `brief-du-jour` (Famille
+registre reste la source de vérité, et les autres skills en profitent. **Quand sonder la source révèle
+une requête non-évidente** (filtre par date, scope étroit, payload long à borner), **consigner cette
+heuristique dans la cellule `accès`** de sa ligne dans `_Meta/sources.md` — pour que les futurs skills
+appellent étroit plutôt que de tout rapatrier. C'est un *comment-requêter-bien*, **jamais le schéma**
+(champs/tables) de la source : le schéma est live, on le redécouvre à l'appel ; le figer le ferait
+dériver. Le skill `brief-du-jour` (Famille
 2) est l'exemple de référence de ce pattern — il est *persona-porté*, livré avec la persona Chief of
 Staff par `kickstart-vault` (le lire dans
 `kickstart-vault/assets/persona-chief-of-staff/.claude/skills/brief-du-jour/`).

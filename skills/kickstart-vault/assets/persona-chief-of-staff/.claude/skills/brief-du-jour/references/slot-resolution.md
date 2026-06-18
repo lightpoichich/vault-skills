@@ -23,6 +23,9 @@ Le skill lit ce tableau. Exemple d'un vault bien branché :
 - **`usage`** — rattache la source à un **slot** du brief. Les slots canoniques : `agenda`, `todos`,
   `meetings veille`, `messages`, `priorités` (vault). Un `usage` libre est rattaché au slot le plus
   proche, ou ajouté en contexte.
+- **`accès`** *(colonne optionnelle — peut être absente)* — l'heuristique pour requêter la source
+  **étroit**. Quand elle est là, **l'appliquer à l'appel** : un `accès: scoper par date` sur Granola =
+  **un seul appel borné à la veille** au lieu d'un list-all puis filtre. Absente → appel par défaut.
 
 ### Si le registre est absent
 

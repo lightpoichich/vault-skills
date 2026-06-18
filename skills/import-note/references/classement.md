@@ -16,6 +16,14 @@ La première décision, avant de ranger quoi que ce soit :
 Un **renvoi** va dans `30-Resources/references-externes/` : un titre, le lien, une ligne de contexte,
 tag 🔒 si sensible. C'est la matérialisation de **renvoi-jamais-copie** (`governance.md`).
 
+**Cas particulier — le renvoi d'emplacement** : quand ce qu'on rattache n'est pas un doc mais l'endroit
+*permanent* où vit le corpus d'un projet/area (dossier Drive du projet, workspace Notion, dossier
+Granola du client), poser un renvoi qui **nomme le connecteur** qui l'atteint — une ligne de contexte
+du type « Dossier Drive *{projet} — Livrables* — **via Google Drive** » (le connecteur reprend une ligne
+de `_Meta/sources.md`). Le wikilinker **au projet/area** (boucle de retour, cf. §5). Ça permet aux skills
+d'y repuiser étroit plus tard sans qu'on recolle le lien ; ça reste un **pointeur**, jamais une copie du
+contenu. `🔒` → renvoi sensible, jamais rapatrié.
+
 **Cas particulier — le doc brut** (PDF, CGV, design system, plaquette…) : quand le document
 **lui-même** est le référentiel — pas un contenu à transformer en fiche — l'import se fait en deux
 pièces : le **fichier posé tel quel** dans `30-Resources/{sous-zone}/` (ou laissé à sa source s'il

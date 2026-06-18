@@ -150,12 +150,31 @@ attendu.
   - **Generate-don't-write** : n'inscrire aucune source que le plan ne nomme pas. Si le plan n'a pas de
     *Mapping sources*, ne poser que la ligne `vault` et le signaler dans le rapport (le dirigeant — ou un
     skill, à la première exécution — complétera quand il branchera ses connecteurs).
+  - **Colonne `accès` optionnelle** (heuristique « comment requêter étroit » : `scoper par date`,
+    `filtrer par projet`…). La laisser **vide** (`—`) sauf si le plan atteste une heuristique claire :
+    elle se remplit par l'usage, jamais par invention, et ne porte **jamais le schéma** de la source.
+- **`_Meta/derivation.md`** — depuis `assets/derivation-template.md`. C'est le **« pourquoi »** du
+  vault : il trace sa forme (PARA, *ses* Areas/Projects, ses règles d'écriture, le CoS par défaut) à
+  ce que le dirigeant a décrit à la cartographie. Là où Schema/governance/sources disent **ce que sont**
+  les règles, lui dit **pourquoi** elles sont là — ce qui rend l'espace explicable au dirigeant et
+  guide ses choix le jour où il voudra le faire évoluer. **Generate-don't-write tient toujours** : la
+  rationale *universelle* (pourquoi PARA, pourquoi le vide-structuré) explique le **système**, elle
+  n'invente aucun contenu métier ; les parties *spécifiques* ({tes domaines}, {ta posture 🔒}) sont
+  **reprises du plan**, jamais inventées — si le plan ne dit rien sur un point, laisser le placeholder
+  ou retirer la ligne, ne pas broder. **Langage simple, calibré sur le curseur *Vocabulaire*** comme
+  tout le reste : ce fichier est lu par le dirigeant, son but est pédagogique — zéro jargon interne.
+  Le principe : **le vault embarque sa propre justification**, tenue **courte** à dessein. À la fin du
+  fichier, la section *Faire évoluer* renvoie aux bonnes compétences (`nouveau-projet`, `gerer-area`,
+  `kickstart-persona`, `interview-vault`).
 
 ### 5. Générer le `CLAUDE.md` racine (mécanique du vault, pas la bio)
 - Depuis `assets/vault-claude-template.md`. Court. Il porte la **mécanique du vault** : une ligne
   de périmètre (reprise du plan), la carte du vault, les conventions (kebab-case, wikilinks
   **+ comment les suivre**, frontmatter), la règle **generate-don't-write**, et les `@imports`
-  de `_Meta/Schema.md` et `_Meta/governance.md`.
+  de `_Meta/Schema.md`, `_Meta/governance.md` et `_Meta/sources.md` — les **contrats** que l'agent
+  doit suivre à chaque session. **Ne PAS `@importer` `_Meta/derivation.md`** : c'est le *pourquoi*
+  (pédagogique, consulté à la demande), pas un contrat opérationnel — l'imposer à chaque session
+  coûterait des tokens pour rien. Il est seulement **listé** dans la carte du vault.
 - **Section `## Ton`** : remplir les 4 curseurs depuis la section *Profil de ton* du plan, en
   reprenant les mots du dirigeant. **Si le plan ne l'a pas** (passe de ton non faite), poser le
   **défaut prudent** — *métier sans jargon · concis · propose, je valide · sobre + tutoiement,
@@ -281,6 +300,10 @@ existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` po
   son dossier de compétences `.claude/skills/brief-du-jour/` + sa liste de compétences à construire
   `capacites-a-construire.md`), et que le skill a **ajouté un raccourci de lancement `cos`** au
   fichier de configuration du terminal (`~/.zshrc`/`.bashrc`) — la seule écriture hors du vault.
+- **Signaler en une ligne** que `_Meta/derivation.md` a été posé — la note « pourquoi ton espace est
+  rangé ainsi », à ouvrir le jour où il se le demande ou avant de changer la structure. Si des parties
+  spécifiques (domaines, posture 🔒) ont gardé des **placeholders** faute d'info au plan, les ranger
+  dans le lot « généré par défaut, à valider ».
 - Y **recommander** de placer le contexte personnel (rôle, enjeux, identité) dans le
   `~/.claude/CLAUDE.md` **global** plutôt que dans le vault, avec un court encart prêt à coller
   (tiré de `matiere-premiere/contexte.md` si présent). **Ne pas** modifier le global soi-même.
@@ -344,6 +367,8 @@ et lis toujours depuis le plan de la personne devant toi.
   première (à lire pour parser un plan qui dévie du gabarit).
 - `assets/schema-template.md` — gabarit du contrat frontmatter `_Meta/Schema.md`.
 - `assets/governance-template.md` — gabarit `_Meta/governance.md`.
+- `assets/derivation-template.md` — gabarit `_Meta/derivation.md` (le *pourquoi* du vault : trace sa
+  forme au plan, renvoie aux compétences d'évolution ; listé dans le `CLAUDE.md` racine mais non `@importé`).
 - `assets/vault-claude-template.md` — gabarit du `CLAUDE.md` racine.
 - `assets/area-shell-template.md` / `assets/project-shell-template.md` — gabarits de fiches-shells.
 - `assets/hooks/vault-health.sh` — hook H1 (`SessionStart`) : bilan de santé + purge `.DS_Store`.

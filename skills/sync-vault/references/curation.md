@@ -30,6 +30,10 @@ Le vault sert de **contexte** aux personas et aux sessions futures. On préserve
   retirer.
 - **Historique** : on garde la trace d'une décision (le *quoi* + le *pourquoi*), pas le log de chaque
   micro-étape qui y a mené.
+- **Décision renversée** (exception au « périmé → remplacer ») : quand une nouvelle décision en
+  contredit une antérieure, ne pas l'écraser en silence — garder une ligne de revirement
+  `~~X~~ → Y le {date} : X abandonné car {raison}`, pour ne pas reproposer X plus tard. Une info
+  simplement périmée (deadline, statut, todo faite), elle, se remplace sans trace.
 
 **Règle du doute** : si on hésite sur l'importance d'un élément → **garder**. Un curateur préserve le
 signal ; il n'élague que ce qui est clairement redondant ou mort.
@@ -54,7 +58,10 @@ gestes.
   l'archive. **Ne jamais déplacer une Resource vers `40-Archive/` seul** : rien ne distingue une
   trame dormante d'une trame morte (règle du doute → garder, signaler).
 - **Renvoi externe possiblement périmé** : un renvoi de `references-externes/` dont la source a
-  manifestement bougé (lien mort évoqué en session, outil abandonné) → à vérifier.
+  manifestement bougé (lien mort évoqué en session, outil abandonné) → à vérifier. Idem pour un
+  **renvoi d'emplacement** dont le connecteur ou la coordonnée ne répond plus (dossier déplacé,
+  workspace renommé) — signaler, ne pas corriger seul (le pointeur peut juste être momentanément
+  injoignable).
 
 ## 5. Curer le sas `00-Inbox/_drafts/` (livrables sortants)
 
@@ -81,4 +88,8 @@ leur validation — il gère seulement leur **sortie du sas**, pour que `_drafts
 - **Sensible 🔒** : jamais copié dans une fiche, jamais exposé ; renvoi seulement (`governance.md`).
 - **Cascade source** (si réconciliation d'une source externe) : déclarée + joignable → utiliser ;
   injoignable → sauter ; non déclarée → sauter ; 🔒 → renvoi. Le vault est toujours joignable.
+- **Registre `sources.md` vrai dans les deux sens** (sur joignabilité **constatée dans la session**,
+  jamais sur parole) : démoter un `actif` qui ment → `à brancher` ; promouvoir un `à brancher` qui
+  répond → `actif` ; ajouter une ligne `actif` pour un connecteur joignable absent du registre. Ne pas
+  inventer `usage`/schéma ; `accès` seulement si une heuristique d'appel étroit a émergé. `🔒` jamais promu.
 - **Autonome** : `sync-vault` décide et écrit sans demander de validation. Il rend compte **après**.

@@ -1,7 +1,7 @@
 {
   "name": "second-cerveau",
   "description": "Pack « Claude Code + second cerveau » pour dirigeants : monte un vault Obsidian PARA, le fait vivre, le garde vrai. Amorcer : interview-vault → kickstart-vault → kickstart-persona → vault-skill-creator (+ persona Chief of Staff et son brief du jour, posés par défaut) · Faire vivre : import-note, nouveau-projet, extraire-trame, gerer-area · Entretenir : sync-vault, audit-vault. Source-agnostique : utile sans aucun connecteur.",
-  "version": "2.5.0",
+  "version": "2.5.3",
   "author": {
     "name": "Lucas Clément",
     "email": "lucas@devlc.co"

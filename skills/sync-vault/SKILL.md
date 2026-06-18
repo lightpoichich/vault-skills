@@ -74,7 +74,15 @@ Remonter jusqu'à la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`).
   longtemps, verbiage qui noie le contexte.
 
 Si une source externe doit être réconciliée (ex. un transcript), lire `_Meta/sources.md` et appliquer
-la cascade.
+la cascade. En passant, **garder le registre vrai dans les deux sens** — toujours sur joignabilité
+**constatée dans la session**, jamais sur parole :
+- **Démoter / élaguer** : un `statut` qui ment (déclaré `actif` mais injoignable) repasse `à brancher` ;
+  un indice `accès` périmé est élagué. Signaler sans broder, ne jamais inventer de schéma.
+- **Promouvoir / ajouter** (geste symétrique) : une source déclarée `à brancher` qui s'est révélée
+  **joignable** (sonde `ToolSearch` positive ou usage réussi pendant la réconciliation) passe `actif` ;
+  un connecteur observé joignable mais **absent** du registre y est ajouté en ligne `actif`. Ne jamais
+  inventer le `usage` ; ne remplir `accès` que si une heuristique d'appel étroit a émergé du sondage.
+  Une source `renvoi 🔒` n'est **jamais** promue.
 
 ### 3. Réconcilier et consolider (voir `references/curation.md`)
 Pour chaque fiche concernée (`Glob`/`Grep` pour la retrouver ; `_Meta/Schema.md` pour le type) :

@@ -53,6 +53,12 @@ communiqué ; un draft resté `en-attente` trop longtemps est remonté dans le b
 - Les **connecteurs** du dirigeant (MCP, sources locales) sont déclarés dans `_Meta/sources.md` —
   le registre que les skills lisent pour savoir d'où tirer leurs informations. Une source marquée `renvoi 🔒`
   dans ce registre **n'est jamais agrégée ni copiée** par un skill, seulement référencée.
+- **Renvoi d'emplacement** (l'endroit *permanent* où vit le corpus d'un projet/area : un dossier Drive,
+  un workspace Notion, un dossier Granola). C'est un renvoi comme un autre — un **pointeur stable**, pas
+  un catalogue du contenu (qui dériverait) — mais il **nomme le connecteur** qui l'atteint (« via Google
+  Drive », repris d'une ligne de `sources.md`) et il est **wikilinké au projet/area** concerné. Les skills
+  l'utilisent pour aller repuiser **étroit** au bon endroit ; `sync-vault` le **signale** s'il cesse de
+  répondre (pointeur momentanément injoignable ≠ mort — il ne le supprime pas seul).
 
 ## Sauvegarde & confidentialité technique
 - {Stratégie de backup choisie par l'utilisateur — à compléter.}
