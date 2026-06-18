@@ -111,9 +111,14 @@ _Meta/
 - **Décision** : {propose, je valide ↔ décide et agis, dis-moi après ↔ informe-moi seulement}
 - **Registre** : {sobre et factuel ↔ chaleureux} · {tutoiement | vouvoiement} · {acquiesce ↔ challenge mes décisions}
 
-## Top 5 irritants
-1. {irritant} → {compétence (skill) à construire, ou zone}
+## Cas d'usage prioritaires (Top 5 irritants → compétences, par impact)
+> Priorisés par impact (temps récupérable). Le signal vient du dirigeant ; l'estimation `~h/sem` est
+> de l'arithmétique (fréquence × temps × part automatisable), **marquée « à valider »** — jamais un
+> chiffre inventé. On capte le temps, pas le coût ni le prix.
+1. {irritant} → {compétence} — fréq {x/sem} · temps unitaire {durée} · répétable {oui | cas-par-cas} · équipe {×N | non} → **~{h/sem} libérées (à valider)**
 2. ...
+
+**Priorisation par impact** : {ordre des compétences à construire d'abord, du plus fort temps récupérable au plus faible}
 ````
 
 ## Règles de remplissage
@@ -145,5 +150,8 @@ _Meta/
   (« écrit `X` ») **doit** figurer dans *Conventions frontmatter suggérées*. Sinon `kickstart-vault`
   ne le mettra pas au Schema et la compétence écrira un type inconnu. Vérifier ce recoupement avant
   d'écrire le plan (ex. une compétence de point quotidien qui écrit un `brief` → déclarer le type `brief`).
+- **Cas d'usage prioritaires** : chaque item porte son signal d'impact (fréquence, temps unitaire,
+  répétabilité, projetable-équipe) + une estimation `~h/sem libérées` **marquée « à valider »** ; ne
+  chiffrer que le **répétable** ; **aucun coût ni prix** (le skill capte le temps, pas l'argent).
 - **N'inventer aucune valeur** : tout vient des réponses de l'interview. Un champ sans réponse →
   « à creuser en S1 ».

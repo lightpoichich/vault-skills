@@ -183,11 +183,33 @@ dans le guide). Prévoir `references-externes/` pour les renvois (jamais de copi
 > (3) le regroupement en personas. Un volet à la fois, validation explicite avant de passer au
 > suivant — exactement comme la boucle Projects + Areas avant la Phase 3.
 
-### Étape 3 — Top 5 irritants
+### Étape 3 — Cas d'usage prioritaires (irritants + signal d'impact)
 
 En clôture, demander les **5 choses qui bouffent le plus de temps** aujourd'hui. Chaque irritant est
-la matière directe d'une **compétence (skill)** à construire — pas d'un rôle. Le regroupement de ces
-compétences en personas se fait ensuite (Phase 4, étape de synthèse).
+la matière directe d'une **compétence (skill)** à construire — pas d'un rôle (le regroupement en
+personas se fait en Phase 4).
+
+Cette étape ne **liste** pas seulement : elle **priorise par impact**. Pour chaque irritant, creuser
+— une question à la fois, jamais un questionnaire — le **signal d'impact** :
+- **fréquence** (combien de fois par semaine / par mois ?),
+- **temps unitaire** (combien de temps à la main, à chaque fois ?),
+- **répétable ?** — est-ce la *même* tâche à chaque fois, ou du cas-par-cas ? **Ne retenir comme
+  piste chiffrable que le vraiment répétable** ; une tâche au cas-par-cas reste un irritant mais pas
+  une automatisation crédible (et le dire renforce la crédibilité).
+- **projetable à l'équipe ?** — d'autres personnes font-elles la même tâche (× N) ?
+
+De là, le plan portera une **estimation `~h/sem libérées` marquée « à valider »** (simple arithmétique
+fréquence × temps × part automatisable — **jamais un chiffre inventé** ; pas de réponse → « à creuser
+en S1 »). Fourchettes basses par défaut. **On capte le temps, pas un coût ni un prix.**
+
+**Inspiration (si ça résonne).** Si le dirigeant sèche ou reste vague, lui proposer **2-3 cas du
+réservoir** de `references/cartographie-guide.md` (« beaucoup de dirigeants récupèrent du temps sur
+{X}, {Y} — l'un de ces postes te parle ? ») pour faire émerger les automatisations qu'il ne nomme pas
+spontanément. **Réservoir, pas checklist** : on ne déroule pas la liste, on ne profile pas, on
+propose seulement ce qui fait écho à son activité.
+
+But : à la sortie, des **cas d'usage priorisés par impact** — utiles au dirigeant pour savoir quoi
+automatiser d'abord, et chiffrables.
 
 ### Étape 3bis — Profil de ton (passe courte)
 

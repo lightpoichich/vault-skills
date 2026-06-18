@@ -90,6 +90,28 @@ Toujours : `project`, `area`, `meeting`. Puis, **selon les signaux** :
 > 3. **Pas de doublon déguisé** — ne pas réinventer sous un autre nom un type existant : un
 >    compte-rendu reste `meeting`, un mail reste `draft`, une décision reste `decision`/`adr`.
 
+## Réservoir de cas d'usage (inspiration — Étape 3)
+
+Même logique que le superset d'Areas : un **réservoir** pour relancer un dirigeant qui sèche sur ses
+irritants, **pas une checklist** à dérouler. On propose 2-3 cas **qui font écho** à son activité, on
+ne profile pas (« tu es opérateur donc… » est proscrit).
+
+Postes où un dirigeant / une équipe récupère souvent du temps (illustratif, non exhaustif) :
+- **Service client / demandes entrantes** — triage + réponses types récurrentes.
+- **Planning / production / ordonnancement** — replanification régulière sous contraintes.
+- **Compta / trésorerie** — reporting mensuel répétitif, rapprochements.
+- **Point quotidien** — compiler agenda + messages + en-cours à la main chaque matin.
+- **Observabilité / suivi d'activité** — surveiller des tableaux de bord, trier ce qui sort.
+- **Rédaction / reformatage** — mails, contrats, déclarations administratives récurrents.
+- **Amont des offres / propositions** — analyser le contexte, reformuler les objectifs, structurer.
+- **Base de connaissance** — retrouver la bonne info au lieu de la reconstruire à chaque fois.
+- **Relances / suivi commercial** — détecter les dossiers sans nouvelle, tenir le CRM à jour.
+- **Préparation de réunions / comptes-rendus** — board, comité, 1:1.
+- **RH / social** — préparation d'entretiens, suivi, conformité.
+
+Chaque cas retenu suit le même traitement qu'un irritant spontané : fréquence, temps unitaire,
+répétabilité, projetable-équipe (cf. signal d'impact ci-dessous).
+
 ## Heuristique — dériver les compétences (skills), puis les regrouper en personas (Phase 4)
 
 **Un irritant donne une compétence, pas un rôle.** C'est l'erreur à ne pas commettre : un irritant
@@ -108,6 +130,23 @@ Exemples de dérivation (illustratifs — **ne pas les imposer**) :
   écrit une fiche de prép).
 
 Pour chaque compétence : noter **ce qu'elle lit** et **où elle écrit** (zone + type de fiche).
+
+### Capter le signal d'impact (pour prioriser et chiffrer)
+
+Pour chaque irritant / cas d'usage, au-delà de la compétence, capter quatre données — **auprès du
+dirigeant, jamais devinées** :
+- **fréquence** (×/semaine ou ×/mois) · **temps unitaire** (durée à la main) · **répétabilité**
+  (même tâche vs cas-par-cas) · **projetable à l'équipe** (× N personnes).
+- En tirer une estimation `~h/sem libérées` = fréquence × temps unitaire × part automatisable (× N si
+  projeté), **toujours marquée « à valider »**, fourchette basse.
+
+Garde-fous (même rigueur que pour les Areas) :
+- **Ne chiffrer que le vraiment répétable.** Une tâche au cas-par-cas reste un irritant mais pas une
+  piste d'automatisation crédible — l'écarter du chiffrage (et le dire) renforce la crédibilité.
+- **Aucun chiffre inventé.** Pas de réponse → « à creuser en S1 ».
+- **On capte le temps, pas l'argent.** Ni coût horaire ni montant ici : la valorisation chiffrée se
+  fait en aval, hors de ce skill.
+- Sert à **prioriser par impact** (quoi automatiser d'abord), pas à profiler.
 
 ### Puis : regrouper en personas (l'étape qui dérive les rôles)
 

@@ -88,6 +88,11 @@ Le skill est **adaptatif** : il ne te demande jamais « tu es tech ou pas ? ». 
 ou un artisan obtiennent chacun la structure qui colle à leur métier, sans questionnaire figé.
 Il n'écrit que dans `00-Inbox/` et ne crée aucune fiche — il prépare, il ne construit pas.
 
+À la clôture, il ne se contente pas de lister tes irritants : il les **priorise par impact**. Pour
+chacun, il creuse la fréquence, le temps que ça te coûte, si la tâche est vraiment répétable et si
+ton équipe la fait aussi — de quoi estimer le **temps récupérable** (« ~X h/semaine », à confirmer)
+et savoir quoi automatiser en premier. Ton plan en ressort priorisé, pas une simple liste.
+
 **Tu le lances quand** tu pars d'un vault vide et que tu veux poser sa structure avant de la
 matérialiser.
 

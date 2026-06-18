@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Pack « Claude Code + second cerveau » — skills d'amorçage (create), d'opération (run) et d'entretien (maintain) d'un vault Obsidian pour dirigeants.",
-    "version": "2.6.0"
+    "version": "2.6.1"
   },
   "plugins": [
     {
       "name": "second-cerveau",
       "source": "./",
       "description": "Second cerveau Obsidian pour dirigeants : Amorcer (interview → vault → personas → compétences) · Faire vivre (import-note, nouveau-projet, gerer-area, extraire-trame, brief du jour) · Entretenir (sync-vault, audit-vault). Utilisable sans aucun connecteur.",
-      "version": "2.6.0"
+      "version": "2.6.1"
     }
   ]
 }
