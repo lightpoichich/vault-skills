@@ -45,6 +45,10 @@ Toucher une area, c'est toucher le squelette.
 ### 1. Localiser le vault
 Remonter depuis le dossier courant jusqu'à la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`).
 
+**Si la remontée ne trouve aucune racine** (cwd hors du vault — un dossier de travail externe sur le
+filesystem), utiliser le **chemin absolu du vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle
+de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu.
+
 ### 2. Aiguiller selon l'intention
 
 | Demande | Geste | Procédure |

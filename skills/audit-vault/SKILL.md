@@ -38,7 +38,10 @@ fichier, une synthèse courte), **agir** (seulement sur validation). C'est la r�
 ## Procédure
 
 ### 1. Localiser le vault et détecter
-Remonter jusqu'à la racine (`CLAUDE.md` + `_Meta/Schema.md`). Lire le Schema (source de vérité
+Remonter jusqu'à la racine (`CLAUDE.md` + `_Meta/Schema.md`). **Si la remontée ne trouve aucune racine**
+(cwd hors du vault — un dossier de travail externe sur le filesystem), utiliser le **chemin absolu du
+vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle de liaison) plutôt que d'échouer. Lire le
+Schema (source de vérité
 des types et champs requis de **ce** vault). Dérouler les trois familles de checks de
 `references/checks.md` :
 1. **Intégrité structurelle** — liens, orphelines, frontmatter, naming, structure, pollution.

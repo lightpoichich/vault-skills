@@ -42,6 +42,10 @@ Le skill sépare nettement deux étages :
 Détecter la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`) en remontant depuis le dossier
 courant.
 
+**Si la remontée ne trouve aucune racine** (cwd hors du vault — un dossier de travail externe sur le
+filesystem), utiliser le **chemin absolu du vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle
+de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu.
+
 ### 2. Détecter la nature de l'entrée
 URL web · page Notion · fichier local (`.md`, `.txt`, `.pdf`…) · texte collé directement. Heuristiques
 dans `references/acquisition.md`. En cas d'ambiguïté, demander.

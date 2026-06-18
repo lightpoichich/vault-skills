@@ -42,6 +42,12 @@ se remplissent, au fil de l'eau.
 ### 1. Localiser le vault
 Remonter depuis le dossier courant jusqu'à la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`).
 
+**Si la remontée ne trouve aucune racine** (cwd hors du vault — un dossier de travail externe sur le
+filesystem), utiliser le **chemin absolu du vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle
+de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu. **Noter alors le dossier
+courant absolu** — c'est le « dossier de travail » candidat à relier au projet (étape 4). Lancé depuis
+l'intérieur du vault → pas de dossier de travail, champ omis.
+
 ### 2. Recueillir les invariants (court, interactif)
 Si la demande vise un projet existant (« complète le projet X », « X est vide »), passer directement
 à l'étape 3 : on ne demandera que les trous.
@@ -62,7 +68,9 @@ Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: pr
   fiche et la comparer au contrat `project` de `_Meta/Schema.md`, demander **seulement les invariants
   manquants** (étape 2 réduite aux trous), puis reprendre aux étapes 5-7 (nourrir, raccrocher,
   confirmer). **Non destructif** : remplir uniquement les champs et sections vides — ne jamais
-  réécrire ce qui est déjà renseigné.
+  réécrire ce qui est déjà renseigné. **Si la fiche n'a pas de `dossier-travail` et qu'on est lancé
+  depuis un dossier de travail externe** (étape 1), **proposer de le renseigner** (lier l'existant au
+  dossier courant) — sans écraser un `dossier-travail` déjà posé.
 - **Projet proche mais distinct** → le signaler et confirmer avant de créer, pour éviter le doublon.
 
 ### 4. Scaffolder le shell
@@ -73,6 +81,9 @@ Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: pr
   active`, `deadline`, `livrable`, `parties-prenantes`, `area: "[[{area}]]"`, `tags: [project]`),
   puis titre, une ligne de résumé, et les sections **vides** `## Objectif` · `## Suivi` ·
   `## Décisions`. Laisser les hooks du vault poser `created`/`updated`.
+- **Dossier de travail** (si détecté à l'étape 1, lancé hors du vault) : ajouter au frontmatter
+  `dossier-travail: {chemin absolu du dossier courant}` et le confirmer brièvement (« je relie ce
+  dossier au projet X »). Lancé depuis l'intérieur du vault → champ omis, rien d'inventé.
 
 ### 5. Nourrir (source-agnostique — voir `references/nourrir.md`)
 Proposer de rattacher le **contexte réel** du projet :

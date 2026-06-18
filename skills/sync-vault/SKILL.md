@@ -67,6 +67,10 @@ récents *peuvent* compléter le signal — optionnel, jamais requis.)
 ### 1. Localiser le vault
 Remonter jusqu'à la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`).
 
+**Si la remontée ne trouve aucune racine** (cwd hors du vault — un dossier de travail externe sur le
+filesystem), utiliser le **chemin absolu du vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle
+de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu.
+
 ### 2. Repérer ce qui a bougé et ce qui dérive
 - Les **mouvements** du travail : décisions, changements de statut, deadlines, todos nés/faits, faits
   et contacts nouveaux (conversation en cours ; + commits si dépôt git).

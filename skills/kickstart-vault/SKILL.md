@@ -307,6 +307,20 @@ existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` po
 - Y **recommander** de placer le contexte personnel (rôle, enjeux, identité) dans le
   `~/.claude/CLAUDE.md` **global** plutôt que dans le vault, avec un court encart prêt à coller
   (tiré de `matiere-premiere/contexte.md` si présent). **Ne pas** modifier le global soi-même.
+- **Règle de liaison hors-vault** — second encart prêt à coller dans le même `~/.claude/CLAUDE.md`
+  **global** (chargé partout, contrairement au CLAUDE.md du vault qui ne se charge que sous le vault).
+  Il permet de travailler depuis un dossier de travail externe (filesystem) en gardant le vault comme
+  mémoire. **Ne pas** modifier le global soi-même : on le livre à coller, paramétré par le chemin absolu
+  du vault scaffoldé (`VAULT_ABS`, cf. étape 10bis).
+  ```
+  Le vault (ta mémoire) est à {VAULT_ABS}. Tu travailles souvent dans des dossiers de
+  travail hors vault. Au démarrage dans un tel dossier :
+  1. cherche dans {VAULT_ABS}/10-Projects/ une fiche dont `dossier-travail` = ce dossier ; si trouvée, charge-la comme contexte ;
+  2. sinon, si on fait clairement du travail projet, propose de lier (projet existant, ou `nouveau-projet`) ;
+  3. trace décisions/avancées dans la fiche — jamais de copie des livrables (renvoi-jamais-copie) ;
+  4. `sync-vault` en fin de session ;
+  5. hors-vault, utilise toujours le chemin absolu ci-dessus pour lire/écrire le vault.
+  ```
 - Lister les **garde-fous installés** (hooks H1 bilan de santé / H2 garde-fou écriture) en **une
   phrase en langage simple**, pour que l'utilisateur ne soit pas surpris par les messages
   « Santé du vault… » et sache qu'il n'a rien à lancer.

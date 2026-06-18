@@ -32,7 +32,9 @@ tags: [area]
 ```
 
 ### `project`
-Effort avec une fin et un livrable.
+Effort avec une fin et un livrable. Le champ optionnel `dossier-travail` relie une fiche projet à un
+dossier de travail externe (filesystem, hors vault) : lancé depuis ce dossier, l'outillage retrouve la
+fiche par ce chemin (résolution dossier↔fiche depuis l'extérieur du vault).
 ```yaml
 type: project
 status: { active | done }
@@ -40,6 +42,7 @@ deadline: { YYYY-MM-DD | "à préciser" }
 livrable: { ... }
 parties-prenantes: [ ... ]
 area: "[[{area liée}]]"
+dossier-travail: { chemin absolu du dossier de travail externe | absent }   # optionnel — relie un dossier filesystem à cette fiche
 tags: [project]
 ```
 

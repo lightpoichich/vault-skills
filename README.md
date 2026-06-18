@@ -100,6 +100,11 @@ Les skills qui gardent le vault vrai et propre dans la durée.
 - **Sources déclarées, pas codées en dur.** La variabilité des connecteurs vit dans
   `_Meta/sources.md` ; un skill tente la source déclarée et bascule sur un collage manuel
   si elle manque.
+- **Travailler hors du vault.** Les skills retrouvent le vault par son chemin absolu déclaré
+  dans le `~/.claude/CLAUDE.md` global : on peut les lancer depuis n'importe quel dossier de
+  travail (un dossier projet sur le disque, hors du vault) sans qu'ils échouent. `nouveau-projet`
+  relie alors ce dossier à sa fiche via le champ `dossier-travail`, et la fiche du projet se
+  recharge automatiquement la prochaine fois qu'on ouvre ce dossier.
 
 ## Installation manuelle (sans plugin)
 
