@@ -19,4 +19,6 @@ tags: [project]
 
 ## Décisions
 
-<!-- Shell généré par kickstart-vault. Rien d'inventé : le suivi se remplit au fil du projet. -->
+<!-- Shell généré par kickstart-vault. Rien d'inventé : le suivi se remplit au fil du projet.
+     Sous-dossiers à créer au besoin, jamais d'avance : meetings/ (notes de réunion YYYY-MM-DD-…),
+     research/ (notes de travail), livrables/ (figé). Aucune note datée à plat à côté de cette fiche. -->

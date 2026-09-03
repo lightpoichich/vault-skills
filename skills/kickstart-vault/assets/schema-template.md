@@ -14,6 +14,10 @@ updated: {YYYY-MM-DD}
 - **Nommage** : `kebab-case` pour tous les fichiers et dossiers.
 - **Relations** : `[[wikilinks]]` entre fiches, jamais de chemins en dur.
 - **Un type par fiche**, déclaré dans le frontmatter.
+- **Dates dans les noms** : toujours en **préfixe** `YYYY-MM-DD-{sujet}` (réunions, comptes rendus, audits), jamais en suffixe — le tri chronologique vient gratuitement.
+- **Un nom de fichier unique dans tout le vault** : un `[[wikilink]]` résout par nom, deux fiches homonymes rendent le lien ambigu. Quand deux objets partagent un slug (un client et son étude de cas, un projet et sa note de facturation), suffixer ou préfixer l'objet secondaire (`{slug}-case-study.md`, `crm-{slug}.md`).
+- **Sous-dossiers d'un projet** : créés au besoin, jamais d'avance, nommés par leur nature — `meetings/` (notes de réunion datées, `type: meeting`), `research/` (notes de travail, audits, plans), `livrables/` (figé, ce qui est parti chez le tiers). Aucune note datée à plat à la racine d'un projet : sa place est `meetings/` ou `research/`.
+- **Racine d'une area** : uniquement ses référentiels courants (une poignée de fiches) ; les flux (réunions, dossiers, posts, briefs) vivent en sous-dossiers ; l'historique clos part en `40-Archive/`.
 
 ## Types de fiches
 

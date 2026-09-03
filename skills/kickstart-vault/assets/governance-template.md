@@ -60,6 +60,11 @@ communiqué ; un draft resté `en-attente` trop longtemps est remonté dans le b
   l'utilisent pour aller repuiser **étroit** au bon endroit ; `sync-vault` le **signale** s'il cesse de
   répondre (pointeur momentanément injoignable ≠ mort — il ne le supprime pas seul).
 
+## Index et vues — requête plutôt que liste
+- Un index tenu à la main (MOC, liste de liens) dérive dès qu'on oublie de l'éditer. Pour voir « toutes les fiches de tel type / tel statut », on écrit une **vue** (`.base` Obsidian, requête sur le frontmatter) — elle est toujours vraie, personne ne la maintient.
+- Un index à la main n'est légitime que s'il est **consommé** par un outil qui ne sait pas requêter (ex. un `CLAUDE.md` externe qui l'`@importe`). Il porte alors en tête « généré par … — ne pas éditer à la main » et un script le régénère depuis le frontmatter.
+- Les `_index.md` de `30-Resources/` sont une liste de **capitalisation** (cases à cocher, emplacement actuel d'un document), pas un index de contenu : ils se remplissent par l'usage.
+
 ## Sauvegarde & confidentialité technique
 - {Stratégie de backup choisie par l'utilisateur — à compléter.}
 - Pas de dépôt public ni de cloud non maîtrisé si le vault contient du sensible.
