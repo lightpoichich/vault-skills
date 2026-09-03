@@ -192,25 +192,33 @@ attendu.
   avec l'usage, les inscrire dans la carte la fait rôtir. La ligne **Périmètre** ne porte que le
   **scope** (ce que couvre le vault), pas le rôle/identité.
 
-### 5bis. Poser les garde-fous (hooks de santé)
-Installer les deux hooks **déterministes** qui maintiennent le vault sain dans le temps. Ce sont
+### 5bis. Garde-fous (hooks) : rien à installer, un réglage à poser
+Les deux hooks **déterministes** qui maintiennent le vault sain dans le temps sont **livrés par le
+plugin lui-même** (`hooks/hooks.json` à la racine du plugin) : ils sont actifs dans toute session
+Claude Code où le plugin est activé, **quel que soit le cwd**, et se mettent à jour avec lui. Ce sont
 la *couche garantie* qui complète la *couche advisory* du `CLAUDE.md`/`Schema.md` (que le modèle
 *essaie* de suivre) : eux s'exécutent **quoi que le modèle décide**, sur des événements du cycle de
-vie. Fichiers **génériques** (non dérivés du plan) → on les **copie tels quels** depuis `assets/hooks/`.
-- Créer `{vault}/.claude/hooks/`, y copier les 2 scripts (`vault-health.sh`, `vault-note-guard.sh`),
-  puis les rendre exécutables (`chmod +x`).
-- Installer le bloc `hooks` de `assets/hooks/settings.hooks.json` dans `{vault}/.claude/settings.json`.
-  **Non destructif** : si le fichier existe déjà, le **lire et fusionner** la seule clé `hooks` (ne
-  jamais écraser des permissions/réglages présents) ; sinon le créer avec ce seul bloc.
-  **Idempotent** : à une ré-exécution, **ne pas dupliquer** un hook déjà présent — pour chaque
-  événement, n'ajouter l'entrée que si aucune ne pointe déjà vers le même script `vault-*.sh`.
-- Les scripts sont **path-agnostiques** (`$CLAUDE_PROJECT_DIR`) et **zéro-config** : rien à
-  personnaliser. Dépendances : `bash` + `python3` (présents sur WSL/macOS), pas de `jq`.
+vie. Hors d'un vault (aucun `_Meta/` en remontant depuis le cwd ou le fichier écrit), ils sont
+**no-op, silencieux et instantanés**.
+- **Ne rien copier dans `{vault}/.claude/hooks/`, ne rien ajouter au `settings.json`** — un vault
+  hérité d'une version < 2.7 qui porte encore `vault-health.sh` / `vault-note-guard.sh` en local les
+  fait tourner **deux fois** : proposer de retirer les entrées locales et les scripts.
+- Poser `{vault}/_Meta/hooks.conf` depuis `assets/hooks/hooks.conf` (copie telle quelle, **sans rien
+  décommenter** : les exclusions sont un choix d'usage, pas de scaffold — `EXCLUDE=` sert quand une
+  zone reçoit des données opérationnelles importées qu'il ne faut ni stamper ni compter).
+- Dépendances : `bash` + `python3` (présents sur WSL/macOS), pas de `jq`.
 
 Ce que font les hooks (à résumer à l'utilisateur, en non-tech) : un **bilan de santé** au démarrage
 (Inbox qui traîne, notes sans `type`, `.DS_Store` purgés) ; un **garde-fou à l'écriture** (dates
-`created`/`updated` posées seules, rappel si frontmatter absent ou nom hors kebab-case).
-Ce sont des **nudges + auto-fix inertes** : jamais de blocage d'action, jamais de suppression de contenu.
+`created`/`updated` posées seules, rappel si frontmatter absent ou nom hors kebab-case). La racine
+étant déduite du **fichier écrit**, une note du vault modifiée depuis un autre dossier (repo client
+via symlink) est gardée aussi. Ce sont des **nudges + auto-fix inertes** : jamais de blocage
+d'action, jamais de suppression de contenu.
+
+**Opt-in, hors plugin** : `assets/hooks/vault-git-sync.sh` est un template de **sync git** pour un
+vault qui vit aussi sur une machine headless (VM d'agents) — commit local au `Stop`, pull au
+`SessionStart`, push par un cron. Ne le proposer **que si** le plan mentionne un tel setup ; il se
+copie dans `{vault}/.claude/hooks/` et se branche à la main dans `{vault}/.claude/settings.json`.
 
 ### 6. Générer les shells d'Areas
 - **Nomenclature stricte** : chaque Area est un **dossier** `20-Areas/{area-slug}/` contenant sa
@@ -321,7 +329,7 @@ existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` po
   4. `sync-vault` en fin de session ;
   5. hors-vault, utilise toujours le chemin absolu ci-dessus pour lire/écrire le vault.
   ```
-- Lister les **garde-fous installés** (hooks H1 bilan de santé / H2 garde-fou écriture) en **une
+- Lister les **garde-fous actifs** (hooks H1 bilan de santé / H2 garde-fou écriture, livrés par le plugin) en **une
   phrase en langage simple**, pour que l'utilisateur ne soit pas surpris par les messages
   « Santé du vault… » et sache qu'il n'a rien à lancer.
 - Afficher une synthèse à l'utilisateur en fin d'exécution.
@@ -385,11 +393,9 @@ et lis toujours depuis le plan de la personne devant toi.
   forme au plan, renvoie aux compétences d'évolution ; listé dans le `CLAUDE.md` racine mais non `@importé`).
 - `assets/vault-claude-template.md` — gabarit du `CLAUDE.md` racine.
 - `assets/area-shell-template.md` / `assets/project-shell-template.md` — gabarits de fiches-shells.
-- `assets/hooks/vault-health.sh` — hook H1 (`SessionStart`) : bilan de santé + purge `.DS_Store`.
-- `assets/hooks/vault-note-guard.sh` — hook H2 (`PostToolUse`) : stamp `created`/`updated` + nudges
-  frontmatter/nommage.
-- `assets/hooks/settings.hooks.json` — bloc `hooks` à fusionner (non destructif) dans le
-  `.claude/settings.json` du vault.
+- `assets/hooks/hooks.conf` — réglages optionnels des hooks du plugin (`EXCLUDE`, `INBOX_STALE_DAYS`),
+  à copier dans `{vault}/_Meta/`. Les hooks eux-mêmes vivent dans `hooks/` à la racine du plugin.
+- `assets/hooks/vault-git-sync.sh` — template **opt-in** de sync git pour un vault sur machine headless.
 - `assets/persona-chief-of-staff/` — bundle figé de la persona Chief of Staff posée par défaut
   (étape 10bis) : `CLAUDE.md` (identité, lentille généraliste), `capacites-a-construire.md` (backlog),
   et `.claude/skills/brief-du-jour/` (le skill du battement quotidien, livré *avec* la persona — c'est

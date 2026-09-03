@@ -106,8 +106,9 @@ contrat qui garde les fiches cohérentes dans le temps), la gouvernance, le `CLA
 et les fiches-coquilles de tes Areas et Projects — le tout en *generate-don't-write* : il pose
 la structure, **jamais du faux contenu métier**.
 
-Il fait deux choses de plus qui rendent le vault vivant dès la première minute : il installe
-deux garde-fous automatiques (un bilan de santé au démarrage, un garde-fou à l'écriture), et
+Il fait deux choses de plus qui rendent le vault vivant dès la première minute : il règle les
+deux garde-fous automatiques que le plugin embarque (un bilan de santé au démarrage, un garde-fou
+à l'écriture — actifs dans toute session, où que tu lances Claude, silencieux hors du vault), et
 il dépose une persona **Chief of Staff** par défaut (alias terminal `cos`) livrée avec le
 skill `brief-du-jour`. Tu tapes `cos`, tu demandes ton brief, ça marche — sans aucun
 connecteur.
