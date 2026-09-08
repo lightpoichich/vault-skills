@@ -139,10 +139,10 @@ def approve(keys):
             data = json.load(fh)
     except FileNotFoundError:
         say(f"ignoré : {tilde(CFG)} absent (Claude Code n'a jamais tourné ici)")
-        return False
+        return None
     except ValueError as e:
         say(f"ignoré : {tilde(CFG)} illisible ({e})")
-        return False
+        return None
     projects = data.setdefault("projects", {})
     changed = False
     for k in keys:
@@ -190,11 +190,12 @@ for raw in [t for t in os.environ["TARGETS"].splitlines() if t.strip()]:
     rp = os.path.realpath(cwd)
     if rp != cwd:
         keys.append(rp)
-    if approve(keys):
+    done = approve(keys)
+    if done:
         say(f"approuvé : {tilde(cwd)} (clé{'s' if len(keys) > 1 else ''} " + ", ".join(tilde(k) for k in keys)
             + f" dans {tilde(CFG)}) ; effet à la prochaine session. Imports : " + ", ".join(tilde(t) for t in external))
         notes.append((cwd, external))
-    else:
+    elif done is False:
         say(f"déjà approuvé : {tilde(cwd)}")
 
 if MODE == "hook" and notes:
