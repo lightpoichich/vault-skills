@@ -1,179 +1,136 @@
-# Guide de cartographie — superset d'Areas & heuristiques d'adaptation
+# Guide de cartographie : superset d'Areas et heuristiques d'adaptation
 
-Outillage de l'**adaptativité** du skill. Rien ici n'est profilé « tech / non-tech ». C'est **un seul
-superset** et un jeu d'heuristiques : on ne **propose** un élément que s'il **résonne** avec ce que
-l'utilisateur a décrit (matière première + réponses). On ne déroule jamais une liste, on ne force
-jamais une suggestion, on n'invente rien.
+Réservoirs et heuristiques, pas de questionnaire : on ne propose un élément que s'il fait écho à
+ce que le dirigeant a décrit (matière première et réponses), on ne déroule jamais une liste, on
+n'invente rien.
 
 ## Comment s'en servir
 
-À la fin de la **Phase 2 (Areas)**, après avoir traité les thèmes spontanés de l'utilisateur,
-parcourir mentalement le superset ci-dessous et **ne retenir que les Areas qui font écho** à son
-activité (un signal dans `contexte.md`, `themes-actuels.md`, `sources-equipe.md` ou ses réponses).
-Les proposer **pour vérification** : « tu n'as pas mentionné {X} — est-ce une responsabilité
-continue pour toi, ou non ? ». S'il dit non, on n'insiste pas.
+À la fin de la Phase 2 (Areas), après les thèmes spontanés du dirigeant, parcourir le superset
+ci-dessous et ne retenir que les Areas qui font écho à son activité (un signal dans `contexte.md`,
+`themes-actuels.md`, `sources-equipe.md` ou ses réponses). Les proposer pour vérification :
+« tu n'as pas mentionné {X} ; est-ce une responsabilité continue pour toi ? ». S'il dit non, ne
+pas insister.
 
-## Superset d'Areas (réservoir, pas une checklist à dérouler)
+## Superset d'Areas
 
-Responsabilités continues qu'un dirigeant/cadre **pourrait** oublier de nommer. Le libellé final est
-en kebab-case et collé à son vocabulaire.
+Responsabilités continues qu'un dirigeant ou un cadre pourrait oublier de nommer. Le libellé final
+est en kebab-case et collé à son vocabulaire.
 
-**Pilotage & direction**
-- gouvernance / instances (CA, comité de direction, CSE, board)
-- relations direction / actionnaires / refinancement
-- stratégie (continue — pas le « plan stratégique 2027 » qui, lui, est un Project)
-- finance / budget / arbitrages
+**Pilotage et direction**
+- gouvernance, instances (CA, comité de direction, CSE, board)
+- relations direction, actionnaires, refinancement
+- stratégie
+- finance, budget, arbitrages
 
-**Équipe & humain**
-- management des équipes / 1:1 / posture managériale
+**Équipe et humain**
+- management des équipes, 1:1, posture managériale
 - recrutement (pipeline, fiches de poste, entretiens)
-- RH / social / conformité sociale
+- RH, social, conformité sociale
 
 **Relations externes**
-- relations clients clés / partenaires
-- communication externe / représentation / marque
-- vendors / fournisseurs / contrats
+- relations clients clés, partenaires
+- communication externe, représentation, marque
+- fournisseurs, contrats
 
 **Technique** (si l'activité l'est)
-- architecture / décisions techniques (ADR) / dette technique
-- fiabilité / observabilité / incidents / oncall
-- delivery / gestion de projet / rituels
-- roadmap produit / priorisation
-- sécurité / conformité (données sensibles, RGPD)
+- architecture, décisions techniques (ADR), dette technique
+- fiabilité, observabilité, incidents, oncall
+- delivery, gestion de projet, rituels
+- roadmap produit, priorisation
+- sécurité, conformité (données sensibles, RGPD)
 - veille techno
 
-**Métier / sectoriel** (très dépendant du domaine)
-- veille sectorielle / réglementaire
-- qualité / certifications / audits
-- production / opérations / process métier
+**Métier et sectoriel** (dépend du domaine)
+- veille sectorielle, réglementaire
+- qualité, certifications, audits
+- production, opérations, process métier
 
-> Ces familles ne sont pas exhaustives et ne sont pas des cases à cocher. Un artisan, un avocat, un
-> médecin-chef auront des Areas absentes de cette liste : **les capturer telles qu'ils les nomment**.
-> Le superset sert à **ne rien oublier d'évident**, pas à plaquer un modèle.
+Ces familles ne sont pas exhaustives. Un artisan, un avocat, un médecin-chef auront des Areas
+absentes de cette liste : les capturer telles qu'ils les nomment.
 
-## Heuristique — logique d'organisation des Resources (Phase 3)
+## Logique d'organisation des Resources (Phase 3)
 
-Choisir **avec** l'utilisateur, selon volume et usage :
+Choisir avec le dirigeant, selon volume et usage :
 
-- **Par type** (`methodologies/`, `runbooks/`, `adr/`, `benchmarks/`, `trames/`) — quand le volume est
-  modeste et les ressources transverses à plusieurs domaines. Défaut raisonnable pour la plupart.
-- **Par domaine** (`reglementation/`, `rh-social/`, `finance/`…) — quand un domaine a un volume
+- **Par type** (`methodologies/`, `runbooks/`, `adr/`, `benchmarks/`, `trames/`) quand le volume est
+  modeste et les ressources transverses à plusieurs domaines. Défaut raisonnable.
+- **Par domaine** (`reglementation/`, `rh-social/`, `finance/`) quand un domaine a un volume
   important et autonome, consulté comme un bloc.
-- Toujours prévoir **`references-externes/`** pour les renvois (la source de vérité reste dehors :
-  GitLab, Notion entreprise, Drive partagé… → on **référence, on ne copie pas**).
+- **`references-externes/`** dans tous les cas, pour les renvois : la source de vérité reste dehors
+  (GitLab, Notion d'entreprise, Drive partagé), on référence sans copier.
 
-## Heuristique — types frontmatter à proposer (Phase 4 / Étape 4)
+## Types de fiches à proposer (Phase 4, Étape 4)
 
-Ne lister dans le plan que les types **qui correspondent à des fiches réelles** de l'activité.
-Toujours : `project`, `area`, `meeting`. Puis, **selon les signaux** :
+Ne lister dans le plan que les types qui correspondent à des fiches réelles de l'activité. Toujours
+`project`, `area`, `meeting`. Puis, selon les signaux :
 
 | Signal dans les réponses | Type à proposer |
 |---|---|
 | décisions techniques à tracer, ADR | `adr` |
 | prod, incidents, oncall, post-mortems | `incident` |
 | agent de point quotidien envisagé | `brief` |
-| partenaires / clients / contacts récurrents | `contact` |
+| partenaires, clients, contacts récurrents | `contact` |
 | production de texte (mails, contrats, déclarations) | `draft` |
 | documents de référence réutilisables | `resource` |
-| besoin d'index / cartes de notes | `moc` |
+| besoin d'index, cartes de notes | `moc` |
 
-> **Le tableau est un réservoir, pas une liste fermée.** Si l'activité produit une fiche
-> **récurrente et réelle** qu'aucun type ci-dessus ne couvre (ex. un pilotage chiffré régulier →
-> `reporting` ; un suivi de dossier juridique → `dossier` ; un brief de veille → `veille`), **créer
-> un type métier** — en kebab-case, collé au vocabulaire du dirigeant — plutôt que de tordre un type
-> approchant. Le `_Meta/Schema.md` accueille n'importe quel type déclaré dans le plan, et rien en aval
-> ne le bloque. Trois garde-fous avant d'en créer un :
-> 1. **Vraie fiche récurrente, pas un type « au cas où »** — même discipline que pour les Areas : on
->    ne déclare que ce qui correspond à un usage réel et répété.
-> 2. **Adossé à une compétence** — un type créé doit être **écrit par au moins une compétence** du
->    plan (sinon il n'a pas de producteur ; c'est la cohérence types ↔ compétences du contrat).
-> 3. **Pas de doublon déguisé** — ne pas réinventer sous un autre nom un type existant : un
->    compte-rendu reste `meeting`, un mail reste `draft`, une décision reste `decision`/`adr`.
+Le tableau n'est pas une liste fermée. Si l'activité produit une fiche récurrente qu'aucun type ne
+couvre (un pilotage chiffré régulier donne `reporting`, un suivi de dossier juridique donne
+`dossier`, un brief de veille donne `veille`), créer un type métier collé au vocabulaire du
+dirigeant plutôt que tordre un type approchant. `_Meta/Schema.md` accueille tout type déclaré dans
+le plan. Trois conditions avant d'en créer un :
+1. **Fiche récurrente réelle**, pas un type « au cas où ».
+2. **Adossé à une compétence** : un type créé est écrit par au moins une compétence du plan, sinon
+   il n'a pas de producteur.
+3. **Pas de doublon déguisé** : un compte-rendu reste `meeting`, un mail reste `draft`, une décision
+   reste `decision` ou `adr`.
 
-## Réservoir de cas d'usage (inspiration — Étape 3)
+## Réservoir de cas d'usage (Étape 3)
 
-Même logique que le superset d'Areas : un **réservoir** pour relancer un dirigeant qui sèche sur ses
-irritants, **pas une checklist** à dérouler. On propose 2-3 cas **qui font écho** à son activité, on
-ne profile pas (« tu es opérateur donc… » est proscrit).
+Pour relancer un dirigeant qui sèche sur ses irritants : proposer deux ou trois cas qui font écho à
+son activité, sans profiler (« tu es opérateur donc… » est proscrit). Postes où un dirigeant ou
+une équipe récupère souvent du temps :
 
-Postes où un dirigeant / une équipe récupère souvent du temps (illustratif, non exhaustif) :
-- **Service client / demandes entrantes** — triage + réponses types récurrentes.
-- **Planning / production / ordonnancement** — replanification régulière sous contraintes.
-- **Compta / trésorerie** — reporting mensuel répétitif, rapprochements.
-- **Point quotidien** — compiler agenda + messages + en-cours à la main chaque matin.
-- **Observabilité / suivi d'activité** — surveiller des tableaux de bord, trier ce qui sort.
-- **Rédaction / reformatage** — mails, contrats, déclarations administratives récurrents.
-- **Amont des offres / propositions** — analyser le contexte, reformuler les objectifs, structurer.
-- **Base de connaissance** — retrouver la bonne info au lieu de la reconstruire à chaque fois.
-- **Relances / suivi commercial** — détecter les dossiers sans nouvelle, tenir le CRM à jour.
-- **Préparation de réunions / comptes-rendus** — board, comité, 1:1.
-- **RH / social** — préparation d'entretiens, suivi, conformité.
+- **Service client, demandes entrantes** : triage et réponses types récurrentes.
+- **Planning, production, ordonnancement** : replanification régulière sous contraintes.
+- **Compta, trésorerie** : reporting mensuel répétitif, rapprochements.
+- **Point quotidien** : compiler agenda, messages et en-cours à la main chaque matin.
+- **Observabilité, suivi d'activité** : surveiller des tableaux de bord, trier ce qui sort.
+- **Rédaction, reformatage** : mails, contrats, déclarations administratives récurrents.
+- **Amont des offres** : analyser le contexte, reformuler les objectifs, structurer.
+- **Base de connaissance** : retrouver la bonne information au lieu de la reconstruire.
+- **Relances, suivi commercial** : détecter les dossiers sans nouvelle, tenir le CRM à jour.
+- **Préparation de réunions, comptes-rendus** : board, comité, 1:1.
+- **RH, social** : préparation d'entretiens, suivi, conformité.
 
-Chaque cas retenu suit le même traitement qu'un irritant spontané : fréquence, temps unitaire,
-répétabilité, projetable-équipe (cf. signal d'impact ci-dessous).
+Chaque cas retenu reçoit le même signal d'impact qu'un irritant spontané (fréquence, temps
+unitaire, répétabilité, projetable à l'équipe).
 
-## Heuristique — dériver les compétences (skills), puis les regrouper en personas (Phase 4)
+## Dériver les compétences (Phase 4)
 
-**Un irritant donne une compétence, pas un rôle.** C'est l'erreur à ne pas commettre : un irritant
-chronophage = une **routine à automatiser** (une compétence / *skill*), surtout pas « une persona de
-plus ». Les compétences **émergent des Top 5 irritants et des sources**, jamais d'un catalogue.
-Méthode : pour chaque irritant, se demander « une compétence qui lit {source} et écrit {fiche} dans
-{zone} ferait-elle disparaître cet irritant ? ».
+Pour chaque irritant, se demander : « une compétence qui lit {source} et écrit {fiche} dans {zone}
+ferait-elle disparaître cet irritant ? ». Exemples de dérivation, à ne pas imposer :
 
-Exemples de dérivation (illustratifs — **ne pas les imposer**) :
-- « je compile mon point du matin à la main » + sources Slack/agenda/Notion → compétence
-  **brief-du-jour** (lit Slack + agenda + Areas actives → écrit une fiche `brief` dans `00-Inbox/briefs/`).
-- « l'info se perd dans Slack » → compétence **capter-décisions** (lit Slack → écrit une fiche `decision`).
-- « je relis et reformate chaque contrat / mail » → compétence **rédaction-reformatage** (lit
-  l'Area/Project concerné + les trames → écrit un `draft`).
-- « je prépare mes 1:1 à la dernière minute » → compétence **préparer-les-1:1** (lit l'Area management →
-  écrit une fiche de prép).
+- « je compile mon point du matin à la main », sources Slack, agenda, Notion : compétence
+  `brief-du-jour`, lit Slack, l'agenda et les Areas actives, écrit une fiche `brief` dans
+  `00-Inbox/briefs/`.
+- « l'information se perd dans Slack » : compétence `capter-decisions`, lit Slack, écrit une fiche
+  `decision`.
+- « je relis et reformate chaque contrat ou mail » : compétence `redaction-reformatage`, lit l'Area
+  ou le Project concerné et les trames, écrit un `draft`.
+- « je prépare mes 1:1 à la dernière minute » : compétence `preparer-les-1-1`, lit l'Area
+  management, écrit une fiche de préparation.
 
-Pour chaque compétence : noter **ce qu'elle lit** et **où elle écrit** (zone + type de fiche).
+## Gouvernance et isolation (Étape 4)
 
-### Capter le signal d'impact (pour prioriser et chiffrer)
+Ne pas sauter cette section, même si le dirigeant n'en parle pas. Scanner les signaux de
+sensibilité dans la matière première et la correspondance entre sources et zones :
+- sources RH, contrats, finances non publiques, données clients, organigramme : marquer 🔒, renvoi
+  jamais copie, interdits aux agents sans règle explicite ;
+- périmètre clair (ce que le vault couvre et exclut), utile si le dirigeant garde un périmètre
+  perso ou un autre vault séparé ;
+- isolation technique selon l'enjeu (vault local, pas de dépôt public, pas de cloud non maîtrisé).
 
-Pour chaque irritant / cas d'usage, au-delà de la compétence, capter quatre données — **auprès du
-dirigeant, jamais devinées** :
-- **fréquence** (×/semaine ou ×/mois) · **temps unitaire** (durée à la main) · **répétabilité**
-  (même tâche vs cas-par-cas) · **projetable à l'équipe** (× N personnes).
-- En tirer une estimation `~h/sem libérées` = fréquence × temps unitaire × part automatisable (× N si
-  projeté), **toujours marquée « à valider »**, fourchette basse.
-
-Garde-fous (même rigueur que pour les Areas) :
-- **Ne chiffrer que le vraiment répétable.** Une tâche au cas-par-cas reste un irritant mais pas une
-  piste d'automatisation crédible — l'écarter du chiffrage (et le dire) renforce la crédibilité.
-- **Aucun chiffre inventé.** Pas de réponse → « à creuser en S1 ».
-- **On capte le temps, pas l'argent.** Ni coût horaire ni montant ici : la valorisation chiffrée se
-  fait en aval, hors de ce skill.
-- Sert à **prioriser par impact** (quoi automatiser d'abord), pas à profiler.
-
-### Puis : regrouper en personas (l'étape qui dérive les rôles)
-
-Une **persona** (= un assistant spécialisé) n'est PAS dérivée d'un irritant. Elle **émerge d'un
-groupe de compétences qui partagent une même lentille** : mêmes zones de lecture/écriture, même
-posture, même voix. La règle de décision :
-
-- **Par défaut, toutes les compétences se rangent sous le Chief of Staff** — la persona généraliste
-  que `kickstart-vault` pose d'office. Trois compétences de capture/synthèse (brief, capter-décisions,
-  compte-rendu de réunion) = **un seul** Chief of Staff qui les porte, pas trois personas.
-- **On n'isole une persona dédiée que si une compétence réclame des zones, une voix ou des garde-fous
-  franchement distincts.** Signal le plus fiable : la **gouvernance**. Une compétence qui lit des
-  sources sensibles 🔒 (finance, RH, contrats) avec ses propres garde-fous, ou qui écrit avec une voix
-  particulière (commerciale, juridique), justifie sa propre lentille. Sinon → Chief of Staff.
-
-Rien de plus à ce stade : les compétences se construisent ensuite avec `vault-skill-creator`, et une
-nouvelle persona ne se crée (`kickstart-persona`) **que** quand le regroupement l'exige.
-
-## Heuristique — gouvernance & isolation (Étape 4)
-
-Ne jamais sauter cette section, même si l'utilisateur n'en parle pas. Scanner les signaux de
-sensibilité dans la matière première et le mapping :
-- sources **RH**, **contrats**, **finances non publiques**, **données clients**, **org chart** →
-  marquer 🔒, **renvoi jamais copie**, interdits aux agents sans règle explicite.
-- périmètre clair (ce que le vault couvre **et exclut**) — utile si l'utilisateur garde un périmètre
-  perso ou un autre vault séparé.
-- isolation technique selon enjeu (vault local, pas de dépôt public, pas de cloud non maîtrisé).
-
-Formuler la politique d'accès comme **une règle**, jamais comme une liste d'agents nommés (la liste
-se périme ; la règle tient).
+Formuler la politique d'accès comme une règle, jamais comme une liste d'agents nommés : la liste se
+périme, la règle tient.

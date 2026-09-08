@@ -1,89 +1,67 @@
 ---
 name: import-note
 description: >-
-  Fait entrer une note ou un contenu externe dans le vault **au bon endroit** (lazy-pull) : détecte
-  la nature de l'entrée (URL/article, page Notion, fichier local, texte collé), l'acquiert proprement,
-  puis la classe dans la bonne zone PARA (Project / Area / Resource) avec un frontmatter conforme au
-  Schema et des `[[wikilinks]]`. Utilise ce skill dès que l'utilisateur dit « importe cette note »,
-  « range cette page Notion / cet article / cette URL dans le vault », « fais entrer ce doc », « ajoute
-  ça à mon projet / mon area X », « classe ce contenu », colle un texte à ranger, ou pointe un lien /
-  un fichier à intégrer. **Transverse** (utile depuis n'importe quelle persona) et **source-agnostique**
-  : il s'adapte à l'entrée et n'exige aucun connecteur précis. NE PAS l'utiliser pour le brief du jour
-  (`brief-du-jour`), pour scaffolder le vault (`kickstart-vault`), pour créer une persona
-  (`kickstart-persona`), ni pour de la capture brute non classée (ça, c'est `00-Inbox/` direct).
+  Fait entrer une note ou un contenu externe dans le vault, une note à la fois : détecte la nature
+  de l'entrée (URL, page Notion, fichier local, texte collé), l'acquiert, puis la classe dans la
+  zone PARA adéquate avec frontmatter conforme au Schema et wikilinks. Pose un renvoi plutôt qu'une
+  copie pour le sensible et le vivant. S'utilise quand l'utilisateur dit « importe cette note »,
+  « range cette page Notion / cet article dans le vault », « fais entrer ce doc », « ajoute ça à mon
+  projet X », ou colle un texte à ranger. Pour capitaliser une pratique déjà dans le vault, voir
+  extraire-trame.
 ---
 
 # Import note
 
-Le **lazy-pull** : tirer un contenu externe **dans** le vault, transformé en fiche utile, **quand ça
-vaut le coup** — au lieu de migrer en masse (le big-bang qui pourrit un vault). On importe une chose à
-la fois, au moment où on en a besoin, et on la **range** bien.
+Deux étages : l'acquisition varie avec la source (URL, Notion, fichier, collage), le classement est
+identique pour tous (zone PARA, frontmatter Schema, wikilinks, titre kebab-case).
 
-Le skill sépare nettement deux étages :
-- **Acquisition** (variable) — d'où vient le contenu change tout le temps (URL, Notion, fichier,
-  collage). Cet étage absorbe la variabilité.
-- **Classement** (universel) — une fois le contenu en markdown propre, le ranger est **identique**
-  pour tous : zone PARA, frontmatter Schema, wikilinks, titre kebab-case.
+## Garde-fous
 
-## Principe à garder en tête
-
-- **Lazy-pull, pas big-bang.** Une note à la fois, à la demande. On ne « migre » jamais une source
-  entière.
-- **Ranger, pas déverser.** Un import qui atterrit dans `00-Inbox/` sans frontmatter ni lien n'a rien
-  importé. Le travail, c'est le **classement**.
-- **Renvoi-jamais-copie pour le sensible et le vivant.** Une source 🔒 ou une source de vérité qui
-  continue d'évoluer ailleurs → on pose un **renvoi**, pas une copie (voir `references/classement.md`).
-- **Non destructif.** On ne crée pas un doublon d'une fiche existante : on cherche d'abord, on propose
-  d'enrichir l'existant avant d'ajouter du neuf.
+- **Ranger, pas déverser** : un import posé dans `00-Inbox/` sans frontmatter ni lien n'a rien
+  importé. Le travail est le classement.
+- **Renvoi, jamais copie** pour une source 🔒 ou une source de vérité qui évolue ailleurs
+  (`references/classement.md`, section 1, et `governance.md`).
+- **Non destructif** : chercher une fiche existante avant de créer, proposer d'enrichir plutôt que
+  dupliquer, ne rien écraser sans demander.
 
 ## Procédure
 
 ### 1. Localiser le vault
-Détecter la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`) en remontant depuis le dossier
-courant.
-
-**Si la remontée ne trouve aucune racine** (cwd hors du vault — un dossier de travail externe sur le
-filesystem), utiliser le **chemin absolu du vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle
-de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu.
+Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
+(`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
+un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
+`~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé.
 
 ### 2. Détecter la nature de l'entrée
-URL web · page Notion · fichier local (`.md`, `.txt`, `.pdf`…) · texte collé directement. Heuristiques
-dans `references/acquisition.md`. En cas d'ambiguïté, demander.
+URL web, page Notion, fichier local (`.md`, `.txt`, `.pdf`) ou texte collé. Heuristiques dans
+`references/acquisition.md`. En cas d'ambiguïté, demander.
 
-### 3. Acquérir (étage variable)
-Selon la nature (détail dans `references/acquisition.md`) :
-- **URL / article** → invoquer le skill `obsidian:defuddle` pour extraire un markdown propre (sans le
-  bruit de navigation).
-- **Page Notion** → si `_Meta/sources.md` déclare Notion `actif`, utiliser le connecteur (tenté via
-  `ToolSearch`) ; sinon demander un export / un collage.
-- **Fichier local** → lecture directe.
-- **Texte collé** → tel quel.
-- Conserver l'**origine** (URL, lien, chemin) pour la traçabilité.
+### 3. Acquérir
+Acquérir selon `references/acquisition.md` et conserver l'origine (URL, lien, chemin) pour le champ
+`source:`. Enlever le bruit sans réécrire le fond.
 
 ### 4. Vérifier la sensibilité
 Si la source est marquée `renvoi 🔒` dans `_Meta/sources.md`, ou si le contenu est manifestement
-sensible (RH, contrats, finances non publiques) → **ne pas copier** : créer un **renvoi** dans
-`30-Resources/references-externes/` (lien + contexte, tag 🔒) et s'arrêter là. Voir `governance.md`.
+sensible (RH, contrats, finances non publiques), ne pas copier. Créer un renvoi dans
+`30-Resources/references-externes/` (lien, contexte, tag 🔒) et s'arrêter là.
 
-### 5. Classer (étage universel)
+### 5. Classer
 Suivre `references/classement.md` :
-- Déterminer la **zone PARA** cible : Project (a une fin/livrable) · Area (responsabilité continue) ·
-  Resource (référentiel réutilisable). **Proposer** et confirmer avec l'utilisateur.
-- **Chercher une fiche existante** pertinente (`Glob`/`Grep`) avant d'en créer une : enrichir plutôt
-  que dupliquer.
-- Lire `_Meta/Schema.md`, poser le frontmatter du type adéquat (souvent `resource`), un titre
-  **kebab-case**, et des `[[wikilinks]]` vers les fiches liées — **bidirectionnels** quand l'import
-  est motivé par un projet/area : la fiche d'accueil gagne aussi le lien. Renseigner `source:` avec
-  l'origine.
-- **Doc brut** (PDF, CGV, design system…) dont le fichier *est* le référentiel → le poser tel quel
-  dans `30-Resources/{sous-zone}/` avec une **fiche compagnon** markdown (voir
-  `references/classement.md`) — jamais un fichier orphelin sans fiche.
+- Déterminer la zone PARA cible : Project (effort avec une fin et un livrable), Area
+  (responsabilité continue), Resource (référentiel réutilisable). Proposer et confirmer avec
+  l'utilisateur ; si la cible est déjà nommée (« ajoute ça à mon projet X »), la respecter.
+- Chercher une fiche existante pertinente (`Glob`, `Grep`) avant d'en créer une.
+- Poser le frontmatter du type adéquat d'après `_Meta/Schema.md` (souvent `resource`), un titre
+  kebab-case, `source:` avec l'origine, et des `[[wikilinks]]` vers les fiches liées. Quand l'import
+  est motivé par un projet ou une area, la fiche d'accueil gagne aussi le lien.
+- Un doc brut dont le fichier est lui-même le référentiel suit le cas particulier de
+  `references/classement.md` : fichier posé avec fiche compagnon.
 
 ### 6. Écrire et confirmer
-Écrire la fiche (ou l'ajout). **Non destructif** : pas d'écrasement sans demander. Confirmer le chemin
-et la zone, afficher un aperçu court.
+Écrire la fiche ou l'ajout. Confirmer le chemin et la zone, afficher un aperçu court.
 
 ## Références
-- `references/acquisition.md` — détecter la nature de l'entrée et l'acquérir par type.
-- `references/classement.md` — choisir la zone PARA, le frontmatter, les liens, et la règle
-  renvoi-vs-copie.
+- `references/acquisition.md` : détecter la nature de l'entrée et l'acquérir par type ;
+  `obsidian:defuddle` en option avec repli.
+- `references/classement.md` : renvoi ou copie, renvoi d'emplacement, doc brut avec fiche
+  compagnon, zone PARA, frontmatter, liens bidirectionnels.

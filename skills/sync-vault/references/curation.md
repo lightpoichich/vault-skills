@@ -1,95 +1,96 @@
-# Réconcilier et consolider — ce qu'on intègre, ce qu'on garde, ce qu'on élague
+# Réconcilier et consolider
 
-`sync-vault` fait deux choses en un geste : **intégrer** ce qui a bougé, et **garder la fiche concise**.
-Une fiche utile est à jour ET dense — pas un journal append-only qui gonfle jusqu'à noyer le signal.
+`sync-vault` fait deux gestes en un : intégrer ce qui a bougé et garder la fiche concise. Une fiche
+utile est à jour et dense.
 
-## 1. Ce qu'on intègre (réconciliation)
+## 1. Ce qu'on intègre
 
 | Mouvement repéré | Fiche cible | Geste |
 |------------------|-------------|-------|
-| Décision prise | Project/Area (section Décisions) ; fiche `adr` si le Schema l'a | inscrire la décision + sa raison (1 ligne) |
-| Statut qui change (projet livré, en pause) | fiche Project | mettre `status` à jour + le refléter dans le résumé |
-| Deadline qui bouge | fiche Project | **remplacer** `deadline` (ne pas empiler) + raison si utile |
-| Todo fait / nouveau | fiche porteuse | retirer le fait, ajouter le neuf |
+| Décision prise | Project ou Area (section Décisions) ; fiche `adr` si le Schema l'a | inscrire la décision et sa raison en une ligne |
+| Statut qui change (projet livré, en pause) | fiche Project | mettre `status` à jour et le refléter dans le résumé |
+| Deadline qui bouge | fiche Project | remplacer `deadline`, avec la raison si utile |
+| Todo fait ou nouveau | fiche porteuse | retirer le fait, ajouter le neuf |
 | Fait structurant, contact, périmètre | fiche la plus proche | intégrer à la bonne section |
 
-## 2. Ce qu'on garde (l'essentiel pour le contexte)
+## 2. Ce qu'on garde
 
-Le vault sert de **contexte** aux personas et aux sessions futures. On préserve toujours :
-- les **décisions** et leur raison ;
-- le **statut courant** et les engagements vivants (deadlines, todos ouverts) ;
-- les **faits structurants** (chiffres, contraintes, parties prenantes) ;
+Le vault sert de contexte aux personas et aux sessions futures. On préserve :
+- les décisions et leur raison ;
+- le statut courant et les engagements vivants (deadlines, todos ouverts) ;
+- les faits structurants (chiffres, contraintes, parties prenantes) ;
 - les `[[wikilinks]]` qui raccrochent la fiche au reste du vault.
 
-## 3. Ce qu'on élague / réécrit (anti-surcharge)
+## 3. Ce qu'on élague ou réécrit
 
-`sync-vault` **n'est pas append-only** : il peut écraser et fusionner.
-- **Redites** : deux sections qui disent la même chose → fusionner en une, à jour.
-- **Périmé** : une info remplacée par une plus récente → **remplacer**, ne pas empiler.
-- **Bruit** : étapes intermédiaires sans valeur de contexte, todos faits depuis longtemps, verbiage →
-  retirer.
-- **Historique** : on garde la trace d'une décision (le *quoi* + le *pourquoi*), pas le log de chaque
-  micro-étape qui y a mené.
-- **Décision renversée** (exception au « périmé → remplacer ») : quand une nouvelle décision en
-  contredit une antérieure, ne pas l'écraser en silence — garder une ligne de revirement
-  `~~X~~ → Y le {date} : X abandonné car {raison}`, pour ne pas reproposer X plus tard. Une info
-  simplement périmée (deadline, statut, todo faite), elle, se remplace sans trace.
+- **Redites** : deux sections qui disent la même chose se fusionnent en une, à jour.
+- **Périmé** : une information remplacée par une plus récente se remplace, sans empiler.
+- **Bruit** : retirer les étapes intermédiaires sans valeur de contexte, les todos faits depuis
+  longtemps et le verbiage.
+- **Historique** : garder la trace d'une décision (le quoi et le pourquoi), pas le log des
+  micro-étapes qui y ont mené.
+- **Décision renversée** : quand une nouvelle décision contredit une antérieure, garder une ligne de
+  revirement `~~X~~ remplacé par Y le {date} : X abandonné car {raison}`, pour ne pas reproposer X
+  plus tard. Une information simplement périmée (deadline, statut, todo faite) se remplace sans
+  trace.
 
-**Règle du doute** : si on hésite sur l'importance d'un élément → **garder**. Un curateur préserve le
-signal ; il n'élague que ce qui est clairement redondant ou mort.
+Règle du doute : un élément dont l'importance est incertaine se garde. Le curateur n'élague que ce
+qui est clairement redondant ou mort.
 
-## 4. Veiller sur `30-Resources/` (curer le registre, signaler le reste)
+## 4. Registre des sources
 
-`30-Resources/` est le référentiel — trames, docs bruts (PDF, CGV, design system…), renvois
-externes. Il dérive en silence si personne ne le regarde. `sync-vault` y sépare strictement deux
-gestes.
+Quand une source externe est réconciliée, `_Meta/sources.md` se lit et sa règle de résolution
+s'applique : déclarée et joignable, utiliser ; injoignable, sauter ; non déclarée, sauter ; 🔒,
+renvoi. Le vault est toujours joignable.
 
-**Ce qu'il fait seul (tenue de registre, autonome) :**
+Le registre se tient vrai dans les deux sens, sur joignabilité constatée dans la session (sonde
+`ToolSearch` positive ou usage réussi), jamais sur parole :
+- **Démoter ou élaguer** : un `statut` déclaré `actif` mais injoignable repasse `à brancher` ; un
+  indice `accès` périmé est retiré. Signaler sans broder.
+- **Promouvoir ou ajouter** : une source `à brancher` qui répond passe `actif` ; un connecteur
+  joignable absent du registre y entre en ligne `actif`.
+- **Ne rien inventer** : ni `usage`, ni schéma de la source ; `accès` seulement si une heuristique
+  d'appel étroit a émergé du sondage. Une source `renvoi 🔒` n'est jamais promue.
+
+## 5. Veiller sur `30-Resources/`
+
+`30-Resources/` porte les trames, les docs bruts (PDF, CGV, design system) et les renvois externes.
+`sync-vault` y sépare deux gestes.
+
+Ce qu'il fait seul (tenue de registre) :
 - `_index.md` des sous-zones : cocher un item dont la ressource existe désormais, réparer un
   wikilink cassé par un renommage.
 - Une ressource touchée par la session (trame utilisée dans un projet, doc consulté) : poser ou
-  maintenir le wikilink bidirectionnel (la fiche d'usage pointe la ressource, et inversement).
+  maintenir le wikilink bidirectionnel entre la fiche d'usage et la ressource.
 
-**Ce qu'il signale au compte-rendu (jamais d'action seul) :**
-- **Candidat à trame** : une forme répétée dans ≥ 2 Projects/Areas (même structure de document, même
-  checklist refaite, même déroulé) → « candidate à `extraire-trame` ». L'extraction est un jugement
-  de généralisation : elle appartient au dirigeant, jamais au curateur.
-- **Ressource orpheline durable** : zéro wikilink entrant et aucun usage repérable → candidate à
-  l'archive. **Ne jamais déplacer une Resource vers `40-Archive/` seul** : rien ne distingue une
-  trame dormante d'une trame morte (règle du doute → garder, signaler).
+Ce qu'il signale au compte-rendu, sans action :
+- **Candidat à trame** : une forme répétée dans au moins deux Projects ou Areas (même structure de
+  document, même checklist, même déroulé) : « candidate à `extraire-trame` ». La généralisation est
+  un jugement qui revient à l'utilisateur.
+- **Ressource orpheline durable** : zéro wikilink entrant et aucun usage repérable : candidate à
+  l'archive. Ne pas déplacer une Resource vers `40-Archive/` seul, rien ne distingue une trame
+  dormante d'une trame morte.
 - **Renvoi externe possiblement périmé** : un renvoi de `references-externes/` dont la source a
-  manifestement bougé (lien mort évoqué en session, outil abandonné) → à vérifier. Idem pour un
-  **renvoi d'emplacement** dont le connecteur ou la coordonnée ne répond plus (dossier déplacé,
-  workspace renommé) — signaler, ne pas corriger seul (le pointeur peut juste être momentanément
-  injoignable).
+  bougé (lien mort évoqué en session, outil abandonné), ou un renvoi d'emplacement dont le
+  connecteur ou la coordonnée ne répond plus : à vérifier, le pointeur peut être momentanément
+  injoignable.
 
-## 5. Curer le sas `00-Inbox/_drafts/` (livrables sortants)
+## 6. Curer le sas `00-Inbox/_drafts/`
 
-Les fiches `type: draft` ne sont **pas du savoir** : ce sont des **livrables externes** (mail,
-courrier, proposition, post) qui attendent la main de l'humain. `sync-vault` ne touche **jamais** à
-leur validation — il gère seulement leur **sortie du sas**, pour que `_drafts/` ne s'accumule pas.
+Les fiches `type: draft` sont des livrables externes (mail, courrier, proposition, post) qui
+attendent la main de l'humain. `sync-vault` gère leur sortie du sas, pour que `_drafts/` ne
+s'accumule pas.
 
 | État repéré | Geste |
 |-------------|-------|
-| `statut: envoyé` | **Archiver en trace** : sortir la fiche de `_drafts/` vers le dossier de son `lien` (projet/client), passer `statut: archivé`. Le vault garde « ce qui a été communiqué le {date} ». |
-| `statut: en-attente`, `date` > ~14 j | Le laisser **remonter dans le brief** (« À valider ») — ne rien archiver tant que l'humain peut encore agir. |
-| `statut: en-attente`, `date` > ~30 j | **Archiver `abandonné`** dans `40-Archive/`. Jamais supprimé sans trace. |
-| `statut: validé` (pas encore envoyé) | Ne rien faire — il attend l'envoi par l'humain ; le brief le remonte. |
+| `statut: envoyé` | Archiver en trace : sortir la fiche de `_drafts/` vers le dossier de son `lien` (projet ou client), passer `statut: archivé`. Le vault garde « ce qui a été communiqué le {date} ». |
+| `statut: en-attente`, `date` de plus de 14 jours environ | Laisser remonter dans le brief (« À valider ») ; ne rien archiver tant que l'humain peut encore agir. |
+| `statut: en-attente`, `date` de plus de 30 jours environ | Archiver `abandonné` dans `40-Archive/`. Un draft ne se supprime pas sans trace. |
+| `statut: validé`, pas encore envoyé | Ne rien faire ; il attend l'envoi par l'humain, le brief le remonte. |
 
-**Garde-fous spécifiques aux drafts :**
-- Ne **jamais** faire avancer un statut côté humain : pas de `en-attente → validé`, pas de
-  `validé → envoyé`. `sync-vault` ne valide ni n'envoie.
-- Ne **jamais** archiver un livrable encore `en-attente` ou `validé` (il pourrait partir).
-- Un draft sans `lien` exploitable ne peut pas être classé en trace → le signaler dans le compte rendu
-  plutôt que de deviner une destination.
-
-## Garde-fous (non négociables)
-
-- **Sensible 🔒** : jamais copié dans une fiche, jamais exposé ; renvoi seulement (`governance.md`).
-- **Cascade source** (si réconciliation d'une source externe) : déclarée + joignable → utiliser ;
-  injoignable → sauter ; non déclarée → sauter ; 🔒 → renvoi. Le vault est toujours joignable.
-- **Registre `sources.md` vrai dans les deux sens** (sur joignabilité **constatée dans la session**,
-  jamais sur parole) : démoter un `actif` qui ment → `à brancher` ; promouvoir un `à brancher` qui
-  répond → `actif` ; ajouter une ligne `actif` pour un connecteur joignable absent du registre. Ne pas
-  inventer `usage`/schéma ; `accès` seulement si une heuristique d'appel étroit a émergé. `🔒` jamais promu.
-- **Autonome** : `sync-vault` décide et écrit sans demander de validation. Il rend compte **après**.
+Garde-fous propres aux drafts :
+- Ne pas faire avancer un statut côté humain : ni `en-attente` vers `validé`, ni `validé` vers
+  `envoyé`.
+- Ne pas archiver un livrable encore `en-attente` ou `validé` : il peut encore partir.
+- Un draft sans `lien` exploitable ne peut pas être classé en trace : le signaler au compte-rendu
+  plutôt que deviner une destination.

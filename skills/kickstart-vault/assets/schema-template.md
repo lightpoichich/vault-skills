@@ -4,25 +4,28 @@ topic: schema
 updated: {YYYY-MM-DD}
 ---
 
-# Schema — contrat frontmatter du vault
+# Schema : contrat frontmatter du vault
 
-> Le contrat qui garde le vault cohérent dans le temps. Tout agent qui écrit une fiche lit
-> d'abord ce fichier. Ne garder que les types réellement utiles à CE vault (issus du plan) ;
-> ajouter un type plutôt que détourner un existant.
+> Tout agent qui écrit une fiche lit d'abord ce fichier. Ajouter un type plutôt que détourner un
+> existant.
 
 ## Conventions générales
 - **Nommage** : `kebab-case` pour tous les fichiers et dossiers.
-- **Relations** : `[[wikilinks]]` entre fiches, jamais de chemins en dur.
+- **Relations** : `[[wikilinks]]` entre fiches, pas de chemins en dur.
 - **Un type par fiche**, déclaré dans le frontmatter.
-- **Dates dans les noms** : toujours en **préfixe** `YYYY-MM-DD-{sujet}` (réunions, comptes rendus, audits), jamais en suffixe — le tri chronologique vient gratuitement.
-- **Un nom de fichier unique dans tout le vault** : un `[[wikilink]]` résout par nom, deux fiches homonymes rendent le lien ambigu. Quand deux objets partagent un slug (un client et son étude de cas, un projet et sa note de facturation), suffixer ou préfixer l'objet secondaire (`{slug}-case-study.md`, `crm-{slug}.md`).
-- **Sous-dossiers d'un projet** : créés au besoin, jamais d'avance, nommés par leur nature — `meetings/` (notes de réunion datées, `type: meeting`), `research/` (notes de travail, audits, plans), `livrables/` (figé, ce qui est parti chez le tiers). Aucune note datée à plat à la racine d'un projet : sa place est `meetings/` ou `research/`.
-- **Racine d'une area** : uniquement ses référentiels courants (une poignée de fiches) ; les flux (réunions, dossiers, posts, briefs) vivent en sous-dossiers ; l'historique clos part en `40-Archive/`.
+- **Date en préfixe** : `YYYY-MM-DD-{sujet}` pour les fiches datées (réunions, comptes rendus,
+  audits), ce qui donne le tri chronologique.
+- **Nom de fichier unique** dans tout le vault : un `[[wikilink]]` résout par nom.
+- **Objets homonymes** : suffixer ou préfixer l'objet secondaire (`{slug}-case-study.md`,
+  `crm-{slug}.md`).
+- **Sous-dossiers d'un projet** : créés au besoin, nommés par leur nature : `meetings/` (notes de
+  réunion datées, `type: meeting`), `research/` (notes de travail, audits, plans), `livrables/`
+  (figé, ce qui est parti chez le tiers).
+- **Pas de note datée à plat** à la racine d'un projet : sa place est `meetings/` ou `research/`.
+- **Racine d'une area** : ses référentiels courants seulement ; les flux (réunions, dossiers, posts,
+  briefs) vivent en sous-dossiers ; l'historique clos part en `40-Archive/`.
 
 ## Types de fiches
-
-<!-- Garder uniquement les types présents dans la section "Conventions frontmatter" du plan.
-     Ci-dessous les plus courants, à adapter/élaguer. -->
 
 ### `area`
 Responsabilité continue, sans fin.
@@ -36,12 +39,9 @@ tags: [area]
 ```
 
 ### `project`
-Effort avec une fin et un livrable. Deux champs optionnels relient une fiche projet à un dossier de
-travail externe (filesystem, hors vault), pour que l'outillage (`nouveau-projet`, `sync-repo`, hook Stop)
-retrouve la fiche depuis ce dossier : `repo`, l'URL du remote git, clé **portable entre machines**
-(suffixe `#sous-dossier` si le projet vit dans un sous-dossier du dépôt) ; `dossier-travail`, le chemin
-absolu sur le poste, indication humaine propre à une machine. Résolution par `repo`, puis
-`dossier-travail`, puis le slug.
+Effort avec une fin et un livrable. `repo` et `dossier-travail`, optionnels, relient la fiche à un
+dossier de travail hors vault ; l'outillage (`nouveau-projet`, `sync-repo`, hook Stop) résout par
+`repo`, puis `dossier-travail`, puis le slug.
 ```yaml
 type: project
 status: { active | done }
@@ -49,8 +49,8 @@ deadline: { YYYY-MM-DD | "à préciser" }
 livrable: { ... }
 parties-prenantes: [ ... ]
 area: "[[{area liée}]]"
-repo: { URL du remote git[#sous-dossier] | absent }                          # optionnel — clé portable dépôt ↔ fiche
-dossier-travail: { chemin absolu du dossier de travail externe | absent }   # optionnel — chemin sur le poste
+repo: { URL du remote git[#sous-dossier] }        # optionnel, clé portable entre machines
+dossier-travail: { chemin absolu sur le poste }    # optionnel, propre à une machine
 tags: [project]
 ```
 
@@ -64,14 +64,24 @@ décisions: [ ... ]
 actions: [ ... ]
 ```
 
-### `adr` — décision (technique ou autre)
+### `adr` : décision (technique ou autre)
 ```yaml
 type: adr
 status: { proposed | accepted | superseded }
 date: {YYYY-MM-DD}
 décideurs: [ ... ]
 ```
-Corps : Contexte · Décision · Conséquences · Alternatives.
+Corps : Contexte, Décision, Conséquences, Alternatives.
+
+### `incident`
+```yaml
+type: incident
+date: {YYYY-MM-DD}
+sévérité: { ... }
+services: [ ... ]
+statut: { ... }
+```
+Corps : Timeline, Post-mortem.
 
 ### `resource`
 Référentiel réutilisable (trame, runbook, benchmark, méthodo).
@@ -81,10 +91,18 @@ domaine: { ... }
 tags: [resource]
 ```
 
-### `draft` — livrable externe en attente de validation
-> Réservé à ce qui **sort du vault vers un tiers** (mail, courrier, proposition, post). Le savoir
-> interne (fiche, résumé, avancement, synthèse) ne passe **pas** par là : il s'écrit directement
-> (voir `governance.md`, « Savoir vs Livrable »).
+### `brief`
+Brief du jour, écrit par `brief-du-jour` dans `00-Inbox/briefs/{YYYY-MM-DD}.md`.
+```yaml
+type: brief
+date: {YYYY-MM-DD}
+status: { draft | done }
+```
+
+### `draft` : livrable externe en attente de validation
+Réservé à ce qui sort du vault vers un tiers (mail, courrier, proposition, post). Le savoir interne
+(fiche, résumé, avancement, synthèse) s'écrit directement (voir `governance.md`, « Savoir et
+livrable »).
 ```yaml
 type: draft
 canal: { mail | contrat | admin | autre }
@@ -94,10 +112,19 @@ date: {YYYY-MM-DD}                          # requis : date de création, sert �
 statut: { en-attente | validé | envoyé | archivé | abandonné }
 sensibilité: { normal | confidentiel }
 ```
-Cycle de vie : `en-attente` → `validé` (humain) → `envoyé` (humain) → **archivé** comme trace sur
-`lien`, ou **abandonné** si périmé. `_drafts/` ne garde jamais un état terminal — `sync-vault` l'en sort.
+Cycle de vie : `en-attente`, puis `validé` (humain), puis `envoyé` (humain), puis `archivé` comme
+trace sur `lien`, ou `abandonné` si périmé. `_drafts/` ne garde pas d'état terminal : `sync-vault`
+l'en sort.
 
-### `audit` — rapport d'audit du vault (éphémère)
+### `note`
+Note de travail scopée à un projet, une area ou l'inbox (recherche, préparation, compte-rendu
+d'installation). Préférer un type dédié quand il existe.
+```yaml
+type: note
+tags: [ ... ]
+```
+
+### `audit` : rapport d'audit du vault (éphémère)
 Produit par `audit-vault` dans `00-Inbox/`, écrasé au jour le jour, purgé par les audits suivants.
 ```yaml
 type: audit
@@ -105,9 +132,14 @@ date: {YYYY-MM-DD}
 findings: { critical: N, warnings: N, infos: N }
 ```
 
-<!-- Types optionnels selon le plan : `brief` (date, priorités, alertes, agenda, todos),
-     `incident` (date, sévérité, services, statut, timeline, post-mortem), `moc` (index). -->
+### `moc`
+Fiche de `_Meta/` (Schema, governance, sources, derivation) ou index.
+```yaml
+type: moc
+topic: { ... }
+updated: {YYYY-MM-DD}
+```
 
 ## Confidentialité
-- Marquer toute fiche/section sensible avec le tag/emoji **🔒** et suivre `governance.md`.
-- Les sources sensibles externes ne sont **pas copiées** : voir `references-externes/`.
+- Marquer toute fiche ou section sensible du marqueur 🔒 et suivre `governance.md`.
+- Les sources sensibles externes ne sont pas copiées : voir `references-externes/`.

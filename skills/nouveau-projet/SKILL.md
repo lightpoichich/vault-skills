@@ -1,124 +1,95 @@
 ---
 name: nouveau-projet
 description: >-
-  Crée **ou complète** un projet dans un vault Obsidian **déjà vivant** : génère
-  `10-Projects/{slug}/{slug}.md` (frontmatter `type: project` conforme au Schema, wikilink vers
-  l'Area parente), puis **nourrit** le projet du contexte réel existant (note d'inbox, réunion, fil
-  d'emails) via `import-note` — sans rien inventer. Sur un shell déjà posé (par `kickstart-vault`
-  au scaffold), même geste : invariants manquants + nourrir, sans écraser l'existant. Utilise ce
-  skill dès que l'utilisateur veut « lancer un nouveau projet », « créer le projet X », « ouvrir un
-  chantier », ou dit « complète / initialise / remplis le projet X », « le projet X est vide ».
-  **Transverse** et **source-agnostique** (lit `_Meta/sources.md`, dégrade proprement). NE PAS
-  l'utiliser pour scaffolder le vault entier (`kickstart-vault` pose les shells une fois — ce skill
-  les complète ensuite), pour faire entrer une note externe isolée (`import-note`), pour créer une
-  persona (`kickstart-persona`), ni pour répercuter une session (`sync-vault`).
+  Crée un projet dans un vault Obsidian déjà structuré, ou complète un projet encore vide : pose
+  10-Projects/{slug}/{slug}.md avec un frontmatter type: project conforme au Schema, relie l'Area
+  parente et le dossier de travail, puis rattache le contexte réel existant
+  (note d'inbox, réunion, fil d'emails) via import-note, sans rien inventer. S'utilise quand
+  l'utilisateur dit « lancer un nouveau projet », « créer le projet X », « ouvrir un chantier »,
+  « complète le projet X », « le projet X est vide ». Pour faire entrer une note isolée sans créer de
+  projet, voir import-note.
 ---
 
 # Nouveau projet
 
-Faire **naître** un projet dans un vault déjà vivant — ou **compléter** un projet qui n'est encore
-qu'un shell. Le jumeau d'`import-note` : import-note fait *entrer* un contenu qui existe déjà ;
-`nouveau-projet` fait *naître* un effort neuf, lui pose son foyer (dossier + fiche), puis le raccroche
-au contexte réel. Le même geste, appliqué à une fiche déjà posée, la complète.
-
-C'est un geste de **Famille 2 (faire vivre)**, pas d'amorçage : `kickstart-vault` génère les shells de
-Projects une seule fois, au scaffold — des coquilles volontairement vides. Ici on ajoute un projet
-*après*, à la demande, sans relancer l'interview de cartographie — et c'est aussi ici que ces shells
-se remplissent, au fil de l'eau.
-
-## Principe à garder en tête
-
-- **Generate-don't-write.** On pose le shell (dossier, fiche, frontmatter, sections vides). On ne
-  remplit pas le suivi avec du contenu inventé — il se remplira au fil du projet.
-- **Nourrir avec du réel, pas du fabriqué.** « Configuré et nourri » = rattacher le contexte qui
-  existe déjà (la note où l'idée est née, la réunion, le fil d'emails), pas générer un faux brief.
-- **Non destructif.** On cherche un projet existant avant d'en créer un ; on enrichit plutôt que
-  dupliquer.
-- **Renvoi-jamais-copie pour le sensible.** Le 🔒 se rattache en renvoi, jamais en copie (voir
-  `import-note` et `governance.md`).
+## Entrées attendues
+- Le nom du projet à créer, ou le slug d'un projet existant à compléter.
+- Le dossier courant, s'il est hors du vault : c'est le dossier de travail candidat à relier.
+- Le contexte réel à rattacher, s'il existe : note d'inbox, réunion, fil d'emails, doc, URL.
 
 ## Procédure
 
 ### 1. Localiser le vault
-Remonter depuis le dossier courant jusqu'à la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`).
+Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
+(`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
+un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
+`~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé : son contrat `type: project`
+fixe les champs à poser.
 
-**Si la remontée ne trouve aucune racine** (cwd hors du vault — un dossier de travail externe sur le
-filesystem), utiliser le **chemin absolu du vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle
-de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu. **Noter alors le dossier
-courant absolu** — c'est le « dossier de travail » candidat à relier au projet (étape 4). Lancé depuis
-l'intérieur du vault → pas de dossier de travail, champ omis.
+Si le dossier courant est hors du vault (`mode` égal à `repo` ou `none`), noter son chemin absolu :
+c'est le dossier de travail à relier à l'étape 4. Lancé depuis l'intérieur du vault, il n'y a pas de
+dossier de travail et les champs `repo:` et `dossier-travail:` sont omis.
 
-### 2. Recueillir les invariants (court, interactif)
-Si la demande vise un projet existant (« complète le projet X », « X est vide »), passer directement
-à l'étape 3 : on ne demandera que les trous.
+### 2. Recueillir les invariants
+Si la demande vise un projet existant (« complète le projet X », « X est vide »), passer à
+l'étape 3 : seuls les trous seront demandés.
 
-Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: project` :
-- **nom** du projet (→ titre + slug `kebab-case`) ;
-- **livrable + critère de fin** (ce qui dira « c'est terminé ») ;
-- **deadline** (ou « à préciser ») ;
-- **parties prenantes** ;
-- **Area parente** : la responsabilité continue à laquelle le projet se rattache (proposer parmi les
-  `20-Areas/` existants ; un projet sans area est possible, mais le signaler).
+Demander à l'utilisateur, en une fois, ce qui remplit le frontmatter `type: project` :
+- le nom du projet, dont dérivent le titre et le slug en kebab-case ;
+- le livrable et le critère de fin ;
+- la deadline, ou « à préciser » ;
+- les parties prenantes ;
+- l'Area parente, à choisir parmi les `20-Areas/` existants. Un projet sans area reste possible, le
+  signaler.
 
-### 3. Chercher l'existant — l'aiguillage naître / compléter
-`Glob` sur `10-Projects/` et `Grep` un terme clé du nom (penser aussi à `40-Archive/` → proposer de
-**désarchiver** plutôt que recréer). Trois cas :
-- **Introuvable** → mode **naître** : dérouler les étapes 4 à 7.
-- **Trouvé** (shell scaffoldé par `kickstart-vault`, ou fiche maigre) → mode **compléter** : lire la
-  fiche et la comparer au contrat `project` de `_Meta/Schema.md`, demander **seulement les invariants
-  manquants** (étape 2 réduite aux trous), puis reprendre aux étapes 5-7 (nourrir, raccrocher,
-  confirmer). **Non destructif** : remplir uniquement les champs et sections vides — ne jamais
-  réécrire ce qui est déjà renseigné. **Si la fiche n'a pas de `dossier-travail` et qu'on est lancé
-  depuis un dossier de travail externe** (étape 1), **proposer de le renseigner** (lier l'existant au
-  dossier courant) — sans écraser un `dossier-travail` déjà posé. Poser aussi `repo:` s'il manque et
-  que le dossier est un dépôt git avec un remote (même règle qu'à l'étape 4).
-- **Projet proche mais distinct** → le signaler et confirmer avant de créer, pour éviter le doublon.
+### 3. Chercher l'existant
+`Glob` sur `10-Projects/` et `Grep` sur un terme clé du nom, `40-Archive/` compris. Trois cas :
+- **Introuvable** : mode naître, dérouler les étapes 4 à 7.
+- **Trouvé** : mode compléter. Lire la fiche, la comparer au contrat `project` du Schema, demander
+  seulement les invariants manquants, puis reprendre aux étapes 4 (liaison au dossier de travail
+  seule) à 7. Remplir uniquement les champs et sections vides. Une fiche trouvée dans `40-Archive/`
+  se désarchive plutôt que d'être recréée.
+- **Projet proche mais distinct** : le signaler et confirmer avant de créer, pour éviter le doublon.
 
-### 4. Scaffolder le shell
-- **Lire `_Meta/Schema.md`** pour le contrat `project` de **ce** vault (les champs peuvent varier d'un
-  vault à l'autre) — c'est la source de vérité au moment de l'écriture.
-- Créer le dossier `10-Projects/{slug}/` et la fiche `10-Projects/{slug}/{slug}.md` (jamais à plat).
-- Structure du shell : frontmatter `type: project` rempli avec les invariants de l'étape 2 (`status:
-  active`, `deadline`, `livrable`, `parties-prenantes`, `area: "[[{area}]]"`, `tags: [project]`),
-  puis titre, une ligne de résumé, et les sections **vides** `## Objectif` · `## Suivi` ·
-  `## Décisions`. Laisser les hooks du vault poser `created`/`updated`.
-- **Dossier de travail** (si détecté à l'étape 1, lancé hors du vault) : ajouter au frontmatter
-  `dossier-travail: {chemin absolu du dossier courant}` et le confirmer brièvement (« je relie ce
-  dossier au projet X »). Si ce dossier est dans un dépôt git avec un remote `origin`, poser aussi
-  `repo: {URL du remote}` (suffixe `#sous-dossier` quand le dossier courant n'est pas la racine du
-  dépôt) : c'est la **clé portable** entre machines, `dossier-travail` restant l'indication propre au
-  poste. `sync-repo` et le hook Stop du plugin retrouvent la fiche par `repo`, puis `dossier-travail`,
-  puis le slug. Lancé depuis l'intérieur du vault → champs omis, rien d'inventé.
-  Si ce dossier de travail porte un `CLAUDE.md` qui `@importe` le vault (`@~/vault/…`, règle de liaison),
-  approuver ses imports externes dans la foulée, sinon Claude Code les ignore en silence à chaque session :
-  `"${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh" "{chemin absolu du dossier courant}"` (idempotent,
-  n'approuve que des cibles situées dans un vault ; le hook SessionStart du plugin le ferait sinon à la
-  session suivante). Pas de `CLAUDE.md` dans le dossier → rien à faire.
+### 4. Poser le shell et relier le dossier de travail
+- Créer `10-Projects/{slug}/` et la fiche `10-Projects/{slug}/{slug}.md`, jamais à plat.
+- Frontmatter `type: project` rempli avec les invariants de l'étape 2 : `status: active`,
+  `deadline`, `livrable`, `parties-prenantes`, `area: "[[{area}]]"`, `tags: [project]`. Les hooks du
+  vault posent `created` et `updated`.
+- Corps : titre, une ligne de résumé, puis trois sections vides : `## Objectif`, `## Suivi`,
+  `## Décisions`.
+- Relier le dossier de travail noté à l'étape 1 : suivre la checklist de
+  `references/liaison-depot.md`. En mode compléter, elle s'applique aussi à une fiche sans `repo:`
+  ni `dossier-travail:`.
 
-### 5. Nourrir (source-agnostique — voir `references/nourrir.md`)
-Proposer de rattacher le **contexte réel** du projet :
-- une note de `00-Inbox/` où l'idée a germé ;
-- la réunion où il a été décidé (cascade `_Meta/sources.md` : Granola/agenda si déclaré actif, sinon
-  collage manuel) ;
-- un fil d'emails, un doc, une URL.
-
-Déléguer l'acquisition à **`import-note`** (ne pas redupliquer la logique URL/Notion/fichier/collage),
-puis lier le résultat depuis la fiche projet en `[[wikilinks]]`. Rien d'inventé, jamais de copie du 🔒.
+### 5. Nourrir
+Proposer de rattacher le contexte réel du projet : une note de `00-Inbox/` où l'idée a germé, la
+réunion où il a été décidé, un fil d'emails, un doc, une URL. Déléguer l'acquisition à
+`import-note`, puis lier le résultat depuis la fiche projet en `[[wikilinks]]`. Quoi rattacher et
+comment : `references/nourrir.md`.
 
 ### 6. Raccrocher au vault
-- Wikilink **bidirectionnel** : la fiche projet pointe vers `[[{area}]]`, et la fiche de l'Area parente
-  (ou son MOC) gagne un lien vers le projet.
-- **Ressources pertinentes** : balayer `30-Resources/` (noms de fichiers + `_index.md` des
-  sous-zones), **proposer** 1-3 `[[wikilinks]]` vers ce qui sert ce projet — une trame, un runbook,
-  un doc de référence (CGV, design system…). Proposer seulement ce qui résonne — jamais de liste
-  déversée, zéro lien vaut mieux qu'un lien décoratif.
-- Mettre à jour un MOC/index de projets s'il en existe un.
+- Wikilink bidirectionnel : la fiche projet pointe vers `[[{area}]]`, la fiche de l'Area parente (ou
+  son MOC) gagne un lien vers le projet.
+- Ressources : balayer `30-Resources/` (noms de fichiers et `_index.md` des sous-zones) et proposer
+  un à trois `[[wikilinks]]` vers ce qui sert le projet (trame, runbook, doc de référence). Zéro
+  lien vaut mieux qu'un lien décoratif.
+- Mettre à jour un MOC ou un index de projets s'il en existe un.
 
 ### 7. Confirmer
-Afficher le chemin créé, le frontmatter posé, les rattachements faits, et un aperçu court. Ne rien
-écraser sans validation.
+Afficher le chemin créé, le frontmatter posé, les rattachements faits et la liaison au dépôt. Ne
+rien écraser sans validation.
+
+## Garde-fous
+- Poser le cadre, pas le contenu : sections vides, rien d'inventé, le suivi se remplit par l'usage.
+- Chercher l'existant avant de créer ; enrichir plutôt que dupliquer ; ne pas réécrire un champ déjà
+  renseigné.
+- Le sensible 🔒 se rattache en renvoi, jamais en copie (`governance.md`).
 
 ## Références
-- `references/nourrir.md` — quoi rattacher, et comment déléguer l'acquisition à `import-note`.
-- Contrat `project` du vault : `_Meta/Schema.md` (lu à l'étape 4).
-- Classement universel (frontmatter, liens, renvoi-vs-copie) : `import-note/references/classement.md`.
+- `references/liaison-depot.md` : checklist pour poser `repo:` et `dossier-travail:` et approuver
+  les imports du `CLAUDE.md` du dépôt.
+- `references/nourrir.md` : quoi rattacher, règle de résolution des sources, délégation à
+  `import-note`.
+- `import-note/references/classement.md` : frontmatter, liens, renvoi d'emplacement, renvoi plutôt
+  que copie.

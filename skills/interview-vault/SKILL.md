@@ -1,270 +1,182 @@
 ---
 name: interview-vault
 description: >-
-  Mène l'interview de cartographie d'activité (PARA) qui produit `00-Inbox/plan-vault.md` — le plan
-  d'implémentation que `kickstart-vault` exécute ensuite. C'est le **premier maillon** de la chaîne
-  d'amorçage d'un vault Obsidian (second cerveau). Utilise ce skill dès que l'utilisateur veut
-  « cartographier mon activité », « construire / dessiner la base de mon vault », « préparer mon
-  vault », « faire l'interview PARA », « monter mon second cerveau », ou démarre un vault vide et
-  veut en poser la structure avant de la matérialiser. Skill **généraliste et adaptatif** : il ne
-  demande jamais « tu es tech ou non-tech ? » — il s'adapte aux réponses, de sorte qu'un DG, un CTO
-  ou un artisan obtiennent chacun le plan qui colle à leur métier. NE PAS l'utiliser si le vault est
-  déjà structuré (c'est alors un audit / une refonte, pas une cartographie initiale), ni pour
-  matérialiser le plan (c'est `kickstart-vault`), ni pour créer une persona (`kickstart-persona`)
-  ou un skill métier (`vault-skill-creator`).
+  Mène l'interview de cartographie PARA d'une activité et écrit 00-Inbox/plan-vault.md, le plan
+  que kickstart-vault exécute ensuite. S'adapte aux réponses du dirigeant sans questionnaire figé
+  et n'écrit rien hors de 00-Inbox/. S'utilise quand l'utilisateur dit « cartographier mon
+  activité », « préparer mon vault », « faire l'interview PARA », « monter mon second cerveau »
+  sur un vault vide. Pour matérialiser le plan, voir kickstart-vault.
 ---
 
 # Interview Vault
 
-Mène l'**interview de cartographie** qui transforme une activité (en tête de l'utilisateur, éparse
-dans ses outils) en un **plan de vault** structuré selon PARA. Le livrable unique est
-`00-Inbox/plan-vault.md` — le plan que `kickstart-vault` exécutera pour poser le squelette réel.
+Transforme une activité, en tête du dirigeant et éparse dans ses outils, en un plan de vault
+structuré selon PARA. Le livrable unique est `00-Inbox/plan-vault.md`, que `kickstart-vault`
+exécute ensuite pour poser le squelette ; viennent après `kickstart-persona` (les agents) puis
+`vault-skill-creator` (les compétences). Ce skill n'écrit que dans `00-Inbox/` : il ne crée ni
+dossier PARA, ni fiche, ni persona, ni skill.
 
-C'est le **premier maillon** de l'amorçage d'un vault :
+## Partis pris
 
-```
-interview-vault  →  kickstart-vault  →  kickstart-persona  →  vault-skill-creator
-(le plan)           (le squelette)      (les agents)          (les compétences)
-```
+- **Généraliste, jamais profilé.** Ne pas demander de catégorie (« tech ou non-tech », « grande
+  boîte ou TPE ») : la structure se dérive des réponses. Une suggestion (Area, source, compétence,
+  type de fiche) n'est proposée que si elle fait écho à ce qui a été décrit ; les réservoirs sont
+  dans `references/cartographie-guide.md`.
+- **On pose le cadre, pas le contenu.** Capturer ce que le dirigeant dit, ne rien inventer. Si une
+  réponse manque, écrire « à creuser en S1 » et avancer.
+- **L'actionnabilité prime sur le sujet.** Le critère de classement PARA est l'actionnabilité, pas
+  le thème. Ce qui ne finit jamais est une Area (« stratégie ») ; ce qui a une fin et un livrable
+  est un Project (« finaliser le plan stratégique 2027 »). Surveiller cette confusion à chaque phase.
 
-Ce skill **n'écrit que dans `00-Inbox/`**. Il ne crée ni dossier PARA, ni fiche, ni persona, ni
-skill. Il cartographie, il propose, il consigne le plan. La matérialisation, c'est l'étape d'après.
+## Langue
 
-## Pourquoi ces partis pris (à garder en tête tout du long)
+Le dirigeant n'est pas un développeur. Tout ce qui s'affiche et tout texte livré suit ces règles :
 
-- **Généraliste, jamais profilé.** On ne demande pas une catégorie (« tech / non-tech », « grande
-  boîte / TPE »). On part de l'activité réelle et on **dérive** la bonne structure des réponses. Le
-  même skill doit produire un plan radicalement différent pour un DG conseil et pour un CTO — parce
-  que leurs réponses diffèrent, pas parce qu'on a coché une case. Les suggestions (Areas, sources,
-  compétences, types de fiches) sont **proposées seulement si elles résonnent** avec ce qui a été décrit.
-  Référence d'appui : `references/cartographie-guide.md`.
-- **Generate-don't-write.** On capture ce que l'utilisateur dit, on ne l'invente pas. Si une réponse
-  manque, on écrit « à creuser en S1 » et on avance. Le plan est un squelette de décisions, pas un
-  contenu rempli d'office.
-- **L'actionnabilité prime sur le sujet.** Le critère de classement PARA n'est pas le thème mais
-  l'actionnabilité — d'où la vigilance permanente sur le piège Areas-as-Projects (voir plus bas).
-- **Une question à la fois.** Pas de questionnaire en bloc. On reformule la réponse avant de passer
-  à la suivante ; si c'est flou, on creuse. C'est ce qui fait émerger la vraie structure.
+- **Français propre.** Ne pas employer scaffold(er), bundle, alias, quick win, input, deal, mapping,
+  shell, lazy-pull. Dire installer ou monter, ensemble prêt à l'emploi, raccourci, gain rapide,
+  matière, affaire ou dossier, correspondance, fiche vide structurée, « au fil des besoins ».
+- **Un terme de structure s'explique une fois**, à sa première occurrence, puis le mot suffit :
+  `frontmatter` (l'en-tête d'une note), kebab-case (nom de fichier en minuscules avec tirets),
+  `wikilink` (un lien `[[…]]`), persona (un assistant spécialisé), compétence (une routine automatisée).
+- **Pas de jargon dans un titre de section du plan.** En cas de doute, la phrase doit être comprise
+  par quelqu'un qui n'a jamais ouvert un terminal.
 
-## Comment parler au dirigeant (langue)
+## Cadre PARA
 
-L'interlocuteur est un **dirigeant, pas un développeur**. Tout ce qui s'affiche à l'écran et tout
-texte livré (le plan, les résumés) suit ces règles :
-
-- **Français propre, zéro anglicisme gratuit.** Bannir, à l'oral comme à l'écrit : *scaffold(er),
-  bundle, alias, quick win, input, deal, mapping, shell, lazy-pull, generate-don't-write*. Dire
-  plutôt : installer/monter, ensemble prêt-à-l'emploi, raccourci, gain rapide, matière/informations,
-  affaire/dossier, correspondance, fiche vide structurée, « au fil des besoins », « on pose le cadre,
-  pas le contenu ».
-- **Un terme de structure = expliqué une seule fois, puis réutilisé.** À la première occurrence,
-  une parenthèse d'explication ; ensuite le mot suffit : `frontmatter` (l'en-tête d'une note),
-  kebab-case (nom de fichier en minuscules-avec-tirets), `wikilink` (un lien `[[…]]`), `persona`
-  (un assistant spécialisé), `compétence`/*skill* (une routine qu'on automatise).
-- **Jamais de jargon dans un titre de section du plan** que le dirigeant relira.
-- En cas de doute : la phrase doit être comprise par quelqu'un qui n'a jamais ouvert un terminal.
-
-## Quand utiliser / quand ne pas utiliser
-
-**Utiliser** quand :
-- Le vault est vide ou quasi-vide et l'utilisateur veut en dessiner la structure avant de la bâtir.
-- On est dans un dossier qui contient (ou contiendra) `00-Inbox/`, `10-Projects/`, `20-Areas/`…
-- L'utilisateur prévoit d'y brancher des agents/personas plus tard.
-
-**Ne pas utiliser** si :
-- Le vault est **déjà structuré** (Areas en place, fiches existantes) → c'est un audit ou une
-  refonte, pas une cartographie initiale.
-- L'utilisateur veut **matérialiser** un plan déjà écrit → c'est `kickstart-vault`.
-- Il veut créer un **agent** (`kickstart-persona`) ou un **skill métier** (`vault-skill-creator`).
-
-## Le cadre PARA (à appliquer et à expliquer si besoin)
-
-- **Projects** — un effort avec **une fin et un livrable** (ex. « préparer le conseil de juin »).
-- **Areas** — une **responsabilité continue sans fin** (ex. « finance », « fiabilité prod »).
-  Viser **4 à 7** (8 à la rigueur si le dirigeant tient à une distinction réelle après que tu lui
-  as proposé de consolider — sa préférence l'emporte).
-- **Resources** — un **référentiel réutilisable** (méthodos, trames, runbooks, benchmarks, ADR).
-- **Archive** — ce qui est clos (on **déplace**, on ne supprime pas).
-- **Inbox** — zone tampon de capture brute.
-
-> **Piège n°1 — Areas-as-Projects.** La confusion la plus fréquente : traiter une Area comme un
-> Project. « Stratégie » n'est jamais « finie » → c'est une Area ; « finaliser le plan stratégique
-> 2027 » a une fin → c'est un Project. Reste vigilant tout du long : si l'utilisateur nomme quelque
-> chose qui ne finit jamais, c'est une Area.
-
----
+- **Projects** : un effort avec une fin et un livrable (« préparer le conseil de juin »).
+- **Areas** : une responsabilité continue (« finance », « fiabilité prod »). Viser 4 à 7 ; au-delà,
+  proposer de consolider, et accepter 8 si le dirigeant tient à la distinction.
+- **Resources** : un référentiel réutilisable (méthodes, trames, runbooks, benchmarks, ADR).
+- **Archive** : ce qui est clos. On déplace, on ne supprime pas.
+- **Inbox** : zone tampon de capture brute.
 
 ## Déroulé
 
-### Phase 0 — Cadre & déroulé
+### Phase 0. Cadre
 
-Se présenter brièvement, poser le cadre PARA (ci-dessus, en une ou deux phrases adaptées au niveau
-de l'utilisateur), annoncer le déroulé (matière première → interview en 4 phases → irritants → profil
-de ton → plan).
-**Aucune question de profil.** Si un `~/.claude/CLAUDE.md` global existe, l'utiliser pour se caler
-sur le contexte (rôle, charge) sans jamais demander de catégorie. Vérifier que l'utilisateur a
-compris le déroulé, puis demander le premier élément de matière première.
+Se présenter, poser le cadre PARA en une ou deux phrases, annoncer le déroulé : matière première,
+interview en quatre phases, irritants, profil de ton, plan. Si un `~/.claude/CLAUDE.md` global
+existe, l'utiliser pour se caler sur le contexte (rôle, charge) sans poser de question de profil.
+Vérifier que le déroulé est compris, puis demander le premier élément de matière première.
 
-### Étape 1 — Matière première (avant toute interview)
+### Étape 1. Matière première
 
-Demander **successivement** ces 6 éléments et écrire le contenu brut **au fil** dans
-`00-Inbox/matiere-premiere/` (créer le dossier si besoin). **Écrire chaque fichier avant de demander
-le suivant.** Ne pas démarrer l'interview tant que les 6 fichiers ne sont pas écrits.
+Demander successivement ces six éléments et écrire chaque fichier dans `00-Inbox/matiere-premiere/`
+(créer le dossier si besoin) avant de demander le suivant. L'interview ne démarre pas tant que les
+six fichiers ne sont pas écrits.
 
-| # | Demande (ouverte, à adapter aux mots de l'utilisateur) | Fichier cible (canonique) |
+| # | Demande (ouverte, aux mots du dirigeant) | Fichier |
 |---|---|---|
 | 1 | Contexte court : rôle, taille d'équipe, charge, ce qui pèse aujourd'hui | `contexte.md` |
 | 2 | Thèmes mentaux actuels : les sujets qui structurent déjà sa tête | `themes-actuels.md` |
-| 3 | Où vivent ses notes aujourd'hui (Notion, OneNote, `.md` en vrac, Apple Reminders, Projects Claude…) | `notes-actuelles.md` |
-| 4 | Sources d'équipe / outils où vit l'information (Slack, Notion, DataDog, Gmail, GitHub, Granola, Outlook…) | `sources-equipe.md` |
-| 5 | Skills / MCP / slash commands / connecteurs déjà en place | `outillage-actuel.md` |
-| 6 | 3-5 chantiers transverses en cours (efforts en attente d'avancée) | `chantiers-en-cours.md` |
+| 3 | Où vivent ses notes aujourd'hui (Notion, OneNote, fichiers `.md`, Apple Reminders, Projects Claude) | `notes-actuelles.md` |
+| 4 | Outils où vit l'information d'équipe (Slack, Notion, DataDog, Gmail, GitHub, Granola, Outlook) | `sources-equipe.md` |
+| 5 | Skills, MCP, slash commands, connecteurs déjà en place | `outillage-actuel.md` |
+| 6 | Trois à cinq chantiers transverses en cours | `chantiers-en-cours.md` |
 
-**La demande est ouverte, le fichier cible reste canonique.** On ne fléchera jamais une question par
-outil (« montre-moi ton OneNote ») : on demande « où vivent tes notes ? » et on range la réponse dans
-`notes-actuelles.md`, que la stack nommée soit OneNote, Obsidian ou un tiroir de Post-it. Si
-l'utilisateur n'a rien pour un élément (ex. aucun outillage Claude en place), écrire le fichier avec
-« néant pour l'instant » et avancer.
+La demande est ouverte, le fichier cible reste canonique : demander « où vivent tes notes ? »,
+jamais « montre-moi ton OneNote », et ranger la réponse dans `notes-actuelles.md` quel que soit
+l'outil nommé. Sans matière pour un élément, écrire « néant pour l'instant » et avancer.
 
-### Étape 2 — Interview en 4 phases
+### Étape 2. Interview en quatre phases
 
-Une question à la fois, reformuler avant d'enchaîner. Consulter `references/cartographie-guide.md`
-pour le **superset d'Areas** et les **heuristiques d'adaptation** (quand proposer quoi).
+Consulter `references/cartographie-guide.md` pour le superset d'Areas, les heuristiques Resources
+et types de fiches, le réservoir de cas d'usage et la dérivation des compétences.
 
-**Phase 1 — Projects (3-4 questions).** Partir de `chantiers-en-cours.md`. Pour chaque chantier,
-valider qu'il a **une fin et un livrable** ; identifier deadline et parties prenantes. Si finalement
-c'est continu → le **reclasser en Area** (et le dire).
+**Phase 1, Projects (3 à 4 questions).** Partir de `chantiers-en-cours.md`. Pour chaque chantier,
+valider qu'il a une fin et un livrable, identifier deadline et parties prenantes. S'il est
+continu, le reclasser en Area et le dire.
 
-**Phase 2 — Areas (5-7 questions).** Partir de `themes-actuels.md`. Pour chaque thème, vérifier que
-c'est une **responsabilité continue** (pas un Project déguisé), puis creuser : **objets récurrents**,
-**fréquence** (≥ 1×/semaine pour qualifier d'Area), **outils actuels**. Ensuite, chercher les Areas
-qui **pourraient manquer** : piocher dans le superset du guide **uniquement celles qui résonnent**
-avec ce qui a été décrit, les **proposer pour vérification** — ne jamais dérouler toute la liste ni
-inventer une Area qui ne parle pas à l'utilisateur. Viser 4 à 7 Areas au total ; si on dépasse,
-**proposer de consolider** (deux thèmes proches fusionnent), mais ne jamais l'imposer.
+**Phase 2, Areas (5 à 7 questions).** Partir de `themes-actuels.md`. Pour chaque thème, vérifier
+qu'il s'agit d'une responsabilité continue, puis creuser : objets récurrents, fréquence (au moins
+hebdomadaire pour qualifier une Area), outils actuels. Chercher ensuite les Areas manquantes :
+piocher dans le superset du guide seulement celles qui font écho, les proposer pour vérification.
+Au-delà de 7, proposer de consolider sans l'imposer.
 
-> **Boucle de validation — obligatoire avant la Phase 3.** Produire une **ébauche partielle**
-> (Projects + Areas identifiés), la montrer, laisser l'utilisateur corriger / compléter / supprimer.
-> N'avancer qu'une fois validée.
+Boucle de validation obligatoire avant la Phase 3 : montrer une ébauche partielle (Projects et
+Areas), laisser corriger, compléter, supprimer. N'avancer qu'une fois validée.
 
-**Phase 3 — Resources (4-5 questions).** Quelles méthodos, trames, runbooks, ADR, frameworks,
-benchmarks réutilise-t-il d'un chantier à l'autre ? Quels documents de référence sont consultés sans
-bouger — y compris les docs bruts (CGV, contrats types, plaquettes, charte graphique) ? **Pour
-chaque document existant : où vit-il aujourd'hui** (un dossier Drive, une page Notion, un PDF qui
-circule par mail, un classeur papier) ? Le plan listera ces documents **avec leur emplacement
-actuel** — c'est ce qui permettra de les faire entrer un par un, au fil des besoins, sans migration
-en masse. À partir des réponses, proposer une **sous-arborescence** pour `30-Resources/` (2-4
-sous-dossiers) et **choisir avec l'utilisateur** la logique — **par type** (`methodologies/`,
-`runbooks/`, `adr/`, `benchmarks/`) ou **par domaine** — selon son volume et son usage réels (heuristique
-dans le guide). Prévoir `references-externes/` pour les renvois (jamais de copie).
+**Phase 3, Resources (4 à 5 questions).** Quelles méthodes, trames, runbooks, ADR, frameworks,
+benchmarks sont réutilisés d'un chantier à l'autre ? Quels documents de référence sont consultés
+tels quels, y compris les documents bruts (CGV, contrats types, plaquettes, charte graphique) ?
+Pour chaque document existant, noter où il vit aujourd'hui (dossier Drive, page Notion, PDF qui
+circule par mail, classeur papier) : le plan le liste avec son emplacement, ce qui permet de le
+faire entrer plus tard, un par un, sans migration en masse. Proposer ensuite une sous-arborescence
+de `30-Resources/` (2 à 4 sous-dossiers) et choisir avec le dirigeant la logique, par type ou par
+domaine (heuristique dans le guide). Prévoir `references-externes/` pour les renvois.
 
-**Phase 4 — Sources & compétences à construire (3-4 questions).**
-- **Sources existantes** : pour chaque source nommée (à l'Étape 1), **quelle zone du vault** elle
-  alimente, et si c'est une **migration** (le contenu entre dans le vault) ou un **renvoi** (la source
-  de vérité reste dehors → `references-externes/`). Noter aussi si un **connecteur est déjà branché**
-  (MCP/API joignable) ou si la source est juste *utilisée* sans connecteur : par défaut, on consigne
-  une source comme **« à brancher »** — `kickstart-vault` n'écrira `actif` dans `_Meta/sources.md` que
-  si le branchement est attesté. Qu'une source existe ne veut pas dire que son connecteur est en place.
-- **Compétences (skills) à construire** : un irritant chronophage donne une **compétence** (une
-  routine qu'on automatisera), **pas un rôle**. Les dériver des Top 5 irritants + des sources (voir
-  Étape 3 et le guide), pas d'un catalogue. Pour chacune : ce qu'elle **lit** (quelles Areas /
-  Resources) et ce qu'elle **écrit** (quelle zone, quel type de fiche).
-- **Regrouper en personas — étape de synthèse.** Les compétences ne sont pas une à une un assistant.
-  Une **persona** naît d'un **groupe de compétences qui partagent une même lentille** : mêmes zones
-  de lecture/écriture, même posture, même voix. **Par défaut, tout se range sous le Chief of Staff**
-  (la persona généraliste posée d'office par `kickstart-vault`). On n'isole une persona dédiée que si
-  une compétence réclame des **zones, une voix ou des garde-fous franchement distincts** (ex. une
-  compétence qui lit des sources sensibles 🔒 finance/RH mérite sa propre lentille). Présenter au
-  dirigeant : « voici tes compétences ; elles tiennent toutes sous ton Chief of Staff, sauf {X} qui
-  mérite sa persona à part parce que {raison de zone/voix} ».
+**Phase 4, Sources et compétences (3 à 4 questions).**
+- **Sources existantes.** Pour chaque source nommée à l'Étape 1 : quelle zone du vault elle
+  alimente, et s'il s'agit d'une migration (le contenu entre) ou d'un renvoi (la source de vérité
+  reste dehors, référencée dans `references-externes/`). Noter si un connecteur est branché (MCP
+  ou API joignable). Par défaut une source est « à brancher » ; `kickstart-vault` n'écrit `actif`
+  dans `_Meta/sources.md` que si le branchement est attesté.
+- **Compétences à construire.** Un irritant chronophage donne une compétence (une routine
+  automatisée), pas un rôle. Les dériver des Top 5 irritants (Étape 3) et des sources, jamais d'un
+  catalogue. Pour chacune, noter ce qu'elle lit (Areas, Resources, source) et ce qu'elle écrit
+  (zone, type de fiche).
+- **Regroupement en personas.** Appliquer la règle de `references/plan-vault-contract.md` : tout
+  sous le Chief of Staff par défaut, une persona à part seulement si zones, voix ou garde-fous
+  distincts. Présenter : « voici tes compétences ; elles tiennent sous ton Chief of Staff, sauf
+  {X} qui mérite sa persona parce que {raison} ».
 
-> **Boucle de validation — obligatoire en Phase 4, volet par volet.** Ne jamais clore cette phase
-> sur une synthèse unique validée d'un bloc. Présenter et faire valider **séparément, dans l'ordre** :
-> (1) la correspondance sources → zones (migration ou renvoi), (2) les compétences pressenties,
-> (3) le regroupement en personas. Un volet à la fois, validation explicite avant de passer au
-> suivant — exactement comme la boucle Projects + Areas avant la Phase 3.
+Boucle de validation obligatoire, volet par volet et dans l'ordre : la correspondance entre sources
+et zones, puis les compétences, puis le regroupement en personas. Validation explicite avant
+chaque volet suivant, jamais une synthèse validée d'un bloc.
 
-### Étape 3 — Cas d'usage prioritaires (irritants + signal d'impact)
+### Étape 3. Cas d'usage prioritaires
 
-En clôture, demander les **5 choses qui bouffent le plus de temps** aujourd'hui. Chaque irritant est
-la matière directe d'une **compétence (skill)** à construire — pas d'un rôle (le regroupement en
-personas se fait en Phase 4).
+Demander les cinq choses qui lui coûtent le plus de temps aujourd'hui. Chaque irritant est la
+matière d'une compétence, pas d'un rôle. Pour chacun, capter le signal d'impact : fréquence (par
+semaine ou par mois), temps unitaire à la main, répétabilité (même tâche ou cas par cas),
+projetable à l'équipe (combien de personnes). Une tâche au cas par cas reste un irritant, pas une
+automatisation ; le dire.
 
-Cette étape ne **liste** pas seulement : elle **priorise par impact**. Pour chaque irritant, creuser
-— une question à la fois, jamais un questionnaire — le **signal d'impact** :
-- **fréquence** (combien de fois par semaine / par mois ?),
-- **temps unitaire** (combien de temps à la main, à chaque fois ?),
-- **répétable ?** — est-ce la *même* tâche à chaque fois, ou du cas-par-cas ? **Ne retenir comme
-  piste chiffrable que le vraiment répétable** ; une tâche au cas-par-cas reste un irritant mais pas
-  une automatisation crédible (et le dire renforce la crédibilité).
-- **projetable à l'équipe ?** — d'autres personnes font-elles la même tâche (× N) ?
+Si le dirigeant sèche, proposer deux ou trois cas du réservoir du guide (« beaucoup de dirigeants
+récupèrent du temps sur {X}, {Y} ; l'un de ces postes te parle ? »). Le plan en tire une
+estimation d'heures libérées par semaine selon la règle de chiffrage de
+`references/plan-vault-contract.md`. Sortie : des cas d'usage priorisés par impact.
 
-De là, le plan portera une **estimation `~h/sem libérées` marquée « à valider »** (simple arithmétique
-fréquence × temps × part automatisable — **jamais un chiffre inventé** ; pas de réponse → « à creuser
-en S1 »). Fourchettes basses par défaut. **On capte le temps, pas un coût ni un prix.**
+### Étape 3bis. Profil de ton
 
-**Inspiration (si ça résonne).** Si le dirigeant sèche ou reste vague, lui proposer **2-3 cas du
-réservoir** de `references/cartographie-guide.md` (« beaucoup de dirigeants récupèrent du temps sur
-{X}, {Y} — l'un de ces postes te parle ? ») pour faire émerger les automatisations qu'il ne nomme pas
-spontanément. **Réservoir, pas checklist** : on ne déroule pas la liste, on ne profile pas, on
-propose seulement ce qui fait écho à son activité.
+Régler comment les assistants du vault s'adresseront au dirigeant. Le résultat va dans la section
+« Profil de ton » du plan, que `kickstart-vault` reporte dans le `CLAUDE.md` racine, hérité par
+toutes les personas. Présenter les quatre curseurs d'un coup et laisser le dirigeant se placer
+avec ses propres mots :
 
-But : à la sortie, des **cas d'usage priorisés par impact** — utiles au dirigeant pour savoir quoi
-automatiser d'abord, et chiffrables.
+- **Vocabulaire** : parle-moi métier, zéro jargon ni nom de fichier, ou les termes techniques sont OK.
+- **Longueur** : va à l'essentiel, listes courtes, ou développe et explique le pourquoi.
+- **Décision** : propose et je valide, ou décide et agis puis dis-moi, ou informe-moi seulement.
+- **Registre** : sobre et factuel ou chaleureux ; tutoiement ou vouvoiement ; acquiesce ou challenge-moi.
 
-### Étape 3bis — Profil de ton (passe courte)
+Le curseur Vocabulaire dit comment on parle, jamais ce qu'on construit. Reformuler le placement en
+une ligne. Sans préférence, le noter : `kickstart-vault` posera un défaut prudent marqué « à valider ».
 
-Avant d'écrire le plan, **régler comment les assistants du vault s'adresseront au dirigeant**. Sans
-cette passe, le ton est posé au hasard et dérive vers le jargon (ce qui rend un assistant illisible
-pour qui ne veut pas de tuyauterie, et trop bavard pour qui la maîtrise). Le résultat ira dans la
-section *Profil de ton* du plan, puis dans le `CLAUDE.md` racine du vault — **hérité par toutes les
-personas**.
+### Étape 4. Écrire `00-Inbox/plan-vault.md`
 
-Présenter les **4 curseurs** d'un coup (calibration rapide, pas une question lourde par curseur) et
-laisser le dirigeant se placer avec ses propres mots :
-
-- **Vocabulaire** — *parle-moi métier, zéro jargon ni nom de fichier* ↔ *les termes techniques sont OK*.
-- **Longueur** — *va à l'essentiel, listes courtes* ↔ *développe, explique le pourquoi*.
-- **Décision** — *propose, je valide* ↔ *décide et agis, dis-moi après* ↔ *informe-moi seulement*.
-- **Registre** — *sobre et factuel* ↔ *chaleureux* · *tutoiement / vouvoiement* · *acquiesce* ↔ *challenge-moi*.
-
-> **Ce n'est PAS un profilage.** Le curseur Vocabulaire dit *comment on parle*, jamais *ce qu'on
-> construit* : la structure du vault reste dérivée des réponses métier (cf. « généraliste, jamais
-> profilé », plus haut). Un DG conseil et un CTO se placeront différemment sur Vocabulaire — et c'est
-> exactement le but : la même question, deux réponses, deux tons. On ne coche pas « tech / non-tech ».
-
-Reformuler le placement retenu en une ligne, puis l'écrire dans la section *Profil de ton* du plan
-(Étape 4). Si le dirigeant n'a pas de préférence, le noter : `kickstart-vault` posera un défaut prudent
-(métier sans jargon, concis, propose-je-valide, sobre + tutoiement) marqué « à valider ».
-
-### Étape 4 — Écrire `00-Inbox/plan-vault.md`
-
-Rédiger le plan complet en **respectant à la lettre** le gabarit de `references/plan-vault-contract.md`.
-Ce gabarit est le **contrat d'interface** : `kickstart-vault` lit ce fichier pour tout générer. Toute
-section manquante ou mal nommée casse l'étape suivante. Détailler en particulier la **Gouvernance /
-isolation** (périmètre, données sensibles 🔒, isolation) — à **synthétiser depuis les signaux** même
-si l'utilisateur n'en a pas parlé spontanément (sources RH, contrats, finances → marquer 🔒).
+Rédiger le plan selon le gabarit de `references/plan-vault-contract.md`, sections et titres
+compris : `kickstart-vault` lit ce fichier pour tout générer. Synthétiser la section Gouvernance
+et isolation depuis les signaux (sources RH, contrats, finances, marqués 🔒) même si le dirigeant
+n'en a pas parlé.
 
 ### Handoff
 
-Une fois `plan-vault.md` écrit, le résumer en quelques lignes (X Areas, Y Projects, la logique
-Resources retenue, les compétences pressenties et leur regroupement en personas) et **pointer la
-suite explicitement** :
-
-> « Ton plan est prêt dans `00-Inbox/plan-vault.md`. Pour le matérialiser en vault réel (arborescence,
-> Schema, gouvernance, CLAUDE.md, hooks), lance **`kickstart-vault`**. »
-
----
+Résumer le plan en quelques lignes (nombre d'Areas et de Projects, logique Resources, compétences
+et regroupement en personas) et pointer la suite : « Ton plan est prêt dans
+`00-Inbox/plan-vault.md`. Pour le matérialiser en vault réel (arborescence, Schema, gouvernance,
+CLAUDE.md, hooks), lance `kickstart-vault`. »
 
 ## Garde-fous
 
-- **Une question à la fois**, jamais un questionnaire en bloc. Reformuler systématiquement avant
-  d'enchaîner. **Jamais deux sujets ou deux domaines regroupés dans la même question, même « pour
-  accélérer » en fin de phase** — si le temps presse, on raccourcit la reformulation, pas la
-  granularité des questions.
-- **N'invente pas.** Si l'utilisateur n'a pas la réponse, écrire « à creuser en S1 » et passer.
-- **Surveille le piège Areas-as-Projects** à chaque phase.
-- **Écris uniquement dans `00-Inbox/`** (le plan + `matiere-premiere/`). Ne crée aucune fiche PARA,
-  aucun dossier d'Area/Project, aucune persona, aucun skill.
-- **Ne touche pas** à `.claude/` ni à `_Meta/`. Si tu les vois, laisse-les tranquilles.
-- **Respecte le contrat de sortie** (`references/plan-vault-contract.md`) — c'est ce qui garantit que
-  `kickstart-vault` saura lire le plan.
+- **Une question à la fois.** Reformuler la réponse avant d'enchaîner ; creuser si elle est floue.
+  Ne pas regrouper deux sujets ou deux domaines dans la même question, même pour accélérer en fin
+  de phase : si le temps presse, raccourcir la reformulation, pas la granularité des questions.
+- **Écrire uniquement dans `00-Inbox/`** (le plan et `matiere-premiere/`). Ne pas toucher à
+  `.claude/` ni à `_Meta/`.
+
+## Références
+
+- `references/cartographie-guide.md` : superset d'Areas, heuristiques Resources, types de fiches et
+  gouvernance, réservoir de cas d'usage, dérivation des compétences.
+- `references/plan-vault-contract.md` : gabarit du plan, règles de remplissage, règle de chiffrage,
+  règle de regroupement en personas.

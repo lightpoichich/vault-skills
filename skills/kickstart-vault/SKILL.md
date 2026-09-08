@@ -1,428 +1,189 @@
 ---
 name: kickstart-vault
 description: >-
-  Scaffolde un vault Obsidian PARA à partir d'un `plan-vault.md` (la sortie de l'interview
-  de cartographie) : génère l'arborescence, `_Meta/Schema.md`, `_Meta/governance.md`, le
-  `CLAUDE.md` racine et les shells d'Areas/Projects en *generate-don't-write* (zéro contenu
-  inventé). Utilise ce skill dès que l'utilisateur a un `plan-vault.md` (souvent
-  `00-Inbox/plan-vault.md`) et veut construire, initialiser, scaffolder ou « monter » son
-  vault, sa structure PARA ou son « second cerveau » — ou dit « j'ai mon plan, crée la
-  structure », « build my vault », « initialise le vault », « génère l'arborescence ».
-  Autoportant et path-agnostique : fonctionne in-place dans n'importe quel dossier vault.
-  NE PAS l'utiliser pour mener l'interview de cartographie (qui produit le plan-vault), ni
-  pour créer une persona/agent ou démarrer un projet/client : il matérialise un plan-vault
-  existant, rien d'autre.
+  Scaffolde un vault Obsidian PARA à partir du plan-vault.md produit par interview-vault :
+  arborescence, Schema, governance, CLAUDE.md racine, fiches vides d'Areas et de Projects, persona
+  Chief of Staff avec brief-du-jour. S'utilise quand l'utilisateur a un plan-vault.md et dit « crée
+  la structure », « initialise le vault », « génère l'arborescence », « monte mon second cerveau ».
+  Pour mener l'interview qui produit le plan, voir interview-vault.
 ---
 
 # Kickstart Vault
 
-Transforme un **plan** de vault en **vault réel**. C'est la suite directe du skill
-`interview-vault` : cette interview a produit `00-Inbox/plan-vault.md` (+ de la matière
-première dans `00-Inbox/matiere-premiere/`) ; ce skill **exécute** ce plan.
+Ce skill exécute le `plan-vault.md` produit par `interview-vault` : il pose le squelette du vault dans
+le dossier courant, à partir des gabarits de `assets/`, sans inventer de contenu. Un vault vide mais
+structuré est le résultat attendu ; le contenu entre ensuite par l'usage. Les gabarits deviennent des
+fichiers du vault du dirigeant, lus à chaque session : ils ne portent que des règles durables.
 
-Le but n'est pas de remplir le vault — c'est d'en poser le **squelette propre et cohérent**
-sur lequel l'usage va se greffer. Un vault scaffolté ce skill doit pouvoir tenir des années :
-conventions homogènes, gouvernance posée d'emblée, et **rien d'inventé**.
+## Langue du dirigeant
 
-## Pourquoi ces partis pris (à garder en tête tout du long)
+- Le curseur Vocabulaire du profil de ton du plan fixe la quantité de structure interne nommée
+  (PARA, `_Meta`, frontmatter, slug, chemins). Sans profil, n'en nommer aucune.
+- Les termes internes du skill (shell, bundle, generate-don't-write, idempotent, asset, scaffold)
+  servent au modèle et ne sont pas répétés au dirigeant.
+- Un terme de structure conservé est expliqué une fois, puis réutilisé.
+- Narrer le résultat et la valeur, pas l'étape technique en cours.
+- Aucun jargon dans le nom d'un fichier livré (`compte-rendu-installation.md`).
 
-- **Generate-don't-write.** On génère des *shells* (frontmatter + titres de sections + une
-  ligne de but), jamais du contenu métier. Un vault à moitié vide mais structuré est sain ;
-  un vault rempli de fausses fiches (faux incidents, faux ADR, faux comptes-rendus) est un
-  mensonge qui pourrit la confiance. *Empty-but-structured beats full-but-fake.*
-- **Chaque dossier a un consommateur.** On ne crée pas de structure « au cas où » : chaque
-  Area et chaque Project listés dans le plan reçoivent une fiche-shell que des agents pourront
-  lire et écrire, et vers laquelle les wikilinks résolvent.
-- **Gouvernance avant la donnée.** On pose `_Meta/governance.md` (périmètre, ce que les
-  agents peuvent lire/écrire, confidentialité 🔒, renvoi-jamais-copie) **avant** tout contenu.
-  Sur un vault qui touchera du sensible, c'est le garde-fou qui protège toute la suite.
-- **Le plan fait foi.** L'arborescence, les Areas, les Projects, les conventions viennent du
-  `plan-vault.md` de **cet** utilisateur. On n'impose pas une structure préfabriquée.
-- **Autoportant + in-place.** Ce skill ne dépend d'aucun vault tiers : ses gabarits sont dans
-  `assets/`. Il scaffolde le **dossier courant** (ou celui qu'on lui donne). Il marche pour
-  n'importe quel élève, sur sa machine, sans rien d'extérieur.
-- **Non destructif.** Si des fichiers/dossiers existent déjà (ré-exécution), on **complète**,
-  on n'écrase jamais sans demander.
-
-## Comment parler au dirigeant (langue)
-
-L'interlocuteur n'est **pas forcément un développeur**, et c'est le **Profil de ton du plan** (curseur
-*Vocabulaire*) qui dit jusqu'où aller — pas une supposition. À défaut de profil : zéro tuyauterie.
-Deux tiers, à ne pas confondre.
-
-**1. Toujours banni, quel que soit le profil** (même un CTO ne veut pas ça) :
-- **Les anglicismes gratuits.** Bannir : *scaffold(er), bundle, alias, quick win, input, deal, mapping,
-  shell, lazy-pull, generate-don't-write*. Dire plutôt : installer/monter/poser, ensemble prêt-à-
-  l'emploi, raccourci (de lancement), gain rapide, matière/informations, affaire, correspondance,
-  fiche vide structurée, « au fil des besoins », « on pose le cadre, pas le contenu ».
-- **Les termes internes de ce SKILL** (*shell, bundle, generate-don't-write, idempotent, skill caché,
-  asset figé*) sont pour toi, le modèle — **jamais répétés** au dirigeant. Ce sont eux qui ont fait
-  déraper la narration testée (« je copie le **bundle figé**, y compris le **skill caché** » ; « l'alias
-  `cos`, chemin absolu, **idempotent** »).
-- **Pas de jargon dans un NOM de fichier livré** (`compte-rendu-installation.md`, pas `scaffold-report.md`).
-
-**2. Calibré sur le curseur *Vocabulaire* du plan** — combien de **structure interne** tu surfaces :
-PARA, `_Meta`, `Schema`, `frontmatter`, `slug`, chemins de fichiers, « couche ». Au profil *zéro
-jargon* (défaut), tu **n'en nommes aucun** ; au profil *termes techniques OK*, tu peux. Dans tous les
-cas : un terme de structure conservé = **expliqué une fois** puis réutilisé (`frontmatter` = l'en-tête
-d'une note ; `wikilink` = un lien `[[…]]` ; `persona` = un assistant spécialisé).
-
-**Narrer le résultat et la valeur, pas l'étape technique en direct.** Le dirigeant n'a pas besoin du
-commentaire du chantier. Avant → après (profil zéro jargon) :
-- ❌ « Maintenant la **couche `_Meta`** — le contrat qui tient le vault. Je génère le **Schema**. »
-  → ✅ « Je pose les règles qui garderont ton espace cohérent dans le temps. »
-- ❌ « **Squelette PARA posé** (generate-don't-write : shells structurés) : **6 Areas** en `{slug}/{slug}.md`. »
-  → ✅ « Ton espace est en place : tes 6 domaines de responsabilité, prêts à se remplir au fil de l'usage. »
-- ❌ « Je pose l'**alias terminal `cos`** (chemin absolu, idempotent). »
-  → ✅ « J'ajoute un raccourci : tu lanceras ton assistant en tapant `cos`. »
+Anglicismes à remplacer et exemples avant/après : `references/langue-dirigeant.md`.
 
 ## Entrées attendues
 
-1. **`plan-vault.md`** — requis. Par défaut `00-Inbox/plan-vault.md` dans le dossier courant.
-   S'il est ailleurs, demander le chemin. **S'il n'existe pas**, ne pas inventer : indiquer
-   à l'utilisateur de lancer d'abord le skill **`interview-vault`** (l'interview de cartographie
-   qui produit ce plan).
-2. **`00-Inbox/matiere-premiere/`** — optionnel mais précieux. Les fichiers bruts de
-   l'interview (`contexte.md`, `themes-actuels.md`, `notes-actuelles.md`, `sources-equipe.md`,
-   `outillage-actuel.md`, `chantiers-en-cours.md`). On les **lit pour le contexte** (remplir
-   le `CLAUDE.md` racine, calibrer la gouvernance), jamais pour les recopier en fiches.
-
-Le format exact d'un `plan-vault.md` et des fichiers de matière première est décrit dans
-`references/plan-vault-format.md` — **le lire avant de parser** si le plan dévie du gabarit
-attendu.
+- `plan-vault.md`, requis, par défaut `00-Inbox/plan-vault.md` du dossier courant. S'il est
+  ailleurs, demander le chemin. S'il n'existe pas, ne rien scaffolder : indiquer au dirigeant de
+  lancer `interview-vault`.
+- `00-Inbox/matiere-premiere/`, optionnel : les fichiers bruts de l'interview, lus pour le contexte
+  (gouvernance, encart de contexte du compte-rendu), jamais recopiés en fiches.
+- Le format des deux entrées et les défauts à appliquer quand une section manque :
+  `references/plan-vault-format.md`.
 
 ## Procédure
 
 ### 1. Localiser et lire les entrées
-- Trouver le `plan-vault.md` (cwd `00-Inbox/` par défaut). Confirmer que le dossier courant
-  est bien la racine du vault à scaffolder.
-- Lire le plan **en entier**. Lire `00-Inbox/matiere-premiere/*` s'il existe.
-- Repérer les sections du plan : *Arborescence proposée*, *Projects*, *Areas*, *Resources*,
-  *Conventions frontmatter*, *Mapping sources*, *Compétences à construire (skills) → personas*,
-  *Top 5 irritants*, et une éventuelle section *Gouvernance / isolation*.
+- Confirmer que le dossier courant est la racine du vault à scaffolder ; noter son chemin absolu
+  (`VAULT_ABS`).
+- Lire le plan en entier, puis `00-Inbox/matiere-premiere/*` s'il existe.
+- Repérer les sections du plan par leur sens, pas par leur position (table dans
+  `references/plan-vault-format.md`).
 
-### 2. Passe de cohérence (rapide, non bloquante)
-- Vérifier le piège **Area-as-Project** : une « Area » avec une date de fin / un livrable
-  unique est probablement un Project (et vice-versa). Le **signaler** à l'utilisateur, ne pas
-  trancher d'autorité — le plan reste la source de vérité.
-- Si une section attendue manque (ex. pas de conventions frontmatter, pas de gouvernance),
-  prévoir un **défaut raisonnable** (cf. assets) et le **marquer** comme « généré par défaut,
-  à valider » dans le rapport final. Ne jamais bloquer.
+### 2. Passe de cohérence
+- Signaler une Area qui a une date de fin ou un livrable unique (probablement un Project), et
+  l'inverse. Le dirigeant tranche ; le plan reste la source de vérité.
+- Si une section attendue manque, appliquer le défaut de `references/plan-vault-format.md` et le
+  marquer « généré par défaut, à valider » dans le compte-rendu. Ne pas bloquer.
 
-### 3. Créer l'arborescence (exactement celle du plan)
+### 3. Créer l'arborescence
 - Reproduire le bloc *Arborescence proposée* du plan : `10-Projects/`, `20-Areas/{areas}`,
-  `30-Resources/{sous-zones}`, `40-Archive/`, `_Meta/`, et `00-Inbox/` (déjà là).
-- Ajouter `_personas/` (dossier des personas). Il **ne reste pas vide** : l'étape 10bis y pose une
-  persona **Chief of Staff** par défaut (la lentille généraliste, livrée avec le skill
-  `brief-du-jour`) — un exemple amorcé que le dirigeant lance tout de suite, et qu'il duplique
-  ensuite via `kickstart-persona` pour ses autres rôles.
-- Tous les noms en **kebab-case**.
+  `30-Resources/{sous-zones}`, `40-Archive/`, `_Meta/` ; `00-Inbox/` existe déjà.
+- Ajouter `_personas/` ; l'étape 12 y pose la persona Chief of Staff.
+- Chaque Area et chaque Project du plan reçoit une fiche (étapes 7 et 8) ; aucun dossier « au cas
+  où ».
+- Tous les noms en kebab-case.
 
-### 4. Générer la couche `_Meta` (la première qui compte)
-- **`_Meta/Schema.md`** — depuis `assets/schema-template.md`, en ne gardant que les types
-  présents dans la section *Conventions frontmatter* du plan (project, area, meeting, adr,
-  brief, incident, draft, resource, moc…) et en reprenant leurs champs. C'est le contrat qui
-  garde le vault cohérent dans le temps. **La liste du gabarit n'est pas fermée** : si le plan
-  déclare un **type métier** absent du gabarit (ex. `reporting`, `dossier`, `veille`), le **reprendre
-  tel quel** — ne jamais l'écarter au motif qu'il n'est pas pré-rédigé. Lui donner un bloc minimal
-  (`type` + `tags` + les champs nommés au plan). Ne pas dupliquer un type sous un autre nom.
-- **`_Meta/governance.md`** — depuis `assets/governance-template.md`. Reprendre la section
-  *Gouvernance / isolation* du plan si elle existe ; sinon la **synthétiser** depuis les
-  signaux (données sensibles de la matière première). Ce fichier pose des **règles durables**,
-  pas un instantané : périmètre du vault, convention 🔒 confidentiel, **renvoi-jamais-copie**,
-  refus par défaut sur le sensible. **Ne nommer AUCUN agent dans ce fichier** — ni tableau, ni
-  liste, ni parenthèse type « (agents prévus : …) ». Toute mention d'agents se périme dès qu'on
-  en ajoute/retire un. Le périmètre lecture/écriture **concret** de chaque agent vit dans son
-  propre `_personas/{slug}/CLAUDE.md` (source de vérité, mise à jour là où l'agent vit) ;
-  `governance.md` ne fait que **pointer** vers cette règle, sans citer d'agent.
-- **`_Meta/sources.md`** — depuis `assets/sources-template.md`. C'est le **registre des connecteurs**
-  du dirigeant : la table que les skills (`brief-du-jour`, `import-note`, et tout skill généré
-  ensuite) lisent pour savoir d'où tirer leurs informations. **Toujours poser la ligne `vault`** (socle,
-  toujours joignable). Pour chaque source nommée dans le *Mapping sources* du plan, ajouter une ligne
-  (`type` cloud/local, `statut`, `usage`) ; une source sensible passe en `renvoi 🔒`.
-  - **`statut` = `à brancher` par défaut.** Ne poser `actif` **que si** le plan atteste explicitement
-    que le connecteur est **déjà branché et joignable**. Qu'une source soit *nommée* (l'activité s'en
-    sert) ne veut pas dire que son **connecteur** (MCP, API) existe dans la session : `actif` signifie
-    **connexion vérifiée**, pas « source qui existe ». Au moindre doute → `à brancher`. Un registre qui
-    ment (`actif` pour un connecteur fantôme) casse la cascade des skills (« déclaré + joignable →
-    l'utiliser » devient faux) ; un `à brancher` trop prudent coûte juste un collage manuel que le
-    dirigeant lève en passant la ligne à `actif` une fois branché. On erre **du côté sûr**.
-  - **Generate-don't-write** : n'inscrire aucune source que le plan ne nomme pas. Si le plan n'a pas de
-    *Mapping sources*, ne poser que la ligne `vault` et le signaler dans le rapport (le dirigeant — ou un
-    skill, à la première exécution — complétera quand il branchera ses connecteurs).
-  - **Colonne `accès` optionnelle** (heuristique « comment requêter étroit » : `scoper par date`,
-    `filtrer par projet`…). La laisser **vide** (`—`) sauf si le plan atteste une heuristique claire :
-    elle se remplit par l'usage, jamais par invention, et ne porte **jamais le schéma** de la source.
-- **`_Meta/derivation.md`** — depuis `assets/derivation-template.md`. C'est le **« pourquoi »** du
-  vault : il trace sa forme (PARA, *ses* Areas/Projects, ses règles d'écriture, le CoS par défaut) à
-  ce que le dirigeant a décrit à la cartographie. Là où Schema/governance/sources disent **ce que sont**
-  les règles, lui dit **pourquoi** elles sont là — ce qui rend l'espace explicable au dirigeant et
-  guide ses choix le jour où il voudra le faire évoluer. **Generate-don't-write tient toujours** : la
-  rationale *universelle* (pourquoi PARA, pourquoi le vide-structuré) explique le **système**, elle
-  n'invente aucun contenu métier ; les parties *spécifiques* ({tes domaines}, {ta posture 🔒}) sont
-  **reprises du plan**, jamais inventées — si le plan ne dit rien sur un point, laisser le placeholder
-  ou retirer la ligne, ne pas broder. **Langage simple, calibré sur le curseur *Vocabulaire*** comme
-  tout le reste : ce fichier est lu par le dirigeant, son but est pédagogique — zéro jargon interne.
-  Le principe : **le vault embarque sa propre justification**, tenue **courte** à dessein. À la fin du
-  fichier, la section *Faire évoluer* renvoie aux bonnes compétences (`nouveau-projet`, `gerer-area`,
-  `kickstart-persona`, `interview-vault`).
+### 4. Générer la couche `_Meta`
+Cette couche se pose avant toute fiche.
+- `_Meta/Schema.md` depuis `assets/schema-template.md`. Garder les types de la section *Conventions
+  frontmatter* du plan et ceux que la section *Compétences à construire* lit ou écrit. Les types
+  d'outillage `moc`, `note`, `brief`, `draft` et `audit` restent toujours : les fichiers `_Meta/`,
+  le compte-rendu, `brief-du-jour`, le sas `_drafts/` et `audit-vault` les utilisent. Un type métier
+  absent du gabarit (`incident`, `reporting`, `veille`) est repris tel quel avec un bloc minimal :
+  `type`, `tags` et les champs nommés au plan. Ne pas dupliquer un type sous un autre nom.
+- `_Meta/governance.md` depuis `assets/governance-template.md`. Reprendre la section *Gouvernance /
+  isolation* du plan ; sinon la synthétiser depuis les signaux de sensibilité de la matière
+  première. Ne nommer aucun agent : le périmètre de chaque agent vit dans son
+  `_personas/{slug}/CLAUDE.md`.
+- `_Meta/sources.md` depuis `assets/sources-template.md`. Poser la ligne `vault`, puis une ligne par
+  source nommée dans le *Mapping sources* du plan (`type`, `statut`, `usage`, `accès`). Aucune source
+  que le plan ne nomme pas ; sans *Mapping sources*, la ligne `vault` seule, signalée dans le
+  compte-rendu.
+  - `statut` : `à brancher` par défaut. `actif` seulement si le plan atteste que le connecteur est
+    branché et joignable, car un `actif` faux casse la cascade des skills. `renvoi 🔒` pour une
+    source sensible.
+  - `accès` : vide sauf heuristique explicite au plan ; jamais le schéma de la source.
+- `_Meta/derivation.md` depuis `assets/derivation-template.md`. Les parties spécifiques (domaines,
+  projets, posture 🔒) sont reprises du plan ; sans information, retirer la ligne ou laisser le
+  placeholder. Langage calibré sur le curseur Vocabulaire : le dirigeant le lit.
 
-### 5. Générer le `CLAUDE.md` racine (mécanique du vault, pas la bio)
-- Depuis `assets/vault-claude-template.md`. Court. Il porte la **mécanique du vault** : une ligne
-  de périmètre (reprise du plan), la carte du vault, les conventions (kebab-case, wikilinks
-  **+ comment les suivre**, frontmatter), la règle **generate-don't-write**, et les `@imports`
-  de `_Meta/Schema.md`, `_Meta/governance.md` et `_Meta/sources.md` — les **contrats** que l'agent
-  doit suivre à chaque session. Ces `@imports` restent **relatifs** (`@_Meta/…`, tels que dans le
-  gabarit) : lancés depuis la racine du vault, ils sont internes au cwd et chargés sans rien demander.
-  Lancés depuis un sous-dossier (`_personas/{slug}/`, dossier de travail), Claude Code les tient pour
-  « externes » et les ignore **en silence** tant que ce dossier n'est pas approuvé dans `~/.claude.json`
-  (dialogue « Allow external CLAUDE.md file imports? », jamais affiché en mode `-p`, SDK ou Paseo ;
-  vérifié sur 2.1.259 le 2026-09-08). C'est le hook `vault-approve-imports.sh` du plugin qui pose cette
-  approbation (voir 5bis et 10bis). Un chemin absolu via symlink (`@~/vault/…`) serait externe même
-  depuis la racine : ne pas en mettre. **Ne PAS `@importer` `_Meta/derivation.md`** : c'est le *pourquoi*
-  (pédagogique, consulté à la demande), pas un contrat opérationnel — l'imposer à chaque session
-  coûterait des tokens pour rien. Il est seulement **listé** dans la carte du vault.
-- **Section `## Ton`** : remplir les 4 curseurs depuis la section *Profil de ton* du plan, en
-  reprenant les mots du dirigeant. **Si le plan ne l'a pas** (passe de ton non faite), poser le
-  **défaut prudent** — *métier sans jargon · concis · propose, je valide · sobre + tutoiement,
-  acquiesce* — et le marquer « généré par défaut, à valider » dans le compte-rendu (étape 11). Ce
-  ton est hérité par le CoS et toute persona ; c'est ce qui calibre la narration (voir la règle de
-  langue ci-dessous). C'est la **seule** part « personne » que porte ce fichier, à dessein.
-- **Ne pas** y mettre la bio/identité de l'utilisateur (rôle, taille d'équipe, enjeux perso) :
-  ça change peu et c'est valable partout → sa place est le `~/.claude/CLAUDE.md` **global**,
-  chargé dans toutes ses sessions. Le CLAUDE.md du vault décrit **le vault, pas la personne**.
-  (Le rapport, étape 11, recommandera de verser ce contexte au global.)
-- **Carte au niveau PARA strict** : la carte du vault liste les **dossiers de premier niveau**
-  (`00-Inbox/`, `10-Projects/`, `20-Areas/`, `30-Resources/`, `40-Archive/`, `_Meta/`,
-  `_personas/`) + la nomenclature `{slug}/{slug}.md`. **N'énumère PAS les sous-dossiers
-  spécifiques** (ex. pas de « `briefs/` pour les briefs matinaux ») : ils naissent et changent
-  avec l'usage, les inscrire dans la carte la fait rôtir. La ligne **Périmètre** ne porte que le
-  **scope** (ce que couvre le vault), pas le rôle/identité.
+### 5. Générer le `CLAUDE.md` racine
+- Depuis `assets/vault-claude-template.md` : périmètre (le scope repris du plan, pas le rôle), carte
+  du vault, conventions, règle « on pose le cadre, pas le contenu », garde-fous, imports.
+- Carte au niveau PARA strict : dossiers de premier niveau et nomenclature `{slug}/{slug}.md`,
+  aucun sous-dossier spécifique (ils changent avec l'usage).
+- Section `## Ton` : quatre curseurs depuis le *Profil de ton* du plan, avec les mots du dirigeant.
+  Pour chaque placeholder `{a | b}` du gabarit, ne garder qu'une valeur. Sans profil, défaut de
+  `references/plan-vault-format.md`, marqué « à valider ». Le gabarit tutoie ; passer au
+  vouvoiement si le profil le demande.
+- Pas de bio (rôle, équipe, enjeux) : sa place est le `~/.claude/CLAUDE.md` global, le compte-rendu
+  le recommande.
+- `@imports` relatifs (`@_Meta/…`) de `Schema.md`, `governance.md` et `sources.md`, tels que dans le
+  gabarit ; pas de chemin absolu via symlink ; ne pas importer `derivation.md`, consulté à la
+  demande. Mécanique et approbation des imports : `references/imports-et-hooks.md`.
 
-### 5bis. Garde-fous (hooks) : rien à installer, un réglage à poser
-Les quatre hooks **déterministes** qui maintiennent le vault sain, chargé et à jour dans le temps sont **livrés par le
-plugin lui-même** (`hooks/hooks.json` à la racine du plugin) : ils sont actifs dans toute session
-Claude Code où le plugin est activé, **quel que soit le cwd**, et se mettent à jour avec lui. Ce sont
-la *couche garantie* qui complète la *couche advisory* du `CLAUDE.md`/`Schema.md` (que le modèle
-*essaie* de suivre) : eux s'exécutent **quoi que le modèle décide**, sur des événements du cycle de
-vie. Hors d'un vault (aucun `_Meta/` en remontant depuis le cwd ou le fichier écrit), ils sont
-**no-op, silencieux et instantanés**.
-- **Ne rien copier dans `{vault}/.claude/hooks/`, ne rien ajouter au `settings.json`** — un vault
-  hérité d'une version < 2.7 qui porte encore `vault-health.sh` / `vault-note-guard.sh` en local les
-  fait tourner **deux fois** : proposer de retirer les entrées locales et les scripts.
-- Poser `{vault}/_Meta/hooks.conf` depuis `assets/hooks/hooks.conf` (copie telle quelle, **sans rien
-  décommenter** : les exclusions sont un choix d'usage, pas de scaffold — `EXCLUDE=` sert quand une
-  zone reçoit des données opérationnelles importées qu'il ne faut ni stamper ni compter).
-- Dépendances : `bash` + `python3` (présents sur WSL/macOS), pas de `jq`.
+### 6. Poser les réglages des garde-fous
+Les quatre hooks (bilan de santé, garde-fou d'écriture, approbation des imports, rappel de sync)
+sont livrés par le plugin et actifs partout ; détail et réglages dans `references/imports-et-hooks.md`.
+- Ne rien copier dans `{vault}/.claude/hooks/` ni ajouter à `settings.json`. Si le vault porte encore
+  des scripts locaux (`vault-health.sh`, `vault-note-guard.sh`), proposer de les retirer : ils
+  tourneraient deux fois.
+- Copier `assets/hooks/hooks.conf` vers `{vault}/_Meta/hooks.conf` tel quel, sans rien décommenter.
+- Proposer `assets/hooks/vault-git-sync.sh` seulement si le plan mentionne un vault partagé avec une
+  machine sans écran.
 
-Ce que font les hooks (à résumer à l'utilisateur, en non-tech) : un **bilan de santé** au démarrage
-(Inbox qui traîne, notes sans `type`, `.DS_Store` purgés) ; un **garde-fou à l'écriture** (dates
-`created`/`updated` posées seules, rappel si frontmatter absent ou nom hors kebab-case) ; une **approbation
-des imports du vault** au démarrage (`vault-approve-imports.sh` : quand le dossier de lancement, persona ou
-dossier de travail, hérite d'un `CLAUDE.md` dont les `@imports` sortent du cwd et se résolvent dans un vault,
-il pose `hasClaudeMdExternalIncludesApproved` pour ce dossier dans `~/.claude.json`, avec effet à la session
-suivante ; jamais pour un import hors vault ; opt-out `APPROVE_EXTERNAL_IMPORTS=0` dans `hooks.conf`). La racine
-étant déduite du **fichier écrit**, une note du vault modifiée depuis un autre dossier (repo client
-via symlink) est gardée aussi ; un **rappel de répercussion en fin de tour** (`vault-sync-nudge.sh` : quand
-la session a produit assez de matière — `SYNC_MIN_KB` Ko de transcript et `SYNC_MIN_MINUTES` min depuis le
-dernier sync — il retient l'arrêt une fois et demande d'invoquer `sync-vault` depuis le vault, ou `sync-repo`
-depuis un dépôt de code relié à une fiche projet par `repo:` / `dossier-travail:` ; ailleurs, rien ; opt-out
-`SYNC_NUDGE=0` ou `SYNC_NUDGE=vault`). Ce sont des **nudges + auto-fix inertes** : jamais de blocage
-d'action définitif, jamais de suppression de contenu.
+### 7. Générer les shells d'Areas
+- Une Area est un dossier `20-Areas/{slug}/` avec sa fiche `20-Areas/{slug}/{slug}.md` ; jamais une
+  fiche à plat.
+- Fiche depuis `assets/area-shell-template.md`, frontmatter rempli depuis le plan (objets, cadence,
+  outils), corps réduit aux titres et à une ligne de but.
 
-**Opt-in, hors plugin** : `assets/hooks/vault-git-sync.sh` est un template de **sync git** pour un
-vault qui vit aussi sur une machine headless (VM d'agents) — commit local au `Stop`, pull au
-`SessionStart`, push par un cron. Ne le proposer **que si** le plan mentionne un tel setup ; il se
-copie dans `{vault}/.claude/hooks/` et se branche à la main dans `{vault}/.claude/settings.json`.
+### 8. Générer les shells de Projects
+- Même nomenclature : `10-Projects/{slug}/{slug}.md`.
+- Fiche depuis `assets/project-shell-template.md` : `status`, `deadline`, `livrable`,
+  `parties-prenantes`, `area` en wikilink si le plan le précise.
 
-### 6. Générer les shells d'Areas
-- **Nomenclature stricte** : chaque Area est un **dossier** `20-Areas/{area-slug}/` contenant sa
-  **fiche principale** `20-Areas/{area-slug}/{area-slug}.md` — **jamais** une fiche à plat
-  `20-Areas/{area-slug}.md`. Le dossier accueillera plus tard les sous-éléments (meetings,
-  sources) ; la fiche `{slug}.md` est le point d'entrée et le fil de suivi.
-- Fiche depuis `assets/area-shell-template.md`, frontmatter `type: area` rempli depuis le plan
-  (objets récurrents, cadence, outils). Corps = titres de sections vides + une ligne de but.
-  **Aucun contenu inventé.**
+### 9. Resources
+- Créer les sous-dossiers de `30-Resources/` du plan. Dans chacun, un `_index.md` liste les items du
+  plan en cases à cocher.
+- Item existant ailleurs : `- [ ] {nom} : {usage} ; vit aujourd'hui : {emplacement}`. Item à créer :
+  case simple. Aucune copie : l'entrée se fait un item à la fois, par `import-note`.
 
-### 7. Générer les shells de Projects
-- **Même nomenclature stricte que les Areas** : chaque Project est un **dossier**
-  `10-Projects/{projet-slug}/` contenant sa **fiche principale**
-  `10-Projects/{projet-slug}/{projet-slug}.md` — **jamais** une fiche à plat
-  `10-Projects/{projet-slug}.md`. La fiche `{slug}.md` suit l'avancement du projet ; le dossier
-  accueillera ses sources, meetings, livrables.
-- Fiche depuis `assets/project-shell-template.md`, frontmatter `type: project` (status, deadline,
-  livrable, parties-prenantes, wikilink vers l'Area liée si le plan le précise).
+### 10. Renvois externes
+- Si le plan a un *Mapping sources* : dans `30-Resources/references-externes/`, un renvoi par source
+  (titre, lien ou emplacement, une ligne de contexte, 🔒 si sensible). Pas de copie du contenu.
 
-### 8. Resources (légère)
-- Créer les sous-dossiers de `30-Resources/` du plan. Dans chaque sous-zone, un `_index.md` qui
-  **liste les items du plan en cases à cocher** (TODO de capitalisation). Pour un item **existant
-  ailleurs** (un PDF sur Drive, des CGV, une charte), reporter son emplacement tel que le plan le
-  donne : `- [ ] {nom} — {usage} — vit aujourd'hui : {emplacement}`. Pour un item « à créer »,
-  case simple. Pas de contenu, jamais de copie : la liste se remplit par l'usage (entrée **une par
-  une** via l'import, jamais de migration en masse).
+### 11. Laisser la matière première en place
+- Ne pas déplacer ni transformer `00-Inbox/matiere-premiere/` : elle est tirée vers les fiches au fil
+  de l'usage.
 
-### 9. Renvois externes (si mapping sources présent)
-- Dans `30-Resources/references-externes/` (le créer si besoin), poser des **renvois-shells**
-  pour les sources du *Mapping sources* : un titre + le lien/emplacement + une ligne de
-  contexte, **tag 🔒 si sensible**. Jamais de copie du contenu. C'est la matérialisation du
-  principe renvoi-jamais-copie.
-
-### 10. Laisser la matière première en place
-- Ne pas déplacer ni transformer `00-Inbox/matiere-premiere/` : c'est de la capture brute, elle
-  sera tirée vers les fiches au fil de l'usage (lazy-pull). Le skill ne fait que la lire.
-
-### 10bis. Poser la persona Chief of Staff par défaut (lentille généraliste)
-Pour qu'un vault fraîchement scaffoldé soit **utilisable tout de suite** — pas un squelette inerte
-— on y dépose une persona **Chief of Staff** générique, qui embarque le skill `brief-du-jour`. Deux
-bénéfices : le dirigeant lance `cos` et obtient son brief dès la première minute (sur le seul vault,
-sans aucun connecteur) ; et `_personas/cos/` lui sert d'**exemple vivant** de la structure du système
-(identité + `.claude/skills/` peuplé + backlog), qu'il dupliquera ensuite via `kickstart-persona`.
-
-C'est un **asset figé** : on copie un bundle prêt, on **n'invoque pas** `kickstart-persona` (sa
-découverte interactive n'a pas de sens pour un rôle générique) ni `vault-skill-creator` (`brief-du-jour`
-existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` pour rester un exemple fidèle.
-
-- **Idempotence** : si `_personas/cos/` existe déjà (ré-exécution, ou CoS créé à la main), **ne pas
-  écraser** — compléter ce qui manque et le signaler dans le rapport. Sinon, le créer.
-- **Copier le bundle** `assets/persona-chief-of-staff/` → `{vault}/_personas/cos/`, **y compris** le
-  dossier caché `.claude/skills/brief-du-jour/` (le skill complet voyage avec la persona). Le
-  `CLAUDE.md` du CoS est posé **tel quel** : ses zones sont au niveau PARA (lit large, écrit étroit),
-  génériques, donc valables pour n'importe quel dirigeant — rien à dériver du plan, rien d'inventé.
-  Il hérite du `CLAUDE.md` racine du vault (carte, conventions, Schema).
-- **Poser l'alias terminal `cos`** (même mécanique que `kickstart-persona` : chemin **absolu**,
-  idempotent, détection du shell). La racine absolue du vault est celle scaffoldée à l'étape 1.
+### 12. Poser la persona Chief of Staff
+Le bundle `assets/persona-chief-of-staff/` est figé : ni `kickstart-persona` ni `vault-skill-creator`
+ne sont invoqués. Le CoS suit les conventions de `kickstart-persona` et sert d'exemple à dupliquer ;
+`brief-du-jour` voyage avec lui et n'est actif que lancé depuis `_personas/cos/`.
+- Si `_personas/cos/` existe, compléter ce qui manque sans écraser, et le signaler.
+- Copier le bundle vers `{vault}/_personas/cos/`, dossier caché `.claude/skills/brief-du-jour/`
+  inclus. Le `CLAUDE.md` du CoS est posé tel quel : ses zones sont au niveau PARA, valables pour tout
+  dirigeant.
+- Poser le raccourci terminal `cos` (chemin absolu, idempotent, détection du shell) :
   ```bash
-  VAULT_ABS="$(pwd)"                                  # racine du vault (cf. étape 1)
+  VAULT_ABS="$(pwd)"                                  # racine du vault (étape 1)
   RC="$HOME/.zshrc"; [ -n "$BASH_VERSION" ] && RC="$HOME/.bashrc"
   LINE="alias cos=\"cd '$VAULT_ABS/_personas/cos' && claude\""
   grep -q "alias cos=" "$RC" 2>/dev/null || echo "$LINE" >> "$RC"
   ```
-  Avec l'approbation ci-dessous, ce sont les **seules** écritures hors du vault que fait ce skill — les
-  signaler dans le rapport (étape 11).
-- **Approuver les imports du vault pour le CoS** : lancé depuis `_personas/cos/`, le `CLAUDE.md` racine est
-  hérité mais ses `@imports` (`_Meta/…`) sortent du cwd ; sans approbation, Schema / governance / sources ne
-  sont pas chargés (voir étape 5). Poser l'approbation tout de suite plutôt qu'attendre la première session :
-  ```bash
-  "${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh" "$VAULT_ABS/_personas/cos"
-  ```
-  Idempotent ; n'écrit dans `~/.claude.json` que si chaque import externe se résout dans un vault. Si
-  `CLAUDE_PLUGIN_ROOT` n'est pas disponible (installation manuelle sans plugin), le dire : le dirigeant lance
-  `cos` une fois en interactif et répond « Yes, allow external imports ».
-- **Persona-porté, pas global** : `brief-du-jour` n'est actif que **lancé depuis le CoS**
-  (`cd _personas/cos && claude` charge son `.claude/skills/`). Depuis la racine du vault ou une autre
-  persona, il ne se déclenche pas — c'est voulu : le brief est le battement du Chief of Staff.
+- Approuver les imports du vault pour le CoS :
+  `"${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh" "$VAULT_ABS/_personas/cos"`. Sans
+  `CLAUDE_PLUGIN_ROOT`, le compte-rendu indique le geste manuel (`references/imports-et-hooks.md`).
+- Le raccourci et cette approbation sont les seules écritures hors du vault ; le compte-rendu les
+  signale.
 
-### 11. Écrire le compte-rendu d'installation
-- Créer `00-Inbox/compte-rendu-installation.md` : l'arbre créé, ce qui a été **généré par défaut à
-  valider**, les points où le plan disait « à creuser », et les **prochaines étapes** :
-  *ne pas remplir les fiches à la main → le contenu entre au fil des besoins (les shells de Projects
-  se complètent au fil de l'eau avec `nouveau-projet` : invariants manquants + contexte réel
-  rattaché ; les Areas évoluent ensuite — naître, compléter, renommer, scinder, archiver — avec
-  `gerer-area`) ; donner ses
-  **compétences** au Chief of Staff via `vault-skill-creator` (en partant des compétences listées au
-  plan) ; ne créer une **nouvelle persona** (`kickstart-persona`) que si une compétence réclame ses
-  propres zones, sa propre voix ou ses propres garde-fous ; les **documents de référence repérés à
-  l'interview** sont listés (avec leur emplacement) dans les `_index.md` de `30-Resources/` — les
-  faire entrer **un par un, au moment où on en a besoin**, avec `import-note`, jamais tout d'un
-  coup.* C'est la règle clé : **une compétence
-  s'ajoute à une persona existante ; on ne crée pas une persona par compétence.**
-- **Persona Chief of Staff posée** (étape 10bis) : l'indiquer clairement, avec le **mode d'emploi
-  immédiat** — recharger le terminal (`source ~/.zshrc`, ou nouvel onglet) puis taper `cos` et demander
-  « fais-moi le brief du jour » : le vault produit son premier brief sur-le-champ, sans aucun
-  connecteur. Préciser que `_personas/cos/` est un **exemple** à dupliquer (identité +
-  son dossier de compétences `.claude/skills/brief-du-jour/` + sa liste de compétences à construire
-  `capacites-a-construire.md`), et que le skill a **ajouté un raccourci de lancement `cos`** au
-  fichier de configuration du terminal (`~/.zshrc`/`.bashrc`) — la seule écriture hors du vault.
-- **Signaler en une ligne** que `_Meta/derivation.md` a été posé — la note « pourquoi ton espace est
-  rangé ainsi », à ouvrir le jour où il se le demande ou avant de changer la structure. Si des parties
-  spécifiques (domaines, posture 🔒) ont gardé des **placeholders** faute d'info au plan, les ranger
-  dans le lot « généré par défaut, à valider ».
-- Y **recommander** de placer le contexte personnel (rôle, enjeux, identité) dans le
-  `~/.claude/CLAUDE.md` **global** plutôt que dans le vault, avec un court encart prêt à coller
-  (tiré de `matiere-premiere/contexte.md` si présent). **Ne pas** modifier le global soi-même.
-- **Règle de liaison hors-vault** — second encart prêt à coller dans le même `~/.claude/CLAUDE.md`
-  **global** (chargé partout, contrairement au CLAUDE.md du vault qui ne se charge que sous le vault).
-  Il permet de travailler depuis un dossier de travail externe (filesystem) en gardant le vault comme
-  mémoire. **Ne pas** modifier le global soi-même : on le livre à coller, paramétré par le chemin absolu
-  du vault scaffoldé (`VAULT_ABS`, cf. étape 10bis).
-  ```
-  Le vault (ta mémoire) est à {VAULT_ABS}. Tu travailles souvent dans des dossiers de
-  travail hors vault. Au démarrage dans un tel dossier :
-  1. cherche dans {VAULT_ABS}/10-Projects/ une fiche dont `repo` = le remote origin de ce dépôt, ou dont `dossier-travail` = ce dossier ; si trouvée, charge-la comme contexte ;
-  2. sinon, si on fait clairement du travail projet, propose de lier (projet existant, ou `nouveau-projet`) ;
-  3. trace décisions/avancées dans la fiche — jamais de copie des livrables (renvoi-jamais-copie) ;
-  4. `sync-repo` en fin de session (la fiche projet seule ; le hook Stop du plugin le rappelle quand la session a assez de matière) — `sync-vault` se lance depuis le vault pour le reste ;
-  5. hors-vault, utilise toujours le chemin absolu ci-dessus pour lire/écrire le vault.
-  ```
-- Lister les **garde-fous actifs** (hooks H1 bilan de santé / H2 garde-fou écriture / H4 rappel de sync, livrés par le plugin) en **une
-  phrase en langage simple**, pour que l'utilisateur ne soit pas surpris par les messages
-  « Santé du vault… » et sache qu'il n'a rien à lancer.
-- Afficher une synthèse à l'utilisateur en fin d'exécution.
+### 13. Écrire le compte-rendu d'installation
+- Créer `00-Inbox/compte-rendu-installation.md` selon le gabarit de `references/compte-rendu.md` :
+  arbre créé, lot « généré par défaut, à valider », points « à creuser » du plan, prochaines étapes,
+  mode d'emploi du CoS, garde-fous, deux encarts à coller dans le `~/.claude/CLAUDE.md` global.
+- Ne pas modifier `~/.claude/CLAUDE.md` : les encarts sont livrés à coller.
+- Afficher une synthèse au dirigeant, dans la langue de la section « Langue du dirigeant ».
 
-## La discipline generate-don't-write, concrètement
+## Garde-fous
 
-Une fiche-shell bien faite, c'est :
+- Aucun contenu métier inventé : pas de candidat, de décision, d'incident ni de chiffre. Si le plan et
+  la matière première ne disent rien, la section reste vide.
+- Sans `plan-vault.md`, ne rien scaffolder.
+- Ré-exécution ou dossier déjà peuplé : compléter, ne pas écraser une fiche existante sans
+  confirmation, tout signaler dans le compte-rendu.
+- Beaucoup d'Areas ou de Projects : tout générer, et rappeler dans le compte-rendu le principe
+  « élargir par l'usage » : peu d'Areas vivantes valent mieux que beaucoup de dossiers vides.
+- Vault sans enjeu de confidentialité : `governance.md` légère (périmètre, accès des agents), sans
+  multiplier les 🔒.
+- Aucune dépendance à l'environnement de l'auteur du skill : tout vient du plan du dirigeant et de
+  `assets/`.
 
-```markdown
----
-type: area
-area: recrutement
-objets: [pipeline candidats, fiches de poste, entretiens, closing]
-cadence: continu
-outils: [Notion]
-tags: [area]
----
+## Références
 
-# Recrutement
-
-> Responsabilité continue : {une ligne reprise du plan}.
-
-## Objets récurrents
-<!-- pipeline, fiches de poste, entretiens, closing -->
-
-## Notes
-```
-
-Ce qu'on ne fait **jamais** : inventer un candidat, un poste, une décision, un incident, un
-chiffre. Si l'info n'est pas dans le plan/la matière première, la section reste vide. Le vide
-structuré est honnête et se remplit ; le faux est un piège.
-
-## Cas limites
-
-- **Pas de `plan-vault.md`** → stop : demander de lancer d'abord l'interview de cartographie.
-  Ne jamais scaffolder « à l'aveugle ».
-- **Plan incomplet** (section manquante) → défauts marqués « à valider », jamais de blocage.
-- **Dossier déjà peuplé** (ré-exécution) → compléter ce qui manque, **ne pas écraser** une
-  fiche existante sans confirmation explicite ; tout signaler dans le rapport.
-- **Beaucoup d'Areas/Projects** → tout générer quand même (ce sont des shells légers), mais
-  rappeler dans le rapport le principe « élargir par l'usage » : mieux vaut 3 Areas vivantes
-  que 12 dossiers morts.
-- **Area-as-Project** détecté → signaler, laisser l'utilisateur trancher.
-- **Vault sans enjeu de confidentialité** → garder une `governance.md` légère (périmètre +
-  accès agents), ne pas sur-charger en 🔒.
-
-## Transférabilité (pour un élève qui l'utilise seul)
-
-Ce skill est conçu pour être **copié tel quel** dans le `~/.claude/skills/` (ou le
-`.claude/skills/` du vault) de n'importe qui. Il ne référence **aucun** vault, nom ou chemin
-extérieur : tout vient du `plan-vault.md` de l'utilisateur et des gabarits `assets/`. Quand tu
-l'exécutes, n'introduis aucune dépendance à l'environnement de l'auteur — reste path-agnostique
-et lis toujours depuis le plan de la personne devant toi.
-
-## Fichiers du skill
-- `references/plan-vault-format.md` — structure attendue du `plan-vault.md` et de la matière
-  première (à lire pour parser un plan qui dévie du gabarit).
-- `assets/schema-template.md` — gabarit du contrat frontmatter `_Meta/Schema.md`.
-- `assets/governance-template.md` — gabarit `_Meta/governance.md`.
-- `assets/derivation-template.md` — gabarit `_Meta/derivation.md` (le *pourquoi* du vault : trace sa
-  forme au plan, renvoie aux compétences d'évolution ; listé dans le `CLAUDE.md` racine mais non `@importé`).
-- `assets/vault-claude-template.md` — gabarit du `CLAUDE.md` racine.
-- `assets/area-shell-template.md` / `assets/project-shell-template.md` — gabarits de fiches-shells.
-- `assets/hooks/hooks.conf` — réglages optionnels des hooks du plugin (`EXCLUDE`, `INBOX_STALE_DAYS`,
-  `SYNC_MIN_KB`, `SYNC_MIN_MINUTES`, `SYNC_NUDGE`, `APPROVE_EXTERNAL_IMPORTS`), à copier dans `{vault}/_Meta/`.
-  Les hooks eux-mêmes vivent dans `hooks/` à la racine du plugin.
-- `assets/hooks/vault-git-sync.sh` — template **opt-in** de sync git pour un vault sur machine headless.
-- `assets/persona-chief-of-staff/` — bundle figé de la persona Chief of Staff posée par défaut
-  (étape 10bis) : `CLAUDE.md` (identité, lentille généraliste), `capacites-a-construire.md` (backlog),
-  et `.claude/skills/brief-du-jour/` (le skill du battement quotidien, livré *avec* la persona — c'est
-  son seul lieu : il n'est volontairement pas un skill global du plugin).
+- `references/plan-vault-format.md` : structure du `plan-vault.md` et de la matière première, étape
+  qui consomme chaque section, défauts quand une section manque (gouvernance, ton, conventions,
+  sources).
+- `references/langue-dirigeant.md` : anglicismes à remplacer, termes internes à taire, calibrage sur
+  le curseur Vocabulaire, exemples avant/après.
+- `references/imports-et-hooks.md` : mécanique des `@imports` et de leur approbation, les quatre
+  hooks du plugin et leurs réglages (`hooks.conf`), le sync git opt-in, la portée de `brief-du-jour`.
+- `references/compte-rendu.md` : gabarit de `00-Inbox/compte-rendu-installation.md`, encarts à
+  coller dans le `CLAUDE.md` global.

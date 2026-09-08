@@ -1,14 +1,6 @@
 # vault-skills
 
-Skills Claude Code pour monter et faire vivre un second cerveau : un vault Obsidian
-structuré en PARA, peuplé par des personas Claude qui le lisent et l'écrivent au quotidien.
-
-La plupart des seconds cerveaux meurent en cimetière de notes : on y capture sans jamais
-relire. Le pari de ce pack est inverse. Un vault tient quand un agent l'écrit et le lit en
-boucle, et c'est cette boucle que les skills construisent.
-
-Le pack sort de missions d'accompagnement réelles auprès de dirigeants. Les principes plus
-bas ne sont pas théoriques, ce sont ceux qui ont survécu au contact des utilisateurs.
+Skills Claude Code pour monter et faire vivre un second cerveau : un vault Obsidian structuré en PARA, lu et écrit au quotidien par des personas Claude. Le pack est issu de missions d'accompagnement de dirigeants menées en 2025 et 2026.
 
 ## Installation
 
@@ -25,300 +17,90 @@ Un seul plugin embarque tout le pack. Pour les mises à jour :
 /plugin marketplace update vault-skills
 ```
 
-## Le cheminement au quotidien
+## Le cycle de vie d'un vault
 
-Les skills ne se lancent pas au hasard : ils s'enchaînent le long du cycle de vie d'un vault.
-On l'amorce **une fois**, on le fait vivre **chaque jour**, on l'entretient **au signal**.
+Les skills s'enchaînent le long du cycle de vie du vault. On l'amorce une fois, on le fait vivre chaque jour, on l'entretient au signal.
 
 ```
-AMORÇAGE  (une seule fois, dans l'ordre)
-   interview-vault ─▶ kickstart-vault ─▶ kickstart-persona ─▶ vault-skill-creator
-      le plan            le vault           les agents          leurs compétences
-                            │
-                            └─ pose déjà une persona « Chief of Staff » (cos) utilisable tout de suite
+AMORCER      une seule fois, dans l'ordre
+             interview-vault        le plan
+             kickstart-vault        le vault, avec une persona Chief of Staff (cos) prête à l'emploi
+             kickstart-persona      les agents supplémentaires
+             vault-skill-creator    leurs compétences
 
-QUOTIDIEN  (en boucle, à chaque session de travail)
-   ┌─ matin ───────────────────────────────────────────────┐
-   │  brief-du-jour   priorités · alertes · agenda · todos  │
-   └────────────────────────────────────────────────────────┘
-                            │
-                            ▼   au fil du travail, quand le besoin tire
-        import-note      une note / URL / doc entre au bon endroit
-        nouveau-projet   un chantier naît — ou se complète
-                            │
-                            ▼   fin de session (un hook le rappelle quand il y a de la matière)
-        sync-vault       répercute décisions & statuts, garde les fiches concises
-        sync-repo        depuis un dossier de code : la fiche projet seule, le reste en « À répercuter »
+FAIRE VIVRE  à chaque session de travail
+             brief-du-jour          le matin : priorités, alertes, agenda, todos
+             import-note            une note, une URL ou un doc entre au bon endroit
+             nouveau-projet         un chantier naît ou se complète
+             sync-vault             fin de session : décisions et statuts répercutés, fiches gardées concises
+             sync-repo              même geste depuis un dossier de code, sur la seule fiche projet
 
-AU SIGNAL  (quand quelque chose le déclenche)
-        extraire-trame   une pratique revient ≥ 2 fois  ─▶  trame réutilisable
-        gerer-area       l'épine dorsale bouge           ─▶  naître / renommer / scinder / archiver
-        audit-vault      contrôle technique mensuel du contenant
+ENTRETENIR   quand quelque chose le déclenche
+             extraire-trame         une pratique revient au moins deux fois
+             gerer-area             une responsabilité naît, se scinde, fusionne ou disparaît
+             audit-vault            contrôle technique mensuel du contenant
 ```
 
-**Lecture du schéma.** L'amorçage est une chaîne : chaque skill consomme la sortie du
-précédent (l'interview produit le plan, le plan devient le vault, le vault accueille les
-agents, les agents reçoivent leurs compétences). Le quotidien est une boucle ouverte :
-`brief-du-jour` ouvre la journée, `import-note` et `nouveau-projet` se déclenchent à la
-demande au milieu du travail, `sync-vault` (ou `sync-repo` depuis un dépôt de code) la referme
-proprement. Les skills « au signal »
-ne sont pas planifiés : ils répondent à un évènement (une répétition repérée, une
-responsabilité qui change, le rituel mensuel).
+L'amorçage est une chaîne : chaque skill consomme la sortie du précédent. Le quotidien est une boucle : `brief-du-jour` ouvre la journée, `import-note` et `nouveau-projet` se déclenchent à la demande, `sync-vault` la referme. Un hook du plugin rappelle `sync-vault` en fin de tour quand la session a produit assez de matière, ou `sync-repo` depuis un dépôt de code relié. Les skills d'entretien répondent à un événement, pas à un calendrier, sauf `audit-vault`.
 
-**Tu peux travailler hors du vault.** Les skills du quotidien se lancent depuis n'importe
-quel dossier — y compris un dossier projet sur ton disque, en dehors du vault. Ils retrouvent
-le vault par son chemin absolu, et `nouveau-projet` relie ce dossier de travail à sa fiche.
+Les skills du quotidien se lancent depuis n'importe quel dossier, y compris un dossier de code hors du vault. Ils retrouvent le vault par le chemin absolu déclaré dans le `CLAUDE.md` global, et `nouveau-projet` relie le dossier de travail à sa fiche projet.
 
-## Les skills, un par un
+## Les skills
 
-Le pack compte onze skills, répartis en trois familles selon le moment du cycle de vie.
-Déplie chaque skill pour le détail.
+Chaque entrée reprend la description du skill telle que Claude Code la lit pour décider de le déclencher.
 
-### Famille 1 — Amorcer *(create)*
+<!-- SKILLS:BEGIN -->
+### Amorcer
 
-La chaîne d'amorçage, dans l'ordre : d'abord le plan, puis le squelette, puis les agents,
-puis leurs compétences. On la déroule une seule fois, au démarrage d'un vault.
+La chaîne d'amorçage, dans l'ordre. On la déroule une seule fois, au démarrage d'un vault.
 
-<details>
-<summary><b>interview-vault</b> — l'interview qui dessine ton vault</summary>
+- **`interview-vault`** : Mène l'interview de cartographie PARA d'une activité et écrit 00-Inbox/plan-vault.md, le plan que kickstart-vault exécute ensuite. S'adapte aux réponses du dirigeant sans questionnaire figé et n'écrit rien hors de 00-Inbox/. S'utilise quand l'utilisateur dit « cartographier mon activité », « préparer mon vault », « faire l'interview PARA », « monter mon second cerveau » sur un vault vide. Pour matérialiser le plan, voir kickstart-vault.
+- **`kickstart-vault`** : Scaffolde un vault Obsidian PARA à partir du plan-vault.md produit par interview-vault : arborescence, Schema, governance, CLAUDE.md racine, fiches vides d'Areas et de Projects, persona Chief of Staff avec brief-du-jour. S'utilise quand l'utilisateur a un plan-vault.md et dit « crée la structure », « initialise le vault », « génère l'arborescence », « monte mon second cerveau ». Pour mener l'interview qui produit le plan, voir interview-vault.
+- **`kickstart-persona`** : Crée le shell d'une persona Claude dans un vault Obsidian : _personas/{slug}/CLAUDE.md (rôle, périmètre lecture/écriture, garde-fous), dossier .claude/skills/ vide et alias terminal. Part d'une découverte du quotidien avant de fixer le rôle. S'utilise quand l'utilisateur dit « crée-moi un agent », « nouvelle persona », « ajoute un Chief of Staff », « je veux un assistant RH dans mon vault ». Pour donner des compétences à la persona, voir vault-skill-creator.
+- **`vault-skill-creator`** : Crée un skill Claude Code à partir d'une routine récurrente d'une persona et le place dans le vault Obsidian : dans _personas/{slug}/.claude/skills/ pour une capacité de persona, à la racine du vault pour une capacité transverse. Interroge sur les données lues par la procédure et propose l'accès (MCP ou import). S'utilise quand l'utilisateur dit « encode mon triage-mails », « crée un skill pour mon Chief of Staff », « porte mon skill Desktop dans le vault », ou pioche dans capacites-a-construire.md. Pour créer le vault ou une persona, voir kickstart-vault et kickstart-persona.
 
-Le premier maillon. Une conversation guidée qui cartographie ton activité (tes domaines de
-responsabilité, tes projets, tes outils, tes irritants) et en tire `00-Inbox/plan-vault.md`,
-le plan que la suite exécutera.
+### Faire vivre
 
-Le skill est **adaptatif** : il ne te demande jamais « tu es tech ou pas ? ». Un DG, un CTO
-ou un artisan obtiennent chacun la structure qui colle à leur métier, sans questionnaire figé.
-Il n'écrit que dans `00-Inbox/` et ne crée aucune fiche — il prépare, il ne construit pas.
+Le quotidien, une fois le vault posé. Ces skills lisent `_Meta/sources.md` et s'adaptent aux connecteurs déclarés.
 
-À la clôture, il ne se contente pas de lister tes irritants : il les **priorise par impact**. Pour
-chacun, il creuse la fréquence, le temps que ça te coûte, si la tâche est vraiment répétable et si
-ton équipe la fait aussi — de quoi estimer le **temps récupérable** (« ~X h/semaine », à confirmer)
-et savoir quoi automatiser en premier. Ton plan en ressort priorisé, pas une simple liste.
+- **`brief-du-jour`** : Produit le brief du jour dans 00-Inbox/briefs/{date}.md (Priorités, Alertes, Agenda, Todos, À valider) à partir du vault et des sources déclarées dans _Meta/sources.md, en dégradant proprement si une source manque. S'utilise quand l'utilisateur dit « mon brief », « le point du matin », « qu'est-ce que j'ai aujourd'hui ». Pour faire entrer une note, voir import-note.
+- **`import-note`** : Fait entrer une note ou un contenu externe dans le vault, une note à la fois : détecte la nature de l'entrée (URL, page Notion, fichier local, texte collé), l'acquiert, puis la classe dans la zone PARA adéquate avec frontmatter conforme au Schema et wikilinks. Pose un renvoi plutôt qu'une copie pour le sensible et le vivant. S'utilise quand l'utilisateur dit « importe cette note », « range cette page Notion / cet article dans le vault », « fais entrer ce doc », « ajoute ça à mon projet X », ou colle un texte à ranger. Pour capitaliser une pratique déjà dans le vault, voir extraire-trame.
+- **`nouveau-projet`** : Crée un projet dans un vault Obsidian déjà structuré, ou complète un projet encore vide : pose 10-Projects/{slug}/{slug}.md avec un frontmatter type: project conforme au Schema, relie l'Area parente et le dossier de travail, puis rattache le contexte réel existant (note d'inbox, réunion, fil d'emails) via import-note, sans rien inventer. S'utilise quand l'utilisateur dit « lancer un nouveau projet », « créer le projet X », « ouvrir un chantier », « complète le projet X », « le projet X est vide ». Pour faire entrer une note isolée sans créer de projet, voir import-note.
+- **`sync-vault`** : Met à jour et consolide les fiches du vault à partir de la conversation en cours : décisions, statuts, todos, faits nouveaux, sections « À répercuter », sas 00-Inbox/_drafts/ et mémoire native de Claude Code. Agit sans validation et réécrit plutôt qu'empiler. S'utilise quand l'utilisateur dit « sync le vault », « mets à jour le vault », « répercute ce qu'on a décidé », « allège le vault », ou sur rappel du hook Stop en fin de tour. Depuis un dépôt de code, sync-repo s'applique à la place.
+- **`sync-repo`** : Répercute une session menée depuis un dépôt de code dans la seule fiche projet du vault qui lui correspond : avancement, décisions, todos, statut, à partir de la conversation et des commits récents. Ce qui concerne d'autres fiches est déposé dans la section « À répercuter » de la fiche projet, que sync-vault traite ensuite. Ne crée jamais de fiche. S'utilise quand l'utilisateur, dans un dépôt, dit « mets à jour la fiche projet », « répercute dans le vault », « sync le projet », ou sur rappel du hook Stop en fin de tour. Depuis l'intérieur du vault, sync-vault s'applique à la place.
 
-**Tu le lances quand** tu pars d'un vault vide et que tu veux poser sa structure avant de la
-matérialiser.
+### Entretenir
 
-</details>
+Les skills qui gardent le vault vrai et propre dans la durée.
 
-<details>
-<summary><b>kickstart-vault</b> — le scaffold du vault depuis le plan</summary>
+- **`extraire-trame`** : Capitalise une pratique récurrente du vault en trame réutilisable dans 30-Resources/ : retrouve les occurrences réelles, Archive comprise, en extrait la forme commune sans rien inventer, la range dans la bonne sous-zone et la lie à ses fiches sources. Propose la généralisation et attend la validation avant d'écrire. S'utilise quand l'utilisateur dit « ça, je le refais à chaque fois », « fais-en une trame », « on a déjà fait ça trois fois », « capitalise cette méthode », ou reprend un candidat signalé par sync-vault. Pour un modèle qui existe déjà hors du vault, voir import-note.
+- **`gerer-area`** : Gère le cycle de vie d'une area dans un vault déjà vivant : crée une nouvelle responsabilité (20-Areas/{slug}/ et fiche conforme au Schema), complète un shell vide, renomme, scinde, fusionne ou archive une area dont la responsabilité a disparu. Exécute un geste demandé ; le diagnostic appartient à audit-vault. S'utilise quand l'utilisateur dit « crée une area », « renomme / scinde / fusionne l'area X », « archive l'area X », « cette responsabilité n'existe plus », « l'area X est vide », ou reprend une suggestion d'audit. Pour scaffolder le vault entier, voir kickstart-vault.
+- **`audit-vault`** : Contrôle technique d'un vault Obsidian PARA : wikilinks cassés, fiches orphelines, frontmatter hors Schema, noms hors kebab-case, pollution, Inbox stale, projets à archiver, areas mortes ou sans consommateur, zones de personas invalides. Produit un rapport daté dans 00-Inbox/ puis propose le traitement par lots, sans écrire avant validation. S'utilise quand l'utilisateur dit « audit du vault », « fais le ménage », « fais le point sur le vault », « qu'est-ce qui traîne », « c'est le bazar », « wikilinks cassés », ou sur rituel mensuel. Pour répercuter la session en cours dans les fiches, voir sync-vault.
+<!-- SKILLS:END -->
 
-Transforme le `plan-vault.md` en vault réel : l'arborescence PARA, `_Meta/Schema.md` (le
-contrat qui garde les fiches cohérentes dans le temps), la gouvernance, le `CLAUDE.md` racine,
-et les fiches-coquilles de tes Areas et Projects — le tout en *generate-don't-write* : il pose
-la structure, **jamais du faux contenu métier**.
+`brief-du-jour` n'est pas dans `skills/` : il voyage dans les assets de `kickstart-vault`, qui le dépose dans la persona Chief of Staff au moment du scaffold. Il ne s'active que depuis cette persona.
 
-Il fait deux choses de plus qui rendent le vault vivant dès la première minute : il règle les
-trois garde-fous automatiques que le plugin embarque (un bilan de santé au démarrage, un garde-fou
-à l'écriture, l'approbation des imports du vault pour les personas et dossiers de travail — actifs
-dans toute session, où que tu lances Claude, silencieux hors du vault), et
-il dépose une persona **Chief of Staff** par défaut (alias terminal `cos`) livrée avec le
-skill `brief-du-jour`. Tu tapes `cos`, tu demandes ton brief, ça marche — sans aucun
-connecteur.
+## Les hooks du plugin
 
-**Tu le lances quand** l'interview a produit ton plan et que tu veux bâtir la structure.
+Quatre hooks tournent dans toute session Claude Code et restent silencieux hors d'un vault.
 
-</details>
+| Hook | Moment | Rôle |
+|---|---|---|
+| `vault-health.sh` | démarrage de session | bilan de santé injecté dans le contexte (Inbox qui traîne, notes sans `type`), purge des `.DS_Store` |
+| `vault-approve-imports.sh` | démarrage de session | approuve pour le dossier courant les imports du vault que Claude Code tiendrait sinon pour externes |
+| `vault-note-guard.sh` | après l'écriture d'une note | pose `created` et `updated` dans un frontmatter existant, signale un frontmatter absent ou un nom hors kebab-case |
+| `vault-sync-nudge.sh` | fin de tour | rappelle `sync-vault` depuis le vault, `sync-repo` depuis un dépôt relié, au-delà des seuils |
 
-<details>
-<summary><b>kickstart-persona</b> — un nouvel agent dans ton vault</summary>
-
-Crée le *shell* d'une persona Claude : son identité dans `_personas/{slug}/CLAUDE.md` (son
-rôle, son ton, ce qu'elle a le droit de lire et d'écrire, ses garde-fous), un alias terminal
-pour la lancer en un mot, l'approbation des imports du vault pour son dossier (sans passer par une
-session interactive), et un backlog de routines à encoder plus tard.
-
-À ce stade, **l'identité d'abord, les capacités ensuite** : la persona sait qui elle est et où
-elle a le droit d'agir, mais elle n'a pas encore de compétences métier. C'est volontaire — on
-ne crée pas une persona par tâche, on ajoute des compétences à une persona existante.
-
-**Tu le lances quand** tu veux un assistant dédié (RH, Métier, Veille, Commercial…) au-delà du
-Chief of Staff par défaut.
-
-</details>
-
-<details>
-<summary><b>vault-skill-creator</b> — encode une routine en compétence</summary>
-
-Prend une routine récurrente (« mon triage de mails du lundi », « ma prépa de comité ») et
-l'encode en skill concret, placé automatiquement au bon endroit :
-`_personas/{slug}/.claude/skills/` si la compétence appartient à un agent, racine du vault si
-elle est transverse.
-
-Il demande **toujours d'où viennent les données** de la routine et propose l'accès qui va avec
-(connecteur, import) plutôt que de supposer. C'est un fork du `skill-creator` officiel
-d'Anthropic — voir Attribution.
-
-**Tu le lances quand** tu veux donner une vraie compétence métier à une persona, en partant
-des routines listées dans son backlog.
-
-</details>
-
-### Famille 2 — Faire vivre *(run)*
-
-Le quotidien, une fois le vault posé. Ces skills lisent le registre `_Meta/sources.md` (les
-connecteurs que tu as déclarés) et s'adaptent à ce qui est branché. Sans aucun connecteur, le
-vault suffit toujours à produire un résultat utile.
-
-<details>
-<summary><b>brief-du-jour</b> — le battement quotidien</summary>
-
-Agrège ton agenda, tes todos, les réunions de la veille, tes messages et l'état de ton vault
-en une fiche `00-Inbox/briefs/{date}.md` : Priorités, Alertes, Agenda, Todos — et une section
-« À valider » quand des livrables attendent ton feu vert.
-
-Il est **porté par la persona Chief of Staff** : il ne s'active que lancé depuis `cos`, pas
-globalement. Et il **dégrade proprement** — si une source manque (pas de connecteur agenda,
-par exemple), il produit quand même un brief utile à partir du vault seul.
-
-**Tu le lances quand** tu ouvres ta journée et veux savoir où tu en es. (« fais-moi le brief »,
-« quoi de neuf ce matin ».)
-
-</details>
-
-<details>
-<summary><b>import-note</b> — fait entrer une note au bon endroit</summary>
-
-Fait entrer un contenu externe — une URL, une page Notion, un fichier, un texte collé — dans
-le vault, transformé en fiche propre : la bonne zone PARA, un frontmatter conforme au Schema,
-et des `[[wikilinks]]` vers les fiches liées.
-
-C'est le **lazy-pull** : une note entre **quand un besoin la tire**, pas en bloc le premier
-jour. Un import qui atterrit dans `00-Inbox/` sans rangement n'a rien importé — le vrai travail,
-c'est le classement. Pour le sensible, il pose un renvoi, jamais une copie.
-
-**Tu le lances quand** tu veux ranger un article, un doc ou une page dans ton vault.
-
-</details>
-
-<details>
-<summary><b>nouveau-projet</b> — fait naître (ou complète) un chantier</summary>
-
-Crée le foyer d'un projet sur un vault déjà vivant : le dossier `10-Projects/{slug}/`, sa fiche
-liée à l'Area parente, puis le rattachement du contexte réel qui existe déjà (la note où l'idée
-est née, la réunion de décision, un fil d'emails) via `import-note`. Il n'invente aucun contenu.
-
-Le même geste **complète** une coquille déjà posée : il ne remplit que les trous, sans jamais
-réécrire l'existant. Et lancé depuis un dossier de travail hors vault, il relie ce dossier à la
-fiche (champ `dossier-travail`) — la prochaine fois que tu ouvres ce dossier, le projet se
-recharge tout seul.
-
-**Tu le lances quand** tu ouvres un nouveau chantier, ou qu'un projet existant est resté vide.
-
-</details>
-
-<details>
-<summary><b>extraire-trame</b> — capitalise une pratique récurrente</summary>
-
-Fait émerger le savoir qui existe en creux dans ton vault. Quand une pratique revient (au moins
-**deux occurrences réelles**), il en extrait la forme commune et la capitalise en trame
-réutilisable dans `30-Resources/`, avec les `[[wikilinks]]` vers les cas fondateurs.
-
-Chaque section de la trame **trace vers un cas réel** — rien d'inventé, aucune donnée sensible
-ne migre. C'est un skill **consultatif** : la généralisation est un jugement, donc il propose et
-tu valides avant écriture.
-
-**Tu le lances quand** tu te dis « ça, je le refais à chaque fois » — ou quand `sync-vault` te
-signale un candidat à trame.
-
-</details>
-
-<details>
-<summary><b>gerer-area</b> — gère l'épine dorsale du vault</summary>
-
-Une Area (un domaine de responsabilité continu) ne se termine jamais, mais elle évolue : elle
-grossit, se scinde, en absorbe une voisine, ou meurt quand la responsabilité disparaît.
-`gerer-area` couvre tout ce cycle de vie : faire naître, compléter, renommer, scinder,
-fusionner, archiver.
-
-Les gestes qui touchent plusieurs fichiers suivent un **plan validé avant exécution** (jamais
-de modification partielle en silence), et l'archivage a des pré-checks bloquants : un projet
-encore actif doit être réaffecté d'abord, un contenu utile promu en Resource. À la naissance,
-il pose la question anti-cimetière : **qui va la lire ?**
-
-**Tu le lances quand** la structure de tes responsabilités bouge.
-
-</details>
-
-### Famille 3 — Entretenir *(maintain)*
-
-Les skills qui gardent le vault vrai et propre dans la durée. Leur intention est la fiabilité,
-pas la production de valeur — c'est ce qui les distingue de la famille « faire vivre ».
-
-<details>
-<summary><b>sync-vault</b> — le curateur autonome</summary>
-
-Réconcilie les fiches avec la réalité du travail en cours — décisions prises, statuts qui
-changent, todos nés ou faits — **et les garde concises** : il consolide, réécrit et élague le
-bruit au lieu d'empiler. Un vault utile est à jour *et* dense, pas un journal qui gonfle jusqu'à
-noyer le signal.
-
-Il agit **seul, sans demander de validation**, et rend compte après coup. Il entretient deux
-mémoires : les fiches du vault, et la mémoire native de Claude Code (le petit digest rappelé au
-démarrage de chaque session). Il gère aussi la sortie des livrables en attente — mais ne valide
-ni n'envoie jamais à ta place.
-
-**Tu le lances quand** une session a fait bouger des choses et que tu veux les répercuter.
-(« sync le vault », « mets à jour le vault ».) Un hook du plugin le rappelle en fin de tour quand
-la session a produit assez de matière.
-
-</details>
-
-<details>
-<summary><b>sync-repo</b> — la fiche projet, depuis le dépôt de code</summary>
-
-La version réduite de `sync-vault` pour les sessions qui se passent dans un dossier de code, hors
-vault. Il retrouve la fiche projet par la clé `repo` (le remote git, portable d'une machine à
-l'autre), sinon par `dossier-travail`, sinon par le slug — et met à jour **cette fiche seulement** :
-avancement, décisions, todos, statut, à partir de la conversation et des commits récents.
-
-Le suivi ne vit pas dans le dépôt : pas de fiche locale qui doublonnerait le vault. Ce qui déborde
-de la fiche projet (un contact pour la fiche client, un pattern pour une area) est déposé dans sa
-section « À répercuter », que `sync-vault` traite au prochain passage depuis le vault. Sans fiche
-reliée, il ne crée rien et renvoie vers `nouveau-projet`.
-
-**Tu le lances quand** tu finis une session dans un repo (« mets à jour la fiche projet »). Le hook
-de fin de tour le rappelle sinon.
-
-</details>
-
-<details>
-<summary><b>audit-vault</b> — le contrôle technique périodique</summary>
-
-Là où `sync-vault` cure le *contenu* au fil de l'eau, `audit-vault` inspecte le *contenant*. Il
-détecte en lecture seule (wikilinks cassés, fiches orphelines, frontmatter hors Schema, projets
-à archiver, Areas mortes ou obèses…), produit un rapport daté dans `00-Inbox/`, et **n'agit que
-sur ta validation**.
-
-Trois lots de traitement : les fixes mécaniques en un seul oui (avec un filet git), les gestes
-de structure délégués au skill dédié (`gerer-area`), et les décisions de fond laissées à
-l'humain. Un fix mécanique restaure une règle — il n'invente jamais de contenu.
-
-**Tu le lances quand** tu veux faire le point, sur un rituel mensuel ou un « c'est le bazar ».
-
-</details>
+Réglages dans `{vault}/_Meta/hooks.conf` : `EXCLUDE`, `INBOX_STALE_DAYS`, `APPROVE_EXTERNAL_IMPORTS`, `SYNC_MIN_KB`, `SYNC_MIN_MINUTES`, `SYNC_NUDGE`. Le gabarit est dans `skills/kickstart-vault/assets/hooks/hooks.conf`.
 
 ## Principes de conception
 
-- **Generate-don't-write.** Les skills génèrent structure, schémas et shells. Jamais de
-  faux contenu métier.
-- **Lazy-pull plutôt que migration big-bang.** Une note entre dans le vault quand un besoin
-  la tire, pas en bloc le premier jour.
-- **Chaque dossier a un consommateur.** Une structure que personne ne lit est un cimetière
-  en construction.
-- **Gouvernance d'abord.** Le périmètre, les données sensibles et les règles d'accès des
-  agents sont posés au scaffold, avant le moindre contenu.
-- **Sources déclarées, pas codées en dur.** La variabilité des connecteurs vit dans
-  `_Meta/sources.md` ; un skill tente la source déclarée et bascule sur un collage manuel
-  si elle manque.
-- **Travailler hors du vault.** Les skills retrouvent le vault par son chemin absolu déclaré
-  dans le `~/.claude/CLAUDE.md` global : on peut les lancer depuis n'importe quel dossier de
-  travail (un dossier projet sur le disque, hors du vault) sans qu'ils échouent. `nouveau-projet`
-  relie alors ce dossier à sa fiche via les champs `repo` (remote git, portable entre machines) et
-  `dossier-travail` (chemin sur le poste), et la fiche du projet se recharge automatiquement la
-  prochaine fois qu'on ouvre ce dossier. Le hook `vault-approve-imports.sh` approuve pour ce dossier
-  les imports du vault que Claude Code tiendrait sinon pour externes et ignorerait en silence
-  (personas comprises) ; le hook `vault-sync-nudge.sh` rappelle `sync-repo` en fin de tour.
+- **On pose le cadre, pas le contenu.** Les skills génèrent structure, schémas et fiches vides. Le contenu entre par l'usage.
+- **Lazy-pull.** Une note entre dans le vault quand un besoin la tire, pas en bloc le premier jour.
+- **Chaque dossier a un consommateur.** Une area sans lecteur est signalée à sa création.
+- **Gouvernance d'abord.** Périmètre, données sensibles et accès des agents sont posés au scaffold.
+- **Sources déclarées.** Les connecteurs vivent dans `_Meta/sources.md`. Un skill utilise la source déclarée et dégrade proprement si elle manque.
+- **Une information à un seul endroit.** Le suivi d'un projet vit dans sa fiche, pas dans le dépôt de code. Les sources externes sont référencées, jamais copiées.
 
 ## Installation manuelle (sans plugin)
 
@@ -327,18 +109,10 @@ git clone https://github.com/lightpoichich/vault-skills.git
 cp -R vault-skills/skills/* ~/.claude/skills/
 ```
 
-Puis relancer Claude Code. À noter : `brief-du-jour` n'apparaît pas dans `skills/`, il
-voyage dans le bundle de `kickstart-vault`, qui le dépose dans la persona Chief of Staff
-au moment du scaffold.
+Puis relancer Claude Code. Les hooks ne sont pas installés par cette voie.
 
 ## Attribution
 
-`vault-skill-creator` est une adaptation du `skill-creator` officiel © Anthropic
-(marketplace claude-plugins-official) : placement vault automatique, étape « sources de
-données », évaluation rendue optionnelle. Le moteur et les scripts d'origine sont
-conservés ; la licence est dans `skills/vault-skill-creator/LICENSE.txt`.
+`vault-skill-creator` est une adaptation du `skill-creator` officiel d'Anthropic (marketplace claude-plugins-official) : placement automatique dans le vault, étape « sources de données », évaluation rendue optionnelle. Le moteur et les scripts d'origine sont conservés. Licence dans `skills/vault-skill-creator/LICENSE.txt`.
 
----
-
-Construit par [Lucas Clément](https://devlc.co), delivery de produits digitaux et
-accompagnement Claude Code pour dirigeants.
+Construit par [Lucas Clément](https://devlc.co), delivery de produits digitaux et accompagnement Claude Code pour dirigeants.

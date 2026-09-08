@@ -1,98 +1,92 @@
 # Résolution des slots
 
-Comment le brief passe d'un **registre de sources déclaré** à des **données concrètes**, sans jamais
-présupposer un connecteur. C'est le mécanisme qui rend le skill portable d'un dirigeant à l'autre.
+Comment le brief passe du registre `_Meta/sources.md` à des données concrètes, sans présupposer de
+connecteur. La lecture des colonnes (`type`, `statut`, `usage`, `accès`) est décrite dans
+`_Meta/sources.md` lui-même ; ce fichier ne la répète pas.
 
-## Le registre `_Meta/sources.md`
+## Exemple de registre
 
-Le skill lit ce tableau. Exemple d'un vault bien branché :
-
-```
-| source          | type  | statut     | usage           |
-|-----------------|-------|------------|-----------------|
-| Projects+Areas  | vault | toujours   | priorités       |
-| Google Calendar | cloud | actif      | agenda          |
-| Apple Reminders | local | actif      | todos           |
-| Granola         | cloud | à brancher | meetings veille |
-| Slack           | cloud | actif      | messages clés   |
-```
-
-- **`type`** — `vault` (zone interne, toujours joignable) · `cloud` (MCP / connecteur Claude distant)
-  · `local` (commande sur la machine).
-- **`statut`** — `actif` · `à brancher` · `renvoi 🔒`.
-- **`usage`** — rattache la source à un **slot** du brief. Les slots canoniques : `agenda`, `todos`,
-  `meetings veille`, `messages`, `priorités` (vault). Un `usage` libre est rattaché au slot le plus
-  proche, ou ajouté en contexte.
-- **`accès`** *(colonne optionnelle — peut être absente)* — l'heuristique pour requêter la source
-  **étroit**. Quand elle est là, **l'appliquer à l'appel** : un `accès: scoper par date` sur Granola =
-  **un seul appel borné à la veille** au lieu d'un list-all puis filtre. Absente → appel par défaut.
-
-### Si le registre est absent
-
-Poser ce stub minimal et prévenir l'utilisateur :
+Les noms de sources ci-dessous sont des exemples ; seul le registre du vault fait foi.
 
 ```
-# Sources — connecteurs du dirigeant
+| source          | type  | statut     | usage           | accès          |
+|-----------------|-------|------------|-----------------|----------------|
+| Projects+Areas  | vault | toujours   | priorités       | read direct    |
+| Calendrier      | cloud | actif      | agenda          | scoper au jour |
+| Réunions        | cloud | à brancher | meetings veille |                |
+| Export tâches   | local | actif      | todos           | {commande}     |
+```
+
+- Slots canoniques : `agenda`, `todos`, `meetings veille`, `messages`, `priorités` (vault). Un `usage`
+  libre est rattaché au slot le plus proche, ou ajouté en contexte.
+- Quand la colonne `accès` est renseignée, l'appliquer à l'appel : `scoper par date` sur une source
+  de réunions donne un seul appel borné à la veille, pas un list-all filtré ensuite. Absente : appel
+  par défaut.
+
+## Si le registre est absent
+
+Poser ce stub et prévenir le dirigeant :
+
+```
+# Sources : connecteurs du dirigeant
 
 | source         | type  | statut   | usage     |
 |----------------|-------|----------|-----------|
 | Projects+Areas | vault | toujours | priorités |
 
-> Déclare ici tes connecteurs (agenda, todos, réunions, messages) pour enrichir le brief.
-> type : cloud (MCP) · local (commande) · vault.  statut : actif · à brancher · renvoi 🔒.
+> Déclarer ici les connecteurs (agenda, todos, réunions, messages) pour enrichir le brief.
+> type : cloud (MCP), local (commande), vault. statut : actif, à brancher, renvoi 🔒.
 ```
 
-Le brief tourne alors sur le vault seul — utile mais minimal.
+Le brief tourne alors sur le vault seul.
 
 ## La cascade de résolution
 
-Pour **chaque slot** dont le brief a besoin :
+| Cas | Comportement |
+|---|---|
+| source déclarée et joignable | l'utiliser |
+| source déclarée, injoignable | demander un collage manuel, ou sauter le slot |
+| source non déclarée | sauter le slot, le proposer en pied de brief |
+| `renvoi 🔒` | référence seulement, ni agrégation ni copie |
 
-```
-source déclarée + joignable    → l'utiliser
-source déclarée + injoignable  → demander un collage manuel, ou sauter le slot
-source non déclarée            → sauter le slot, le proposer en pied de brief
-🔒 (renvoi)                    → ne jamais agréger ni copier ; référence seulement
-```
-
-Règle d'or : **un slot manquant n'est jamais une erreur.** Le brief se construit avec ce qui est là,
-et signale en pied ce qui manque. Il ne bloque jamais, ne se plaint jamais, ne hardcode jamais.
+Un slot manquant n'est pas une erreur : le brief se construit avec ce qui est là et signale le manque
+en pied.
 
 ## Acquérir chaque type de source
 
-### `vault` — le socle (toujours)
-- `Glob` les Projects (`10-Projects/*/*.md`) ; ne garder que `status: active` (lire le frontmatter).
-- Repérer les **deadlines proches** (champ `deadline`/`échéance` dans le frontmatter, à venir ou
-  dépassées) → alimentent **Priorités** et **Alertes**.
-- Survoler les Areas (`20-Areas/*/*.md`) pour les fils chauds (dernière mise à jour récente).
-- Citer chaque projet/area en `[[wikilink]]`.
+### `vault`
+- Lister les Projects (`10-Projects/*/*.md`) et ne garder que `status: active` (frontmatter).
+- Repérer les deadlines proches (champ `deadline` ou `échéance`, à venir ou dépassées) ; elles
+  alimentent Priorités et Alertes.
+- Survoler les Areas (`20-Areas/*/*.md`) pour les fils chauds (mise à jour récente).
+- Citer chaque projet ou area en `[[wikilink]]`.
 
-### `cloud` — connecteur / MCP (tenter, ne pas présupposer)
-- Le skill **ne connaît pas** les noms de MCP en dur. Il part du **nom de la source** déclaré dans le
-  registre (« Granola », « Google Calendar », « Slack »…).
-- **Tenter** de trouver l'outil correspondant via `ToolSearch` (ex. requête `granola meetings`,
-  `google calendar events`, `slack messages`). Si un outil MCP est disponible, l'appeler pour la
-  fenêtre pertinente (agenda du jour ; réunions/messages depuis la veille).
-- **S'il ne répond pas** (pas connecté dans cette session, droits manquants, budget) → ne pas
-  insister : demander un **collage manuel** (« colle ton agenda du jour / les messages clés ») ou
-  sauter le slot. Le noter en pied.
+### `cloud`
+- Aucun nom de MCP n'est fixé dans le skill : partir du nom de la source tel que déclaré dans le
+  registre.
+- Chercher l'outil par `ToolSearch` avec le nom de la source et le slot. Exemple à adapter au nom
+  déclaré : pour une source « Calendrier » servant `agenda`, une requête comme `calendar events`.
+- Si un outil répond, l'appeler sur la fenêtre pertinente (agenda du jour ; réunions et messages
+  depuis la veille).
+- S'il ne répond pas (non connecté dans la session, droits manquants), ne pas insister : demander un
+  collage manuel (« colle ton agenda du jour, les messages clés ») ou sauter le slot, et le noter en
+  pied.
 
-### `local` — commande sur la machine (tenter, dégrader)
-- Le registre peut noter la commande (ex. Apple Reminders via `osascript`). L'exécuter en lecture
-  seule pour récupérer les todos ouverts.
-- Si la commande échoue (autre machine, droits) → collage manuel ou saut.
+### `local`
+- La colonne `accès` peut noter la commande. L'exécuter en lecture seule pour récupérer les données
+  du slot (par exemple les todos ouverts).
+- Si elle échoue (autre machine, droits), collage manuel ou saut.
 
 ## Fenêtres de temps par slot
 
-- **agenda** → événements du **jour**.
-- **todos** → tâches **ouvertes** (échéance ≤ aujourd'hui en priorité).
-- **meetings veille** → réunions **depuis le dernier brief** (par défaut : depuis hier) → on en tire
-  les **action items**, pas le verbatim.
-- **messages** → messages clés **non traités depuis la veille** dans les canaux suivis.
+- **agenda** : événements du jour.
+- **todos** : tâches ouvertes, échéance au plus tard aujourd'hui en priorité.
+- **meetings veille** : réunions depuis le dernier brief (par défaut depuis hier) ; en tirer les
+  actions, pas le verbatim.
+- **messages** : messages clés non traités depuis la veille dans les canaux suivis.
 
 ## Sécurité
 
-- Toute source `renvoi 🔒` : **jamais** lue pour agrégation, **jamais** recopiée. Si une donnée
-  sensible apparaît incidemment dans un collage, ne pas la verser dans la fiche — la résumer en
-  neutre ou la référencer.
-- Respect strict de `_Meta/governance.md`.
+- Une source `renvoi 🔒` n'est ni lue pour agrégation ni recopiée. Si une donnée sensible apparaît
+  dans un collage, ne pas la verser dans la fiche : la résumer en neutre ou la référencer.
+- Respecter `_Meta/governance.md`.
