@@ -84,6 +84,11 @@ Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: pr
 - **Dossier de travail** (si détecté à l'étape 1, lancé hors du vault) : ajouter au frontmatter
   `dossier-travail: {chemin absolu du dossier courant}` et le confirmer brièvement (« je relie ce
   dossier au projet X »). Lancé depuis l'intérieur du vault → champ omis, rien d'inventé.
+  Si ce dossier de travail porte un `CLAUDE.md` qui `@importe` le vault (`@~/vault/…`, règle de liaison),
+  approuver ses imports externes dans la foulée, sinon Claude Code les ignore en silence à chaque session :
+  `"${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh" "{chemin absolu du dossier courant}"` (idempotent,
+  n'approuve que des cibles situées dans un vault ; le hook SessionStart du plugin le ferait sinon à la
+  session suivante). Pas de `CLAUDE.md` dans le dossier → rien à faire.
 
 ### 5. Nourrir (source-agnostique — voir `references/nourrir.md`)
 Proposer de rattacher le **contexte réel** du projet :

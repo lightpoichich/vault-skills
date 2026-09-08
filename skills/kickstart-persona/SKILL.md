@@ -59,7 +59,8 @@ d'écrire la procédure d'une tâche dans le `CLAUDE.md` de la persona — sa pl
   dans le vault, les personas le produisent ou le consomment* — en dépend.
 - **Le `CLAUDE.md` de la persona est un minimum, pas un doublon.** Claude Code remonte
   l'arborescence et charge le `CLAUDE.md` racine du vault (la carte, les conventions, le Schema,
-  **et le ton**) **automatiquement**. La persona n'a donc qu'à porter ce qui lui est propre : son
+  **et le ton**) **automatiquement** (ses `@imports`, eux, demandent l'approbation de l'étape 7bis).
+  La persona n'a donc qu'à porter ce qui lui est propre : son
   rôle, son périmètre, et **un écart de ton seulement s'il est justifié** par le rôle (le ton de base
   est hérité du racine — voir étape 6). Recopier la carte, les conventions ou le ton du vault dans
   chaque persona, c'est créer de la dette qui se périme.
@@ -210,6 +211,23 @@ grep -q "alias {slug}=" "$RC" 2>/dev/null || echo "$LINE" >> "$RC"
 Indiquer à l'utilisateur de recharger son shell (`source "$RC"`) ou d'ouvrir un nouvel onglet
 pour que `{slug}` soit actif.
 
+### 7bis. Approuver les imports du vault pour la persona (idempotent)
+Lancée depuis `_personas/{slug}/`, la persona hérite du `CLAUDE.md` racine, mais ses `@imports`
+(`_Meta/Schema.md`, `governance.md`, `sources.md`) sortent du cwd : Claude Code les tient pour « externes »
+et les ignore **en silence** tant que ce dossier n'est pas approuvé dans `~/.claude.json` (dialogue
+« Allow external CLAUDE.md file imports? », jamais affiché en mode `-p`, SDK ou Paseo). Le plugin pose
+cette approbation sans session interactive :
+
+```bash
+"${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh" "$VAULT_ABS/_personas/{slug}"
+```
+
+Le script n'approuve que des imports qui se résolvent dans un vault et n'écrit rien sinon. Le hook
+SessionStart du plugin ferait la même chose de lui-même à la première session dans ce dossier, avec effet
+à la suivante : l'appel ici évite cette première session sans contrats. Sans plugin (`CLAUDE_PLUGIN_ROOT`
+absent), le signaler : le dirigeant lance `{slug}` une fois en interactif et répond « Yes, allow external
+imports ».
+
 ### 8. Persister le backlog des capacités (le pont vers skill-creator)
 La découverte a fait émerger les tâches récurrentes : ce sont les **procédures à encoder ensuite**.
 Pour qu'elles ne se perdent pas à la fin de la session, les écrire dans
@@ -240,6 +258,7 @@ Persona {Nom} créée :
 - Backlog    : _personas/{slug}/capacites-a-construire.md  (les routines à encoder en skills)
 - Lancement  : tape `{slug}` dans le terminal (après `source` de ton fichier shell) → session
                directe avec {Nom} chargé
+- Imports    : contrats du vault (Schema, governance, sources) approuvés pour ce dossier dans ~/.claude.json
 
 Procédures à encoder ensuite (depuis le backlog — rien n'est codé) :
 - {tâche récurrente 1 — la plus fréquente/pénible}
@@ -295,6 +314,8 @@ le shell brodé ment sur ce que l'agent sait faire.
   qui écrivent au même endroit n'est pas une erreur, juste un point d'attention.
 - **Ni zsh ni bash détecté** (cas rare) → écrire la ligne d'alias et laisser l'utilisateur la
   placer dans le bon fichier, en l'expliquant.
+- **`~/.claude.json` absent ou `CLAUDE_PLUGIN_ROOT` indisponible** (étape 7bis) → ne pas bricoler le
+  fichier à la main ; indiquer la voie interactive (« Yes, allow external imports » au premier lancement).
 
 ## Transférabilité (pour un élève qui l'utilise seul)
 

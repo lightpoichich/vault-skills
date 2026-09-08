@@ -8,6 +8,11 @@
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/vault-health.sh",
             "timeout": 15,
             "statusMessage": "Bilan de santé du vault..."
+          },
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh",
+            "timeout": 10
           }
         ]
       }

@@ -107,8 +107,9 @@ et les fiches-coquilles de tes Areas et Projects — le tout en *generate-don't-
 la structure, **jamais du faux contenu métier**.
 
 Il fait deux choses de plus qui rendent le vault vivant dès la première minute : il règle les
-deux garde-fous automatiques que le plugin embarque (un bilan de santé au démarrage, un garde-fou
-à l'écriture — actifs dans toute session, où que tu lances Claude, silencieux hors du vault), et
+trois garde-fous automatiques que le plugin embarque (un bilan de santé au démarrage, un garde-fou
+à l'écriture, l'approbation des imports du vault pour les personas et dossiers de travail — actifs
+dans toute session, où que tu lances Claude, silencieux hors du vault), et
 il dépose une persona **Chief of Staff** par défaut (alias terminal `cos`) livrée avec le
 skill `brief-du-jour`. Tu tapes `cos`, tu demandes ton brief, ça marche — sans aucun
 connecteur.
@@ -122,7 +123,8 @@ connecteur.
 
 Crée le *shell* d'une persona Claude : son identité dans `_personas/{slug}/CLAUDE.md` (son
 rôle, son ton, ce qu'elle a le droit de lire et d'écrire, ses garde-fous), un alias terminal
-pour la lancer en un mot, et un backlog de routines à encoder plus tard.
+pour la lancer en un mot, l'approbation des imports du vault pour son dossier (sans passer par une
+session interactive), et un backlog de routines à encoder plus tard.
 
 À ce stade, **l'identité d'abord, les capacités ensuite** : la persona sait qui elle est et où
 elle a le droit d'agir, mais elle n'a pas encore de compétences métier. C'est volontaire — on
@@ -292,7 +294,9 @@ l'humain. Un fix mécanique restaure une règle — il n'invente jamais de conte
   dans le `~/.claude/CLAUDE.md` global : on peut les lancer depuis n'importe quel dossier de
   travail (un dossier projet sur le disque, hors du vault) sans qu'ils échouent. `nouveau-projet`
   relie alors ce dossier à sa fiche via le champ `dossier-travail`, et la fiche du projet se
-  recharge automatiquement la prochaine fois qu'on ouvre ce dossier.
+  recharge automatiquement la prochaine fois qu'on ouvre ce dossier. Le hook `vault-approve-imports.sh`
+  approuve pour ce dossier les imports du vault que Claude Code tiendrait sinon pour externes et
+  ignorerait en silence (personas comprises).
 
 ## Installation manuelle (sans plugin)
 

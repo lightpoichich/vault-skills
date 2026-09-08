@@ -172,11 +172,14 @@ attendu.
   de périmètre (reprise du plan), la carte du vault, les conventions (kebab-case, wikilinks
   **+ comment les suivre**, frontmatter), la règle **generate-don't-write**, et les `@imports`
   de `_Meta/Schema.md`, `_Meta/governance.md` et `_Meta/sources.md` — les **contrats** que l'agent
-  doit suivre à chaque session. Ces `@imports` s'écrivent en **chemin absolu** (celui du vault,
-  forme `~/…` acceptée, remplace `{chemin-absolu-du-vault}` du gabarit) : un import relatif `@_Meta/…`
-  n'est pas résolu quand la session s'ouvre dans un sous-dossier du vault (`_personas/{slug}/`, dossier
-  de projet), et les contrats ne sont alors pas chargés (constaté avec Claude Code 2.1.259, le
-  2026-09-08). **Ne PAS `@importer` `_Meta/derivation.md`** : c'est le *pourquoi*
+  doit suivre à chaque session. Ces `@imports` restent **relatifs** (`@_Meta/…`, tels que dans le
+  gabarit) : lancés depuis la racine du vault, ils sont internes au cwd et chargés sans rien demander.
+  Lancés depuis un sous-dossier (`_personas/{slug}/`, dossier de travail), Claude Code les tient pour
+  « externes » et les ignore **en silence** tant que ce dossier n'est pas approuvé dans `~/.claude.json`
+  (dialogue « Allow external CLAUDE.md file imports? », jamais affiché en mode `-p`, SDK ou Paseo ;
+  vérifié sur 2.1.259 le 2026-09-08). C'est le hook `vault-approve-imports.sh` du plugin qui pose cette
+  approbation (voir 5bis et 10bis). Un chemin absolu via symlink (`@~/vault/…`) serait externe même
+  depuis la racine : ne pas en mettre. **Ne PAS `@importer` `_Meta/derivation.md`** : c'est le *pourquoi*
   (pédagogique, consulté à la demande), pas un contrat opérationnel — l'imposer à chaque session
   coûterait des tokens pour rien. Il est seulement **listé** dans la carte du vault.
 - **Section `## Ton`** : remplir les 4 curseurs depuis la section *Profil de ton* du plan, en
@@ -197,7 +200,7 @@ attendu.
   **scope** (ce que couvre le vault), pas le rôle/identité.
 
 ### 5bis. Garde-fous (hooks) : rien à installer, un réglage à poser
-Les deux hooks **déterministes** qui maintiennent le vault sain dans le temps sont **livrés par le
+Les trois hooks **déterministes** qui maintiennent le vault sain et chargé dans le temps sont **livrés par le
 plugin lui-même** (`hooks/hooks.json` à la racine du plugin) : ils sont actifs dans toute session
 Claude Code où le plugin est activé, **quel que soit le cwd**, et se mettent à jour avec lui. Ce sont
 la *couche garantie* qui complète la *couche advisory* du `CLAUDE.md`/`Schema.md` (que le modèle
@@ -214,7 +217,11 @@ vie. Hors d'un vault (aucun `_Meta/` en remontant depuis le cwd ou le fichier é
 
 Ce que font les hooks (à résumer à l'utilisateur, en non-tech) : un **bilan de santé** au démarrage
 (Inbox qui traîne, notes sans `type`, `.DS_Store` purgés) ; un **garde-fou à l'écriture** (dates
-`created`/`updated` posées seules, rappel si frontmatter absent ou nom hors kebab-case). La racine
+`created`/`updated` posées seules, rappel si frontmatter absent ou nom hors kebab-case) ; une **approbation
+des imports du vault** au démarrage (`vault-approve-imports.sh` : quand le dossier de lancement, persona ou
+dossier de travail, hérite d'un `CLAUDE.md` dont les `@imports` sortent du cwd et se résolvent dans un vault,
+il pose `hasClaudeMdExternalIncludesApproved` pour ce dossier dans `~/.claude.json`, avec effet à la session
+suivante ; jamais pour un import hors vault ; opt-out `APPROVE_EXTERNAL_IMPORTS=0` dans `hooks.conf`). La racine
 étant déduite du **fichier écrit**, une note du vault modifiée depuis un autre dossier (repo client
 via symlink) est gardée aussi. Ce sont des **nudges + auto-fix inertes** : jamais de blocage
 d'action, jamais de suppression de contenu.
@@ -286,7 +293,17 @@ existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` po
   LINE="alias cos=\"cd '$VAULT_ABS/_personas/cos' && claude\""
   grep -q "alias cos=" "$RC" 2>/dev/null || echo "$LINE" >> "$RC"
   ```
-  C'est la **seule** écriture hors du vault que fait ce skill — la signaler dans le rapport (étape 11).
+  Avec l'approbation ci-dessous, ce sont les **seules** écritures hors du vault que fait ce skill — les
+  signaler dans le rapport (étape 11).
+- **Approuver les imports du vault pour le CoS** : lancé depuis `_personas/cos/`, le `CLAUDE.md` racine est
+  hérité mais ses `@imports` (`_Meta/…`) sortent du cwd ; sans approbation, Schema / governance / sources ne
+  sont pas chargés (voir étape 5). Poser l'approbation tout de suite plutôt qu'attendre la première session :
+  ```bash
+  "${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh" "$VAULT_ABS/_personas/cos"
+  ```
+  Idempotent ; n'écrit dans `~/.claude.json` que si chaque import externe se résout dans un vault. Si
+  `CLAUDE_PLUGIN_ROOT` n'est pas disponible (installation manuelle sans plugin), le dire : le dirigeant lance
+  `cos` une fois en interactif et répond « Yes, allow external imports ».
 - **Persona-porté, pas global** : `brief-du-jour` n'est actif que **lancé depuis le CoS**
   (`cd _personas/cos && claude` charge son `.claude/skills/`). Depuis la racine du vault ou une autre
   persona, il ne se déclenche pas — c'est voulu : le brief est le battement du Chief of Staff.

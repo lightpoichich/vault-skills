@@ -60,10 +60,12 @@ Deux petits automatismes veillent sur la santé du vault — tu n'as **rien à l
 
 Ce sont des **rappels** (et de petites corrections sans risque), pas des blocages : tu gardes la main.
 
-<!-- Imports en chemin ABSOLU (celui du vault, forme `~/…` acceptée), jamais relatif : un `@_Meta/…`
-     relatif n'est pas résolu quand la session s'ouvre dans un sous-dossier du vault (ex. `_personas/{slug}/`)
-     et les contrats ne sont alors pas chargés (constaté avec Claude Code 2.1.259, le 2026-09-08). -->
+<!-- Imports RELATIFS à ce fichier. Depuis la racine du vault, ils sont internes au cwd et chargés sans rien
+     demander. Depuis un sous-dossier (`_personas/{slug}/`, dossier de travail), Claude Code les tient pour
+     « externes » et les ignore en silence tant que ce dossier n'est pas approuvé dans `~/.claude.json` :
+     le hook SessionStart `vault-approve-imports.sh` du plugin pose cette approbation. Un chemin absolu via
+     symlink (`@~/vault/…`) serait externe même depuis la racine : ne pas en mettre. -->
 ## Imports
-@{chemin-absolu-du-vault}/_Meta/Schema.md
-@{chemin-absolu-du-vault}/_Meta/governance.md
-@{chemin-absolu-du-vault}/_Meta/sources.md
+@_Meta/Schema.md
+@_Meta/governance.md
+@_Meta/sources.md
