@@ -5,7 +5,7 @@
 # (le plugin est actif partout) : ils doivent être no-op, silencieux et instantanés hors d'un vault.
 #
 # Config optionnelle : `{vault}/_Meta/hooks.conf` (KEY=VALUE, une par ligne, # commentaires) :
-#   EXCLUDE=20-Areas/crm,pandoc     chemins relatifs (préfixes) ignorés par H1 santé et H2 garde-fou écriture
+#   EXCLUDE=20-Areas/donnees-importees,outillage     chemins relatifs (préfixes) ignorés par H1 santé et H2 garde-fou écriture
 #   INBOX_STALE_DAYS=14             seuil d'ancienneté d'une note d'Inbox (H1)
 #   APPROVE_EXTERNAL_IMPORTS=0      H3 : ne plus approuver soi-même les imports du vault dans ~/.claude.json
 #   SYNC_MIN_KB=40                  H4 : Ko de transcript écrits depuis le dernier sync avant de rappeler sync-vault / sync-repo

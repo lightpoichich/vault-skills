@@ -12,7 +12,8 @@ mode :
   none   — ni l'un ni l'autre (pas de dépôt, pas de vault joignable, ou aucune fiche reliée).
 
 Vault(s) candidats depuis un dépôt, dans l'ordre : cibles des `@imports` des CLAUDE.md du dossier et de ses
-ancêtres (règle de liaison : le dépôt importe `@~/vault/…`), puis `~/.claude/CLAUDE.md`, puis `~/vault`.
+ancêtres (règle de liaison : le dépôt importe `@~/vault/…`), puis `~/.claude/CLAUDE.md` (ses `@imports` et tout
+chemin absolu cité en clair, comme le « Le vault est à {VAULT_ABS} » du gabarit kickstart-vault), puis `~/vault`.
 Fiche : dans `{vault}/10-Projects/`, par ordre de priorité —
   1. `repo:` = remote `origin` du dépôt (URL normalisée : sans schéma, sans `user@`, sans `.git`, insensible à la
      casse ; suffixe optionnel `#sous-dossier` quand le projet vit dans un sous-dossier du dépôt) ;
@@ -78,6 +79,23 @@ def imports_of(md_path):
     return out
 
 
+PATH_RE = re.compile(r"(?<![\w@])(~|/)[^\s`'\"<>()\[\]{},;]+")
+
+
+def paths_in(md_path):
+    """Chemins absolus (ou ~/…) cités en clair dans un .md — le gabarit global de kickstart-vault écrit
+    « Le vault (ta mémoire) est à {VAULT_ABS} » sans @import."""
+    try:
+        text = open(md_path, encoding="utf-8", errors="ignore").read()
+    except OSError:
+        return []
+    out = []
+    for m in PATH_RE.finditer(text):
+        raw = m.group(0).rstrip(".,;:")
+        out.append(os.path.normpath(os.path.expanduser(raw)))
+    return out
+
+
 def candidate_vaults(d):
     """Vaults joignables depuis d, dédupliqués, du plus spécifique au plus général."""
     seeds, cur = [], d
@@ -90,10 +108,11 @@ def candidate_vaults(d):
         if parent == cur:
             break
         cur = parent
-    seeds.append(os.path.join(HOME, ".claude", "CLAUDE.md"))
+    glob_md = os.path.join(HOME, ".claude", "CLAUDE.md")
+    seeds.append(glob_md)
     found = []
     for s in seeds:
-        for t in imports_of(s):
+        for t in imports_of(s) + (paths_in(s) if s == glob_md else []):
             v = vault_root(os.path.realpath(t)) if os.path.exists(t) else None
             if v and v not in found:
                 found.append(v)
