@@ -46,8 +46,9 @@ QUOTIDIEN  (en boucle, à chaque session de travail)
         import-note      une note / URL / doc entre au bon endroit
         nouveau-projet   un chantier naît — ou se complète
                             │
-                            ▼   fin de session
+                            ▼   fin de session (un hook le rappelle quand il y a de la matière)
         sync-vault       répercute décisions & statuts, garde les fiches concises
+        sync-repo        depuis un dossier de code : la fiche projet seule, le reste en « À répercuter »
 
 AU SIGNAL  (quand quelque chose le déclenche)
         extraire-trame   une pratique revient ≥ 2 fois  ─▶  trame réutilisable
@@ -59,7 +60,8 @@ AU SIGNAL  (quand quelque chose le déclenche)
 précédent (l'interview produit le plan, le plan devient le vault, le vault accueille les
 agents, les agents reçoivent leurs compétences). Le quotidien est une boucle ouverte :
 `brief-du-jour` ouvre la journée, `import-note` et `nouveau-projet` se déclenchent à la
-demande au milieu du travail, `sync-vault` la referme proprement. Les skills « au signal »
+demande au milieu du travail, `sync-vault` (ou `sync-repo` depuis un dépôt de code) la referme
+proprement. Les skills « au signal »
 ne sont pas planifiés : ils répondent à un évènement (une répétition repérée, une
 responsabilité qui change, le rituel mensuel).
 
@@ -257,7 +259,26 @@ démarrage de chaque session). Il gère aussi la sortie des livrables en attente
 ni n'envoie jamais à ta place.
 
 **Tu le lances quand** une session a fait bouger des choses et que tu veux les répercuter.
-(« sync le vault », « mets à jour le vault ».)
+(« sync le vault », « mets à jour le vault ».) Un hook du plugin le rappelle en fin de tour quand
+la session a produit assez de matière.
+
+</details>
+
+<details>
+<summary><b>sync-repo</b> — la fiche projet, depuis le dépôt de code</summary>
+
+La version réduite de `sync-vault` pour les sessions qui se passent dans un dossier de code, hors
+vault. Il retrouve la fiche projet par la clé `repo` (le remote git, portable d'une machine à
+l'autre), sinon par `dossier-travail`, sinon par le slug — et met à jour **cette fiche seulement** :
+avancement, décisions, todos, statut, à partir de la conversation et des commits récents.
+
+Le suivi ne vit pas dans le dépôt : pas de fiche locale qui doublonnerait le vault. Ce qui déborde
+de la fiche projet (un contact pour la fiche client, un pattern pour une area) est déposé dans sa
+section « À répercuter », que `sync-vault` traite au prochain passage depuis le vault. Sans fiche
+reliée, il ne crée rien et renvoie vers `nouveau-projet`.
+
+**Tu le lances quand** tu finis une session dans un repo (« mets à jour la fiche projet »). Le hook
+de fin de tour le rappelle sinon.
 
 </details>
 
@@ -293,10 +314,11 @@ l'humain. Un fix mécanique restaure une règle — il n'invente jamais de conte
 - **Travailler hors du vault.** Les skills retrouvent le vault par son chemin absolu déclaré
   dans le `~/.claude/CLAUDE.md` global : on peut les lancer depuis n'importe quel dossier de
   travail (un dossier projet sur le disque, hors du vault) sans qu'ils échouent. `nouveau-projet`
-  relie alors ce dossier à sa fiche via le champ `dossier-travail`, et la fiche du projet se
-  recharge automatiquement la prochaine fois qu'on ouvre ce dossier. Le hook `vault-approve-imports.sh`
-  approuve pour ce dossier les imports du vault que Claude Code tiendrait sinon pour externes et
-  ignorerait en silence (personas comprises).
+  relie alors ce dossier à sa fiche via les champs `repo` (remote git, portable entre machines) et
+  `dossier-travail` (chemin sur le poste), et la fiche du projet se recharge automatiquement la
+  prochaine fois qu'on ouvre ce dossier. Le hook `vault-approve-imports.sh` approuve pour ce dossier
+  les imports du vault que Claude Code tiendrait sinon pour externes et ignorerait en silence
+  (personas comprises) ; le hook `vault-sync-nudge.sh` rappelle `sync-repo` en fin de tour.
 
 ## Installation manuelle (sans plugin)
 

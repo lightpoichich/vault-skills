@@ -15,8 +15,9 @@ description: >-
   (maintain) : garde le vault **vrai et sobre** et alimente la **mémoire native de Claude Code**
   (auto-recall) pour que les personas rappellent l'essentiel d'une session à l'autre, en veillant à ce
   qu'elle soit active. NE PAS l'utiliser pour faire entrer une note externe
-  (`import-note`), pour le brief du jour (`brief-du-jour`), pour créer un projet (`nouveau-projet`), ni
-  pour un audit/diagnostic structural large produisant un rapport (skills d'hygiène à venir).
+  (`import-note`), pour le brief du jour (`brief-du-jour`), pour créer un projet (`nouveau-projet`),
+  pour mettre à jour la seule fiche projet depuis un dépôt de code (`sync-repo`), ni pour un
+  audit/diagnostic structural large produisant un rapport (`audit-vault`).
 ---
 
 # Sync vault
@@ -69,11 +70,15 @@ Remonter jusqu'à la racine (présence de `CLAUDE.md` + `_Meta/Schema.md`).
 
 **Si la remontée ne trouve aucune racine** (cwd hors du vault — un dossier de travail externe sur le
 filesystem), utiliser le **chemin absolu du vault** déclaré dans le `~/.claude/CLAUDE.md` global (règle
-de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu.
+de liaison) plutôt que d'échouer : lire et écrire le vault à ce chemin absolu. Si ce dossier est un
+dépôt de code relié à une fiche projet, le geste attendu est plutôt `sync-repo` (une fiche, ciblée).
 
 ### 2. Repérer ce qui a bougé et ce qui dérive
 - Les **mouvements** du travail : décisions, changements de statut, deadlines, todos nés/faits, faits
   et contacts nouveaux (conversation en cours ; + commits si dépôt git).
+- Les **sections `## À répercuter`** des fiches projet (`Grep` sur `10-Projects/`) : déposées par
+  `sync-repo` depuis les dépôts de code, elles listent ce qui concerne d'autres fiches (client, area,
+  ressource, mémoire). Les traiter, puis **retirer la section** une fois vide.
 - Les **fiches qui se sont chargées** : sections redondantes, infos périmées, todos faits depuis
   longtemps, verbiage qui noie le contexte.
 

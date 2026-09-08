@@ -70,7 +70,8 @@ Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: pr
   confirmer). **Non destructif** : remplir uniquement les champs et sections vides — ne jamais
   réécrire ce qui est déjà renseigné. **Si la fiche n'a pas de `dossier-travail` et qu'on est lancé
   depuis un dossier de travail externe** (étape 1), **proposer de le renseigner** (lier l'existant au
-  dossier courant) — sans écraser un `dossier-travail` déjà posé.
+  dossier courant) — sans écraser un `dossier-travail` déjà posé. Poser aussi `repo:` s'il manque et
+  que le dossier est un dépôt git avec un remote (même règle qu'à l'étape 4).
 - **Projet proche mais distinct** → le signaler et confirmer avant de créer, pour éviter le doublon.
 
 ### 4. Scaffolder le shell
@@ -83,7 +84,11 @@ Demander — sans noyer le dirigeant — ce qui remplit le frontmatter `type: pr
   `## Décisions`. Laisser les hooks du vault poser `created`/`updated`.
 - **Dossier de travail** (si détecté à l'étape 1, lancé hors du vault) : ajouter au frontmatter
   `dossier-travail: {chemin absolu du dossier courant}` et le confirmer brièvement (« je relie ce
-  dossier au projet X »). Lancé depuis l'intérieur du vault → champ omis, rien d'inventé.
+  dossier au projet X »). Si ce dossier est dans un dépôt git avec un remote `origin`, poser aussi
+  `repo: {URL du remote}` (suffixe `#sous-dossier` quand le dossier courant n'est pas la racine du
+  dépôt) : c'est la **clé portable** entre machines, `dossier-travail` restant l'indication propre au
+  poste. `sync-repo` et le hook Stop du plugin retrouvent la fiche par `repo`, puis `dossier-travail`,
+  puis le slug. Lancé depuis l'intérieur du vault → champs omis, rien d'inventé.
   Si ce dossier de travail porte un `CLAUDE.md` qui `@importe` le vault (`@~/vault/…`, règle de liaison),
   approuver ses imports externes dans la foulée, sinon Claude Code les ignore en silence à chaque session :
   `"${CLAUDE_PLUGIN_ROOT}/hooks/vault-approve-imports.sh" "{chemin absolu du dossier courant}"` (idempotent,

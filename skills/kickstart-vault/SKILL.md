@@ -200,7 +200,7 @@ attendu.
   **scope** (ce que couvre le vault), pas le rôle/identité.
 
 ### 5bis. Garde-fous (hooks) : rien à installer, un réglage à poser
-Les trois hooks **déterministes** qui maintiennent le vault sain et chargé dans le temps sont **livrés par le
+Les quatre hooks **déterministes** qui maintiennent le vault sain, chargé et à jour dans le temps sont **livrés par le
 plugin lui-même** (`hooks/hooks.json` à la racine du plugin) : ils sont actifs dans toute session
 Claude Code où le plugin est activé, **quel que soit le cwd**, et se mettent à jour avec lui. Ce sont
 la *couche garantie* qui complète la *couche advisory* du `CLAUDE.md`/`Schema.md` (que le modèle
@@ -223,8 +223,12 @@ dossier de travail, hérite d'un `CLAUDE.md` dont les `@imports` sortent du cwd 
 il pose `hasClaudeMdExternalIncludesApproved` pour ce dossier dans `~/.claude.json`, avec effet à la session
 suivante ; jamais pour un import hors vault ; opt-out `APPROVE_EXTERNAL_IMPORTS=0` dans `hooks.conf`). La racine
 étant déduite du **fichier écrit**, une note du vault modifiée depuis un autre dossier (repo client
-via symlink) est gardée aussi. Ce sont des **nudges + auto-fix inertes** : jamais de blocage
-d'action, jamais de suppression de contenu.
+via symlink) est gardée aussi ; un **rappel de répercussion en fin de tour** (`vault-sync-nudge.sh` : quand
+la session a produit assez de matière — `SYNC_MIN_KB` Ko de transcript et `SYNC_MIN_MINUTES` min depuis le
+dernier sync — il retient l'arrêt une fois et demande d'invoquer `sync-vault` depuis le vault, ou `sync-repo`
+depuis un dépôt de code relié à une fiche projet par `repo:` / `dossier-travail:` ; ailleurs, rien ; opt-out
+`SYNC_NUDGE=0` ou `SYNC_NUDGE=vault`). Ce sont des **nudges + auto-fix inertes** : jamais de blocage
+d'action définitif, jamais de suppression de contenu.
 
 **Opt-in, hors plugin** : `assets/hooks/vault-git-sync.sh` est un template de **sync git** pour un
 vault qui vit aussi sur une machine headless (VM d'agents) — commit local au `Stop`, pull au
@@ -344,13 +348,13 @@ existe déjà). Le CoS suit exactement les conventions de `kickstart-persona` po
   ```
   Le vault (ta mémoire) est à {VAULT_ABS}. Tu travailles souvent dans des dossiers de
   travail hors vault. Au démarrage dans un tel dossier :
-  1. cherche dans {VAULT_ABS}/10-Projects/ une fiche dont `dossier-travail` = ce dossier ; si trouvée, charge-la comme contexte ;
+  1. cherche dans {VAULT_ABS}/10-Projects/ une fiche dont `repo` = le remote origin de ce dépôt, ou dont `dossier-travail` = ce dossier ; si trouvée, charge-la comme contexte ;
   2. sinon, si on fait clairement du travail projet, propose de lier (projet existant, ou `nouveau-projet`) ;
   3. trace décisions/avancées dans la fiche — jamais de copie des livrables (renvoi-jamais-copie) ;
-  4. `sync-vault` en fin de session ;
+  4. `sync-repo` en fin de session (la fiche projet seule ; le hook Stop du plugin le rappelle quand la session a assez de matière) — `sync-vault` se lance depuis le vault pour le reste ;
   5. hors-vault, utilise toujours le chemin absolu ci-dessus pour lire/écrire le vault.
   ```
-- Lister les **garde-fous actifs** (hooks H1 bilan de santé / H2 garde-fou écriture, livrés par le plugin) en **une
+- Lister les **garde-fous actifs** (hooks H1 bilan de santé / H2 garde-fou écriture / H4 rappel de sync, livrés par le plugin) en **une
   phrase en langage simple**, pour que l'utilisateur ne soit pas surpris par les messages
   « Santé du vault… » et sache qu'il n'a rien à lancer.
 - Afficher une synthèse à l'utilisateur en fin d'exécution.
@@ -414,8 +418,9 @@ et lis toujours depuis le plan de la personne devant toi.
   forme au plan, renvoie aux compétences d'évolution ; listé dans le `CLAUDE.md` racine mais non `@importé`).
 - `assets/vault-claude-template.md` — gabarit du `CLAUDE.md` racine.
 - `assets/area-shell-template.md` / `assets/project-shell-template.md` — gabarits de fiches-shells.
-- `assets/hooks/hooks.conf` — réglages optionnels des hooks du plugin (`EXCLUDE`, `INBOX_STALE_DAYS`),
-  à copier dans `{vault}/_Meta/`. Les hooks eux-mêmes vivent dans `hooks/` à la racine du plugin.
+- `assets/hooks/hooks.conf` — réglages optionnels des hooks du plugin (`EXCLUDE`, `INBOX_STALE_DAYS`,
+  `SYNC_MIN_KB`, `SYNC_MIN_MINUTES`, `SYNC_NUDGE`, `APPROVE_EXTERNAL_IMPORTS`), à copier dans `{vault}/_Meta/`.
+  Les hooks eux-mêmes vivent dans `hooks/` à la racine du plugin.
 - `assets/hooks/vault-git-sync.sh` — template **opt-in** de sync git pour un vault sur machine headless.
 - `assets/persona-chief-of-staff/` — bundle figé de la persona Chief of Staff posée par défaut
   (étape 10bis) : `CLAUDE.md` (identité, lentille généraliste), `capacites-a-construire.md` (backlog),

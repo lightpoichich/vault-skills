@@ -36,9 +36,12 @@ tags: [area]
 ```
 
 ### `project`
-Effort avec une fin et un livrable. Le champ optionnel `dossier-travail` relie une fiche projet à un
-dossier de travail externe (filesystem, hors vault) : lancé depuis ce dossier, l'outillage retrouve la
-fiche par ce chemin (résolution dossier↔fiche depuis l'extérieur du vault).
+Effort avec une fin et un livrable. Deux champs optionnels relient une fiche projet à un dossier de
+travail externe (filesystem, hors vault), pour que l'outillage (`nouveau-projet`, `sync-repo`, hook Stop)
+retrouve la fiche depuis ce dossier : `repo`, l'URL du remote git, clé **portable entre machines**
+(suffixe `#sous-dossier` si le projet vit dans un sous-dossier du dépôt) ; `dossier-travail`, le chemin
+absolu sur le poste, indication humaine propre à une machine. Résolution par `repo`, puis
+`dossier-travail`, puis le slug.
 ```yaml
 type: project
 status: { active | done }
@@ -46,7 +49,8 @@ deadline: { YYYY-MM-DD | "à préciser" }
 livrable: { ... }
 parties-prenantes: [ ... ]
 area: "[[{area liée}]]"
-dossier-travail: { chemin absolu du dossier de travail externe | absent }   # optionnel — relie un dossier filesystem à cette fiche
+repo: { URL du remote git[#sous-dossier] | absent }                          # optionnel — clé portable dépôt ↔ fiche
+dossier-travail: { chemin absolu du dossier de travail externe | absent }   # optionnel — chemin sur le poste
 tags: [project]
 ```
 

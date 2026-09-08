@@ -52,11 +52,13 @@ on fait entrer les notes externes quand un besoin se présente (au fil des besoi
 mais bien structurée est normale.
 
 ## Garde-fous automatiques
-Deux petits automatismes veillent sur la santé du vault — tu n'as **rien à lancer** :
+Trois petits automatismes veillent sur la santé du vault — tu n'as **rien à lancer** :
 - **Au démarrage** : un bilan rapide apparaît s'il y a de quoi (Inbox qui traîne, notes sans
   `type`, fichiers `.DS_Store` nettoyés au passage).
 - **Quand une note est écrite** : ses dates `created`/`updated` sont posées toutes seules ; un
   rappel s'affiche si la note n'a pas de frontmatter ou si son nom n'est pas en kebab-case.
+- **En fin de tour** : si la session a produit assez de matière, un rappel demande de répercuter
+  ce qui a bougé (`sync-vault` depuis le vault, `sync-repo` depuis un dossier de code relié à un projet).
 
 Ce sont des **rappels** (et de petites corrections sans risque), pas des blocages : tu gardes la main.
 
