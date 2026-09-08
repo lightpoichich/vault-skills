@@ -172,7 +172,11 @@ attendu.
   de périmètre (reprise du plan), la carte du vault, les conventions (kebab-case, wikilinks
   **+ comment les suivre**, frontmatter), la règle **generate-don't-write**, et les `@imports`
   de `_Meta/Schema.md`, `_Meta/governance.md` et `_Meta/sources.md` — les **contrats** que l'agent
-  doit suivre à chaque session. **Ne PAS `@importer` `_Meta/derivation.md`** : c'est le *pourquoi*
+  doit suivre à chaque session. Ces `@imports` s'écrivent en **chemin absolu** (celui du vault,
+  forme `~/…` acceptée, remplace `{chemin-absolu-du-vault}` du gabarit) : un import relatif `@_Meta/…`
+  n'est pas résolu quand la session s'ouvre dans un sous-dossier du vault (`_personas/{slug}/`, dossier
+  de projet), et les contrats ne sont alors pas chargés (constaté avec Claude Code 2.1.259, le
+  2026-09-08). **Ne PAS `@importer` `_Meta/derivation.md`** : c'est le *pourquoi*
   (pédagogique, consulté à la demande), pas un contrat opérationnel — l'imposer à chaque session
   coûterait des tokens pour rien. Il est seulement **listé** dans la carte du vault.
 - **Section `## Ton`** : remplir les 4 curseurs depuis la section *Profil de ton* du plan, en

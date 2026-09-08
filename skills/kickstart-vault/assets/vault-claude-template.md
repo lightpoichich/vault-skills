@@ -60,7 +60,10 @@ Deux petits automatismes veillent sur la santé du vault — tu n'as **rien à l
 
 Ce sont des **rappels** (et de petites corrections sans risque), pas des blocages : tu gardes la main.
 
+<!-- Imports en chemin ABSOLU (celui du vault, forme `~/…` acceptée), jamais relatif : un `@_Meta/…`
+     relatif n'est pas résolu quand la session s'ouvre dans un sous-dossier du vault (ex. `_personas/{slug}/`)
+     et les contrats ne sont alors pas chargés (constaté avec Claude Code 2.1.259, le 2026-09-08). -->
 ## Imports
-@_Meta/Schema.md
-@_Meta/governance.md
-@_Meta/sources.md
+@{chemin-absolu-du-vault}/_Meta/Schema.md
+@{chemin-absolu-du-vault}/_Meta/governance.md
+@{chemin-absolu-du-vault}/_Meta/sources.md
