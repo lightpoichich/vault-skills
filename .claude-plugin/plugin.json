@@ -1,7 +1,7 @@
 {
   "name": "second-cerveau",
   "description": "Second cerveau Obsidian pour dirigeants, piloté par Claude Code. Amorcer un vault PARA depuis une interview (interview-vault, kickstart-vault, kickstart-persona, vault-skill-creator, avec une persona Chief of Staff et son brief-du-jour posés par défaut), le faire vivre au quotidien (import-note, nouveau-projet, extraire-trame, gerer-area) et l'entretenir (sync-vault, sync-repo, audit-vault). Fonctionne sans aucun connecteur.",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": {
     "name": "Lucas Clément",
     "email": "lucas@devlc.co"

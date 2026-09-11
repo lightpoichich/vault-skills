@@ -89,9 +89,9 @@ Quatre hooks tournent dans toute session Claude Code et restent silencieux hors 
 | `vault-health.sh` | démarrage de session | bilan de santé injecté dans le contexte (Inbox qui traîne, notes sans `type`), purge des `.DS_Store` |
 | `vault-approve-imports.sh` | démarrage de session | approuve pour le dossier courant les imports du vault que Claude Code tiendrait sinon pour externes |
 | `vault-note-guard.sh` | après l'écriture d'une note | pose `created` et `updated` dans un frontmatter existant, signale un frontmatter absent ou un nom hors kebab-case |
-| `vault-sync-nudge.sh` | fin de tour | rappelle `sync-vault` depuis le vault, `sync-repo` depuis un dépôt relié, au-delà des seuils |
+| `vault-sync-nudge.sh` | fin de tour | rappelle `sync-vault` depuis le vault, `sync-repo` depuis un dépôt relié, au-delà des seuils ; silencieux dans un worktree git lié (sous-agent de ticket) |
 
-Réglages dans `{vault}/_Meta/hooks.conf` : `EXCLUDE`, `INBOX_STALE_DAYS`, `APPROVE_EXTERNAL_IMPORTS`, `SYNC_MIN_KB`, `SYNC_MIN_MINUTES`, `SYNC_NUDGE`. Le gabarit est dans `skills/kickstart-vault/assets/hooks/hooks.conf`.
+Réglages dans `{vault}/_Meta/hooks.conf` : `EXCLUDE`, `INBOX_STALE_DAYS`, `APPROVE_EXTERNAL_IMPORTS`, `SYNC_MIN_KB`, `SYNC_MIN_MINUTES`, `SYNC_NUDGE`, `SYNC_NUDGE_WORKTREES`. Le gabarit est dans `skills/kickstart-vault/assets/hooks/hooks.conf`.
 
 ## Principes de conception
 

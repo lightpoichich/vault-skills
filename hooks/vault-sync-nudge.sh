@@ -10,6 +10,7 @@
 #
 # Seuils, lus dans `{vault}/_Meta/hooks.conf` : SYNC_MIN_KB (40) de transcript écrits depuis le dernier sync ET
 # SYNC_MIN_MINUTES (20) écoulées. Opt-out : SYNC_NUDGE=0 (plus rien) ou SYNC_NUDGE=vault (pas depuis les dépôts).
+# Depuis un worktree git lié (sous-agent de ticket), pas de rappel sauf SYNC_NUDGE_WORKTREES=1.
 # Marqueur par session : ${XDG_CACHE_HOME:-~/.cache}/second-cerveau/sync-nudge/<session_id>
 # (contenu = taille du transcript au dernier sync, mtime = quand). Dépendances : bash + python3 (+ git côté dépôt).
 
@@ -30,6 +31,14 @@ case "$(vault_conf "$VAULT" SYNC_NUDGE 1)" in
   0|off|false|no|non) exit 0 ;;
   vault) [ "$MODE" = vault ] || exit 0 ;;
 esac
+
+# Worktree git lié (sous-agent de ticket : Paseo `~/.paseo/worktrees/`, `.claude/worktrees/`) : pas de rappel.
+# Plusieurs builders parallèles écriraient la même fiche projet ; l'orchestrateur, dans le checkout principal,
+# synchronise une fois. SYNC_NUDGE_WORKTREES=1 rétablit le rappel dans les worktrees.
+if [ "$MODE" = repo ] && [ "$(vault_conf "$VAULT" SYNC_NUDGE_WORKTREES 0)" != 1 ]; then
+  gd="$(git -C "$DIR" rev-parse --git-dir 2>/dev/null)"; gcd="$(git -C "$DIR" rev-parse --git-common-dir 2>/dev/null)"
+  if [ -n "$gd" ] && [ -n "$gcd" ] && [ "$(cd "$DIR" && cd "$gd" && pwd -P)" != "$(cd "$DIR" && cd "$gcd" && pwd -P)" ]; then exit 0; fi
+fi
 MIN_KB="$(vault_conf "$VAULT" SYNC_MIN_KB 40)"; MIN_MIN="$(vault_conf "$VAULT" SYNC_MIN_MINUTES 20)"
 
 dir="${XDG_CACHE_HOME:-$HOME/.cache}/second-cerveau/sync-nudge"; mkdir -p "$dir" 2>/dev/null || exit 0
