@@ -11,6 +11,7 @@
 #   SYNC_MIN_KB=40                  H4 : Ko de transcript écrits depuis le dernier sync avant de rappeler sync-vault / sync-repo
 #   SYNC_MIN_MINUTES=20             H4 : minutes écoulées depuis le dernier sync (les deux seuils doivent être atteints)
 #   SYNC_NUDGE=0|vault              H4 : 0 = aucun rappel ; vault = rappel depuis le vault seulement, pas depuis les dépôts
+#   SYNC_NUDGE_WORKTREES=1          H4 : rappeler aussi depuis un worktree git lié (par défaut, un worktree de ticket ne rappelle pas)
 
 # vault_root <chemin> → imprime la racine du vault contenant <chemin>, rien si aucune. Remonte jusqu'à /.
 vault_root() {
