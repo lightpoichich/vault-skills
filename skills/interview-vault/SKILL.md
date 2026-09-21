@@ -70,7 +70,7 @@ six fichiers ne sont pas écrits.
 | 1 | Contexte court : rôle, taille d'équipe, charge, ce qui pèse aujourd'hui | `contexte.md` |
 | 2 | Thèmes mentaux actuels : les sujets qui structurent déjà sa tête | `themes-actuels.md` |
 | 3 | Où vivent ses notes aujourd'hui (Notion, OneNote, fichiers `.md`, Apple Reminders, Projects Claude) | `notes-actuelles.md` |
-| 4 | Outils où vit l'information d'équipe (Slack, Notion, DataDog, Gmail, GitHub, Granola, Outlook) | `sources-equipe.md` |
+| 4 | Outils où vit l'information d'équipe (Slack, Notion, DataDog, Gmail, GitHub, Wispr Flow, Granola, Outlook) | `sources-equipe.md` |
 | 5 | Skills, MCP, slash commands, connecteurs déjà en place | `outillage-actuel.md` |
 | 6 | Trois à cinq chantiers transverses en cours | `chantiers-en-cours.md` |
 

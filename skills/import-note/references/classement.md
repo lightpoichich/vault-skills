@@ -18,7 +18,7 @@ tag 🔒 si sensible. C'est la règle renvoi-jamais-copie de `governance.md`.
 Deux cas particuliers :
 
 - **Renvoi d'emplacement** : l'endroit permanent où vit le corpus d'un projet ou d'une area (dossier
-  Drive du projet, workspace Notion, dossier Granola du client).
+  Drive du projet, workspace Notion, réunions Wispr Flow du client).
   - Le renvoi nomme le connecteur qui l'atteint, repris d'une ligne de `_Meta/sources.md` :
     « Dossier Drive {projet}, Livrables, via Google Drive ».
   - Il est wikilinké au projet ou à l'area (boucle de retour, section 5), pour que les skills y

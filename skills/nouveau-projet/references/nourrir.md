@@ -8,11 +8,11 @@ de l'utilisateur. On ne lui génère pas de brief.
 | Source du contexte | Comment l'attacher |
 |--------------------|--------------------|
 | Une note de `00-Inbox/` où l'idée a germé | la classer dans le projet via `import-note`, puis `[[lien]]` depuis la fiche |
-| La réunion où le projet a été décidé | connecteur déclaré dans `_Meta/sources.md` (Granola, agenda), sinon collage manuel, puis `import-note` |
+| La réunion où le projet a été décidé | connecteur déclaré dans `_Meta/sources.md` (Wispr Flow, agenda), sinon collage manuel, puis `import-note` |
 | Un fil d'emails, un doc, une URL | `import-note`, qui adapte l'acquisition à l'entrée |
 | Une Area parente ou un projet voisin déjà dans le vault | `[[wikilink]]` direct, pas de copie |
 | Une trame ou un doc de référence de `30-Resources/` | `[[wikilink]]` direct depuis la fiche projet, un à trois liens |
-| L'emplacement permanent du corpus (dossier Drive, workspace Notion, dossier Granola) | renvoi d'emplacement nommant le connecteur (`import-note/references/classement.md`), wikilinké au projet |
+| L'emplacement permanent du corpus (dossier Drive, workspace Notion, réunions Wispr Flow) | renvoi d'emplacement nommant le connecteur (`import-note/references/classement.md`), wikilinké au projet |
 
 ## Résolution des sources
 

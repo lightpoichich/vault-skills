@@ -83,7 +83,7 @@ Faire préciser sur quoi travaille la procédure, puis classer chaque entrée.
   `10-Projects/{slug}/`, `30-Resources/`), désignées par leur chemin, fiches liées en
   `[[wikilinks]]`.
 - Hors du vault : proposer un accès plutôt qu'un collage manuel à vie. Réunions par le connecteur
-  Granola ; mails par le connecteur Gmail ou Graph API, lecture seule souvent suffisante ; notes et
+  Wispr Flow (Notetaker) ; mails par le connecteur Gmail ou Graph API, lecture seule souvent suffisante ; notes et
   docs par le connecteur Notion ou un import vers le vault (`import-note`, collage cadré).
 - Ne pas forcer le montage d'un connecteur, budget API et droits IT étant des contraintes réelles.
   S'il n'est pas branché, faire tourner la procédure sur une entrée collée, noter `TODO : brancher
