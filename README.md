@@ -17,6 +17,8 @@ Dans Claude Code :
 
 ```
 /plugin marketplace add https://github.com/lightpoichich/vault-skills
+```
+```
 /plugin install second-cerveau@vault-skills
 ```
 
