@@ -12,6 +12,11 @@
 #   SYNC_MIN_MINUTES=20             H4 : minutes écoulées depuis le dernier sync (les deux seuils doivent être atteints)
 #   SYNC_NUDGE=0|vault              H4 : 0 = aucun rappel ; vault = rappel depuis le vault seulement, pas depuis les dossiers de travail
 #   SYNC_NUDGE_WORKTREES=1          H4 : rappeler aussi depuis un worktree git lié (par défaut, un worktree de ticket ne rappelle pas)
+#   JOURNAL_ROTATION=1              vault-journal.py : autorise la rotation écrite des journaux de fiche (0 par défaut)
+#   JOURNAL_MAX_KB_{TYPE}=Ko        budget de taille par type de fiche (AREA=20, PROJECT=30 par défaut) ; H1 signale le dépassement
+#   JOURNAL_MAX_KB=30               budget des autres types, seulement pour une fiche qui a une section de journal
+#   JOURNAL_SECTIONS=Journal        sections rotables (liste blanche) ; tout le reste de la fiche est protégé
+#   JOURNAL_KEEP=5                  entrées les plus récentes jamais déplacées, par section
 
 # vault_root <chemin> → imprime la racine du vault contenant <chemin>, rien si aucune. Remonte jusqu'à /.
 vault_root() {

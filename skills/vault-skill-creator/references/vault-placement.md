@@ -69,6 +69,9 @@ routine récurrente, avec son input, son action, son livrable et sa fréquence.
   - un savoir interne (fiche, résumé, synthèse) s'écrit directement à sa place PARA ;
   - relations en `[[wikilinks]]`, pas de chemin en dur dans le contenu ;
   - lecture de `_Meta/Schema.md` avant toute écriture de note ;
+  - un récit daté (réunion, échange, avancement) entre en tête de `## Journal` de la fiche, complet
+    et en ajout seul, selon la convention « État et journal » du Schema ; jamais dans une section
+    d'état ;
   - renvoi, jamais copie : une source externe se référence dans `30-Resources/references-externes/`
     par un lien et une ligne de contexte ;
   - marqueur 🔒 pour le sensible ; pas de donnée confidentielle hors des zones autorisées de la

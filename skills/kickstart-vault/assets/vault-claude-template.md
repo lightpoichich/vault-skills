@@ -43,11 +43,13 @@ professionnelle X uniquement ; le perso vit dans un vault séparé »}.
 ## Règle de travail : on pose le cadre, pas le contenu
 On ne remplit pas les fiches à la main. Le contenu entre par l'usage : les personas écrivent, les
 notes externes entrent quand un besoin se présente. Une fiche vide mais bien structurée est normale.
+Une fiche tient son état courant dans ses sections et son récit daté dans `## Journal`, en ajout
+seul (convention « État et journal » du Schema) : rien ne s'y résume ni ne s'y perd.
 
 ## Garde-fous automatiques
 Quatre automatismes veillent sur le vault ; rien à lancer (réglages : `_Meta/hooks.conf`).
-- **Au démarrage** : un bilan rapide s'il y a de quoi (Inbox qui traîne, notes sans `type`,
-  `.DS_Store` nettoyés), et l'approbation des règles du vault pour une session lancée depuis une
+- **Au démarrage** : un bilan rapide s'il y a de quoi (Inbox qui traîne, notes sans `type`, fiches
+  au-dessus de leur budget de taille, `.DS_Store` nettoyés), et l'approbation des règles du vault pour une session lancée depuis une
   persona ou un dossier de travail.
 - **Quand une note est écrite** : dates `created`/`updated` posées seules ; rappel si frontmatter
   absent ou nom hors kebab-case.

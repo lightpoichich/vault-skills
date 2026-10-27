@@ -47,6 +47,29 @@ lit : une persona (`grep` du chemin de l'area dans les `_personas/*/CLAUDE.md`) 
 | Zone de persona invalide | un chemin déclaré dans les zones d'un `_personas/*/CLAUDE.md` qui ne correspond à aucun dossier | critique | C : créer l'area ou retirer la ligne ; la persona est source de vérité de son périmètre |
 | Persona sans zone | persona dont plus aucune zone ne résout | critique | C |
 
+## Taille des fiches
+
+Source : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-journal.py" check` (JSON, lecture seule). Budgets
+et sections de journal lus dans `_Meta/hooks.conf` (`JOURNAL_MAX_KB_{TYPE}`, `JOURNAL_SECTIONS`).
+
+| Check | Heuristique | Sévérité | Lot |
+|---|---|---|---|
+| Fiche au-dessus du budget, rotable | `over[]` avec `entries` > 0 ; les `warnings` (entrées épinglées sans date en tête, liens relatifs) se recopient au rapport | alerte | A : `vault-journal.py rotate` en simulation dans le rapport, puis `rotate --apply --force` sur les fiches validées. Le script déplace mot pour mot et vérifie la non-perte |
+| Fiche au-dessus du budget, bloquée | `over[]` avec `blocked` : pas de section de journal, bloc de code non fermé ou qui déborde de son entrée, section qui mêle puces et `###`, paragraphe intercalé, ou fiche qui reste au-dessus du budget après rotation (sections protégées ou entrées sans date trop lourdes). Une fiche peut relever des deux lignes : rotation d'abord, restructuration ensuite | alerte | C : restructuration assistée, ci-dessous |
+| Skill de vault qui écrit un récit daté hors journal | `SKILL.md` d'un skill du vault (racine ou `_personas/*/.claude/skills/`) qui ajoute des entrées datées dans une section d'état (`## Suivi`, `## Réunions`, `## Discussions`) | info | C : aligner le skill sur la règle `## Journal` du Schema |
+
+Restructuration assistée d'une fiche bloquée, une fiche à la fois, après validation de son plan :
+1. Copier la fiche hors du vault (`/tmp/{slug}.avant.md`).
+2. Proposer la restructuration : le récit daté passe dans `## Journal` (par exemple un `## Suivi`
+   devenu journal est renommé, et un `## Suivi` court réécrit l'état courant), chaque entrée reçoit
+   sa date complète en tête (`AAAA-MM-JJ`, année comprise : une date `JJ/MM` reprise du titre se
+   complète d'après le contexte, et se demande à l'humain en cas de doute), les sections mixtes
+   sont séparées. Aucun texte n'est résumé ni retiré.
+3. Après écriture, contrôler :
+   `vault-journal.py verify --loose --before /tmp/{slug}.avant.md --after {fiche}`. Une ligne
+   manquante annule la restructuration : restaurer la copie et signaler.
+4. Lancer ensuite la rotation en simulation, puis en écriture sur validation.
+
 Hors audit, territoire de `sync-vault` : candidats à trame, ressources à indexer dans `_index.md`,
 renvois externes périmés, fiches verbeuses à consolider.
 

@@ -50,7 +50,8 @@ Lire ensuite `_Meta/Schema.md` du vault trouvé.
 Pour chaque fiche écrite : intégrer les faits nouveaux à la bonne section, remplacer le périmé,
 fusionner les redites, élaguer le bruit en préservant décisions et raison, statut courant,
 engagements vivants et wikilinks. Quoi intégrer, garder et élaguer : `references/curation.md`,
-sections 1 à 3. Les hooks du vault posent `updated`.
+sections 1 à 3. Le récit daté (réunion, avancement, échange) ne s'élague pas : il entre complet en
+tête de `## Journal`, en ajout seul (`curation.md`, section 7). Les hooks du vault posent `updated`.
 
 ### 4. Rendre compte
 Résumer après coup, avec le contenu que la référence du mode demande. Si rien de substantiel n'a

@@ -19,7 +19,10 @@ cd "$VAULT" 2>/dev/null || exit 0
 DSSTORE=$(find . -type f -name '.DS_Store' 2>/dev/null | wc -l | tr -d ' ')
 [ "${DSSTORE:-0}" -gt 0 ] && find . -type f -name '.DS_Store' -delete 2>/dev/null
 
-DSSTORE="$DSSTORE" \
+# Fiches au-dessus de leur budget de taille (rotation des journaux, voir vault-journal.py) : signalement seul.
+JOURNAL_SUMMARY="$(python3 "$(dirname "$0")/vault-journal.py" check --vault "$VAULT" --summary 2>/dev/null)"
+
+DSSTORE="$DSSTORE" JOURNAL_SUMMARY="$JOURNAL_SUMMARY" \
 INBOX_STALE_DAYS="$(vault_conf "$VAULT" INBOX_STALE_DAYS 14)" \
 EXCLUDE="$(vault_conf "$VAULT" EXCLUDE "")" \
 python3 <<'PY'
@@ -83,6 +86,7 @@ if inbox_count and inbox_oldest >= stale_days:
 if no_type: segs.append(f"{no_type} sans type")
 if stray: segs.append(f"{stray} .md égaré(s) à la racine")
 if dsstore: segs.append(f"{dsstore} .DS_Store purgé(s)")
+if os.environ.get("JOURNAL_SUMMARY"): segs.append(os.environ["JOURNAL_SUMMARY"])
 if not segs:
     raise SystemExit(0)  # vault sain : pas de bruit
 

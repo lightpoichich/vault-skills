@@ -51,7 +51,7 @@ Le plugin installe quatre hooks, actifs dans toute session Claude Code. Hors d'u
 
 | Hook | Événement | Rôle |
 |---|---|---|
-| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`) et supprime les fichiers `.DS_Store` |
+| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`, fiches au-dessus de leur budget de taille) et supprime les fichiers `.DS_Store` |
 | `vault-approve-imports.sh` | démarrage de session | approuve pour le dossier courant les imports du vault, que Claude Code ignorerait sinon comme imports externes |
 | `vault-note-guard.sh` | après l'écriture d'une note | renseigne `created` et `updated` dans un frontmatter existant, signale un frontmatter absent ou un nom de fichier hors kebab-case |
 | `vault-sync-nudge.sh` | fin de tour | demande une fois `sync-vault` depuis le vault ou depuis un dossier de travail relié, quand les seuils de volume et de durée sont atteints ; aucun rappel depuis un worktree git lié |
@@ -65,7 +65,24 @@ Les réglages se placent dans `{vault}/_Meta/hooks.conf`. `kickstart-vault` y co
 - **`APPROVE_EXTERNAL_IMPORTS`** : la valeur `0` désactive l'approbation automatique des imports.
 - **`SYNC_MIN_KB`** et **`SYNC_MIN_MINUTES`** : seuils du rappel de synchronisation, 40 Ko de transcript et 20 minutes depuis la dernière synchronisation par défaut. Les deux seuils doivent être atteints.
 - **`SYNC_NUDGE`** : la valeur `0` supprime le rappel, la valeur `vault` le limite aux sessions ouvertes dans le vault.
+- **`JOURNAL_ROTATION`**, **`JOURNAL_MAX_KB_{TYPE}`**, **`JOURNAL_MAX_KB`**, **`JOURNAL_SECTIONS`**, **`JOURNAL_KEEP`** : rotation des journaux de fiche, voir plus bas. Sans ces clés : rotation coupée, 20 Ko pour une area, 30 Ko pour un projet, section `Journal`, 5 entrées gardées. Le gabarit `hooks.conf` de `kickstart-vault` pose `JOURNAL_ROTATION=1` : un nouveau vault a la rotation active.
 - **`SYNC_NUDGE_WORKTREES`** : la valeur `1` rétablit le rappel dans les worktrees git liés. Par défaut, les sous-agents qui traitent des tickets en parallèle dans des worktrees ne reçoivent pas de rappel, et l'orchestrateur synchronise une seule fois depuis le checkout principal.
+
+### Rotation des journaux de fiche
+
+Une fiche d'area ou de projet tient son état courant dans ses sections ordinaires et son récit daté dans `## Journal`, en ajout seul. Quand elle dépasse son budget de taille, `hooks/vault-journal.py` sort les entrées les plus anciennes, mot pour mot, vers `{dossier de la fiche}/journal/{slug}-{AAAA}-T{n}.md`, et tient l'index `## Journaux` en fin de fiche. Le script n'utilise pas de modèle de langage.
+
+- **Commandes** : `vault-journal.py check` liste les fiches au-dessus du budget : `blocked` dit ce qui empêche d'y revenir, `warnings` ce qui reste signalé sans bloquer. `vault-journal.py rotate {fiche}` simule ; `--apply` écrit, et seulement si `JOURNAL_ROTATION=1` (ou `--force`). `vault-journal.py verify --before {copie} --after {fichiers}` vérifie qu'aucune ligne n'a été perdue. `--loose` tolère un titre d'étiquette de structure renommé (Suivi, Réunions, Notes…) et une ligne d'au moins 12 caractères complétée sur place ; une ligne plus courte doit se retrouver à l'identique.
+- **Ce qui bouge** : une entrée est une puce de premier niveau avec ses sous-lignes, ou un bloc `###`. Seules les sections listées dans `JOURNAL_SECTIONS` sont rotables. La date d'une entrée est celle qui ouvre sa ligne de tête, avec l'année (`AAAA-MM-JJ` ou `JJ/MM/AAAA`). Une entrée sans cette date (absente, sans année, placée plus loin dans le titre, ou à plus d'un an de ses deux voisines) reste dans la fiche et se signale. Une section ne bouge pas si un `###` suit des entrées en puces, si une puce datée apparaît sous un `###`, ou si un paragraphe ou un bloc de code s'intercale en colonne 0 entre deux entrées. Une fiche dont un bloc de code reste ouvert, ou déborde de son entrée, ne bouge pas du tout.
+- **Sûreté** : la fiche réduite, entrées réinsérées, doit redonner l'original à l'octet près, et chaque ligne doit se retrouver dans la fiche ou ses journaux. Une copie des fichiers touchés va dans `${XDG_STATE_HOME:-~/.local/state}/second-cerveau/rotation/`. Le contenu de la fiche et des journaux est comparé à la lecture avant le commit, puis après l'écriture sur disque du fichier temporaire, juste avant chaque remplacement : une modification concurrente annule tout, journaux déjà écrits compris. Seule reste la fenêtre de quelques microsecondes entre ce contrôle et le remplacement. L'écriture passe par un fichier temporaire synchronisé sur disque, et garde les droits du fichier remplacé. Dans un vault git, seuls les chemins touchés sont commités, avant et après.
+- **Déclenchement** : `sync-vault`, en mode vault, lance la rotation sur les fiches qu'il vient d'écrire. Une planification reste possible, par cron ou par une routine Paseo, en appelant le script du plugin installé :
+
+```bash
+PLUGIN="$(python3 -c 'import json,os;d=json.load(open(os.path.expanduser("~/.claude/plugins/installed_plugins.json")));print(d["plugins"]["second-cerveau@vault-skills"][0]["installPath"])')"
+python3 "$PLUGIN/hooks/vault-journal.py" rotate --apply --all --vault ~/vault
+```
+
+Le chemin du plugin change à chaque version, d'où la lecture de `installPath` plutôt qu'un chemin écrit en dur.
 
 ### Synchronisation git d'un vault partagé
 
@@ -103,7 +120,7 @@ Chaque entrée reprend mot pour mot la description du `SKILL.md`, c'est-à-dire 
 
 - **`extraire-trame`** : Capitalise une pratique récurrente du vault en trame réutilisable dans 30-Resources/ : retrouve les occurrences réelles, Archive comprise, en extrait la forme commune sans rien inventer, la range dans la bonne sous-zone et la lie à ses fiches sources. Propose la généralisation et attend la validation avant d'écrire. S'utilise quand l'utilisateur dit « ça, je le refais à chaque fois », « fais-en une trame », « on a déjà fait ça trois fois », « capitalise cette méthode », ou reprend un candidat signalé par sync-vault. Pour un modèle qui existe déjà hors du vault, voir import-note.
 - **`gerer-area`** : Gère le cycle de vie d'une area dans un vault déjà vivant : crée une nouvelle responsabilité (20-Areas/{slug}/ et fiche conforme au Schema), complète un shell vide, renomme, scinde, fusionne ou archive une area dont la responsabilité a disparu. Exécute un geste demandé ; le diagnostic appartient à audit-vault. S'utilise quand l'utilisateur dit « crée une area », « renomme / scinde / fusionne l'area X », « archive l'area X », « cette responsabilité n'existe plus », « l'area X est vide », ou reprend une suggestion d'audit. Pour scaffolder le vault entier, voir kickstart-vault.
-- **`audit-vault`** : Contrôle technique d'un vault Obsidian PARA : wikilinks cassés, fiches orphelines, frontmatter hors Schema, noms hors kebab-case, pollution, Inbox stale, projets à archiver, areas mortes ou sans consommateur, zones de personas invalides. Produit un rapport daté dans 00-Inbox/ puis propose le traitement par lots, sans écrire avant validation. S'utilise quand l'utilisateur dit « audit du vault », « fais le ménage », « fais le point sur le vault », « qu'est-ce qui traîne », « c'est le bazar », « wikilinks cassés », ou sur rituel mensuel. Pour répercuter la session en cours dans les fiches, voir sync-vault.
+- **`audit-vault`** : Contrôle technique d'un vault Obsidian PARA : wikilinks cassés, fiches orphelines, frontmatter hors Schema, noms hors kebab-case, pollution, Inbox stale, projets à archiver, areas mortes ou sans consommateur, personas invalides, fiches trop lourdes. Produit un rapport daté dans 00-Inbox/ puis propose le traitement par lots, sans écrire avant validation. S'utilise quand l'utilisateur dit « audit du vault », « fais le ménage », « c'est le bazar », « wikilinks cassés », « cette fiche est trop lourde », ou sur rituel mensuel. Pour répercuter la session en cours dans les fiches, voir sync-vault.
 <!-- SKILLS:END -->
 
 ## Attribution

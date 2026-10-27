@@ -65,7 +65,7 @@ Lire le contrat `area` de `_Meta/Schema.md`, puis demander en une fois :
 
 ### 4. Poser le shell (ou combler les trous)
 - Créer `20-Areas/{slug}/{slug}.md`, jamais une fiche à plat. Frontmatter `type: area` rempli avec
-  les invariants, titre, ligne de responsabilité, section `## Notes` vide. Laisser les hooks du
+  les invariants, titre, ligne de responsabilité, sections `## Notes` et `## Journal` vides. Laisser les hooks du
   vault poser `created` et `updated`.
 - **Mode compléter** (shell posé par `kickstart-vault`) : comparer la fiche au contrat `area` du
   Schema, demander seulement les invariants manquants, remplir uniquement les champs et sections

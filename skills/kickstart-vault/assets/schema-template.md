@@ -24,6 +24,13 @@ updated: {YYYY-MM-DD}
 - **Pas de note datée à plat** à la racine d'un projet : sa place est `meetings/` ou `research/`.
 - **Racine d'une area** : ses référentiels courants seulement ; les flux (réunions, dossiers, posts,
   briefs) vivent en sous-dossiers ; l'historique clos part en `40-Archive/`.
+- **État et journal** : une fiche d'area ou de projet sépare son état courant (sections ordinaires,
+  réécrites à chaque mise à jour) de son récit daté (section `## Journal`). Tout skill qui écrit dans
+  une fiche, du plugin ou propre au vault, suit la même règle : une entrée par événement, en tête de
+  `## Journal`, au format `- **{AAAA-MM-JJ} : {titre}.**` suivi du détail complet en sous-puces ;
+  ajout seul, jamais de réécriture d'une entrée passée. Quand la fiche dépasse son budget de taille
+  (`_Meta/hooks.conf`), les entrées anciennes sortent mot pour mot vers
+  `{dossier de la fiche}/journal/{slug}-{AAAA}-T{n}.md` ; la fiche en garde l'index `## Journaux`.
 
 ## Types de fiches
 
@@ -52,6 +59,15 @@ area: "[[{area liée}]]"
 repo: { URL du remote git[#sous-dossier] }        # optionnel, clé portable entre machines
 dossier-travail: { chemin absolu | [chemin, chemin] }  # optionnel, un chemin par poste
 tags: [project]
+```
+
+### `journal` : entrées sorties d'une fiche par rotation
+Écrit par `hooks/vault-journal.py`, jamais à la main ni par un skill. Lu à la demande depuis l'index
+`## Journaux` de la fiche source. Hérite de la sensibilité de sa source.
+```yaml
+type: journal
+source: "[[{slug de la fiche}]]"
+periode: {AAAA-Tn}
 ```
 
 ### `meeting`

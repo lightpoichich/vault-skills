@@ -56,8 +56,8 @@ Demander à l'utilisateur, en une fois, ce qui remplit le frontmatter `type: pro
 - Frontmatter `type: project` rempli avec les invariants de l'étape 2 : `status: active`,
   `deadline`, `livrable`, `parties-prenantes`, `area: "[[{area}]]"`, `tags: [project]`. Les hooks du
   vault posent `created` et `updated`.
-- Corps : titre, une ligne de résumé, puis trois sections vides : `## Objectif`, `## Suivi`,
-  `## Décisions`.
+- Corps : titre, une ligne de résumé, puis quatre sections vides : `## Objectif`, `## Suivi`,
+  `## Décisions`, `## Journal`.
 - Relier le dossier de travail noté à l'étape 1 : suivre la checklist de
   `references/liaison-depot.md`. En mode compléter, elle s'applique aussi à une fiche sans `repo:`
   ni `dossier-travail:`, ou reliée depuis un autre poste.

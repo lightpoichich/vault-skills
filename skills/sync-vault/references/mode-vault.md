@@ -42,6 +42,13 @@ Le vault est le fonds ; la mémoire native est le rappel chargé au démarrage d
 - Garder `MEMORY.md` court, même discipline que pour les fiches. Emplacement, plafond et contenu
   attendu : `memoire-claude-code.md`.
 
-## 6. Rendre compte
+## 6. Faire tourner les journaux
+Si `_Meta/hooks.conf` porte `JOURNAL_ROTATION=1`, lancer sur les fiches écrites pendant ce passage :
+`python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-journal.py" rotate --apply {fiche…}`. Le script ne touche
+qu'aux fiches au-dessus de leur budget, déplace mot pour mot et vérifie la non-perte avant d'écrire.
+Ne jamais déplacer d'entrée à la main. Sans `JOURNAL_ROTATION=1`, ne rien lancer.
+
+## 7. Rendre compte
 Fiches mises à jour, consolidées et élaguées, sections « À répercuter » vidées, drafts curés,
-signalements Resources, entrées de mémoire : chemins et nature des changements.
+signalements Resources, entrées de mémoire, rotation (entrées déplacées et blocages rendus par le
+script) : chemins et nature des changements.

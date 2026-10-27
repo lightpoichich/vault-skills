@@ -22,6 +22,9 @@ vault).
 ## 3. Écrire la fiche
 - `## Suivi` : l'état courant en quelques lignes datées (où on en est, prochain pas, blocage).
   Remplacer, ne pas empiler ; le `## Suivi` décrit l'état courant, pas l'historique des sessions.
+- `## Journal` : une entrée datée et complète en tête, pour le récit de la session (ce qui a été
+  fait, constaté, échangé). Ajout seul, format de `curation.md`, section 7. Pas de rotation dans ce
+  mode : le passage suivant depuis le vault s'en charge.
 - `## Décisions` : une ligne par décision nouvelle, avec la raison. Les décisions existantes ne
   bougent pas, sauf revirement explicite.
 - Todos : cocher le fait, ajouter le né, retirer le périmé.
