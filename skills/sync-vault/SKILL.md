@@ -1,86 +1,75 @@
 ---
 name: sync-vault
 description: >-
-  Met à jour et consolide les fiches du vault à partir de la conversation en cours : décisions,
-  statuts, todos, faits nouveaux, sections « À répercuter », sas 00-Inbox/_drafts/ et mémoire native
-  de Claude Code. Agit sans validation et réécrit plutôt qu'empiler. S'utilise quand l'utilisateur dit
-  « sync le vault », « mets à jour le vault », « répercute ce qu'on a décidé », « allège le vault »,
-  ou sur rappel du hook Stop en fin de tour. Depuis un dépôt de code, sync-repo s'applique à la place.
+  Met à jour et consolide les fiches du vault à partir de la conversation en cours. Depuis le vault :
+  décisions, statuts, todos, sections « À répercuter », sas 00-Inbox/_drafts/ et mémoire native de
+  Claude Code. Depuis un dossier de travail relié à un projet, dépôt de code ou dossier sans git : la
+  seule fiche projet, le reste déposé en « À répercuter ». Agit sans validation et réécrit plutôt
+  qu'empiler. S'utilise quand l'utilisateur dit « sync le vault », « sync le projet », « mets à jour
+  la fiche projet », « répercute ce qu'on a décidé », ou sur rappel du hook Stop en fin de tour.
 ---
 
 # Sync vault
 
+Un seul skill de répercussion, deux modes. Le mode vient du script de résolution, jamais d'une
+déduction : depuis le vault, toutes les fiches ; depuis un dossier de travail relié, la seule fiche
+projet.
+
 ## Entrées attendues
 - La conversation en cours : décisions, statuts, todos, faits et contacts nouveaux. C'est le signal
-  premier ; les commits récents du vault, s'il a un dépôt git, le complètent sans être requis.
-- Les sections `## À répercuter` déposées par `sync-repo` dans les fiches projet.
-- Le sas `00-Inbox/_drafts/`, le dossier `30-Resources/` et le dossier mémoire de Claude Code.
+  premier dans les deux modes.
+- Le mode et la fiche rendus par `hooks/vault-resolve.py`.
+- En mode vault : les sections `## À répercuter` des fiches projet, le sas `00-Inbox/_drafts/`,
+  `30-Resources/` et le dossier mémoire de Claude Code. En mode projet : la fiche résolue et, dans
+  un dépôt git, son historique.
 
 ## Procédure
 
-### 1. Localiser le vault
-Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
-(`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
-un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
-`~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé. Si `mode` vaut `repo`, le
-geste attendu est `sync-repo` : le dire et s'arrêter.
+### 1. Résoudre le mode
+`python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode` (`vault`, `projet`,
+`none`), `vault` (racine), `sheet` (fiche projet), `repo` (remote `origin`, vide hors dépôt git),
+`subpath` et `match`.
 
-### 2. Repérer ce qui a bougé et ce qui dérive
-- Les mouvements du travail : décisions, changements de statut, deadlines, todos nés ou faits, faits
-  et contacts nouveaux.
-- Les sections `## À répercuter` des fiches projet (`Grep` sur `10-Projects/`) : chaque ligne vise
-  une autre fiche (client, area, ressource, mémoire). Les traiter, puis retirer la section une fois
-  vide.
-- Les fiches qui se sont chargées : sections redondantes, informations périmées, todos faits depuis
-  longtemps, verbiage.
-- Une source externe à réconcilier (un transcript, par exemple) : lire `_Meta/sources.md` et
-  appliquer sa règle de résolution. Tenir le registre vrai dans les deux sens, sur joignabilité
-  constatée dans la session : `references/curation.md`, section 4.
+Si `CLAUDE_PLUGIN_ROOT` est inconnu, appliquer la règle décrite dans la docstring du script :
+- dans le vault : un ancêtre du dossier contient `_Meta/` ;
+- sinon, vault : cibles des `@imports` du `CLAUDE.md` du dossier, sinon chemin absolu déclaré dans
+  `~/.claude/CLAUDE.md`, sinon `~/vault` ;
+- fiche : `repo:` égal au remote `origin` normalisé, sinon un `dossier-travail:` égal au dossier ou
+  à un ancêtre, sinon, dans un dépôt git seulement, slug égal au nom du dossier.
 
-### 3. Réconcilier et consolider
-Pour chaque fiche concernée (`Glob` ou `Grep` pour la retrouver, `_Meta/Schema.md` pour son type) :
-intégrer les faits nouveaux à la bonne section, remplacer le périmé, fusionner les redites, élaguer
-le bruit en préservant décisions, statut courant, engagements vivants et wikilinks. Quoi intégrer,
-garder et élaguer : `references/curation.md`, sections 1 à 3.
+Lire ensuite `_Meta/Schema.md` du vault trouvé.
 
-### 4. Écrire
-Appliquer directement : frontmatter mis à jour, sections réécrites ou fusionnées, élagages. Les
-hooks du vault posent `updated`.
+### 2. Suivre le mode
+- `mode: vault` : dérouler `references/mode-vault.md`.
+- `mode: projet` : dérouler `references/mode-projet.md`. Une seule fiche est écrite, `sheet` ; ce
+  qui concerne une autre fiche va dans sa section `## À répercuter`.
+- `mode: none` : aucune fiche reliée. Proposer `nouveau-projet` (mode compléter si le projet existe
+  sous un autre nom, sinon naître) et s'arrêter sans rien écrire.
 
-### 5. Curer le sas `00-Inbox/_drafts/`
-Les drafts sont des livrables sortants, pas du savoir. `sync-vault` gère leur sortie du sas
-(archiver l'envoyé en trace sur son `lien`, archiver l'abandonné), jamais leur validation ni leur
-envoi. États, seuils et gestes : `references/curation.md`, section 6.
+### 3. Curer en écrivant
+Pour chaque fiche écrite : intégrer les faits nouveaux à la bonne section, remplacer le périmé,
+fusionner les redites, élaguer le bruit en préservant décisions et raison, statut courant,
+engagements vivants et wikilinks. Quoi intégrer, garder et élaguer : `references/curation.md`,
+sections 1 à 3. Les hooks du vault posent `updated`.
 
-### 6. Veiller sur `30-Resources/`
-Tenue de registre autonome : `_index.md` cochés, wikilinks cassés réparés, liens bidirectionnels
-maintenus sur les ressources touchées par la session. Le reste (candidats à trame, orphelines,
-renvois périmés) se signale au compte-rendu sans action. Détail dans `references/curation.md`,
-section 5.
-
-### 7. Alimenter la mémoire native de Claude Code
-Le vault est le fonds ; la mémoire native est le rappel chargé au démarrage de chaque session.
-- Vérifier que la mémoire auto est active. Si elle ne l'est pas, le signaler à l'utilisateur en une
-  ligne et ne pas éditer `settings.json`.
-- Distiller dans `MEMORY.md` et ses fichiers thématiques l'essentiel transversal qu'une persona doit
-  savoir dès le démarrage : priorités courantes, statut des projets actifs en une ligne, décisions
-  et préférences durables, qui-est-qui.
-- Garder `MEMORY.md` court, même discipline que pour les fiches. Emplacement, plafond et contenu
-  attendu : `references/memoire-claude-code.md`.
-
-### 8. Rendre compte
-Résumer après coup : fiches mises à jour, consolidées et élaguées, drafts curés, signalements
-Resources, entrées de mémoire (chemins et nature des changements). Si rien n'a bougé et qu'aucune
-fiche n'a besoin d'être allégée, le dire en une ligne et s'arrêter.
+### 4. Rendre compte
+Résumer après coup, avec le contenu que la référence du mode demande. Si rien de substantiel n'a
+bougé et qu'aucune fiche n'a besoin d'être allégée, le dire en une ligne et ne rien écrire.
 
 ## Garde-fous
 - Autonome : décider et écrire sans validation préalable, rendre compte après. Écraser, fusionner et
   réécrire sont autorisés ; empiler ne l'est pas.
 - Règle du doute : un élément dont l'importance est incertaine se garde.
-- Le sensible 🔒 ne se copie ni dans une fiche ni en mémoire ; renvoi seulement (`governance.md`).
+- Pas de fiche inventée : sans fiche résolue en mode projet, proposer `nouveau-projet`.
+- Le sensible 🔒 ne se copie ni dans une fiche, ni dans « À répercuter », ni en mémoire ; renvoi
+  seulement (`governance.md`).
 - Respecter le contrat de `_Meta/Schema.md` pour tout frontmatter touché.
 
 ## Références
+- `references/mode-vault.md` : procédure depuis le vault (sections « À répercuter », sas des drafts,
+  `30-Resources/`, mémoire native).
+- `references/mode-projet.md` : procédure depuis un dossier de travail relié (la fiche projet seule,
+  historique git s'il existe, dépôt dans « À répercuter »).
 - `references/curation.md` : quoi intégrer, garder et élaguer ; registre des sources ; veille de
   `30-Resources/` ; curation des drafts avec ses seuils.
 - `references/memoire-claude-code.md` : où vit la mémoire native, comment vérifier qu'elle est

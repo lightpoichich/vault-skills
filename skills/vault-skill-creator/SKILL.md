@@ -38,7 +38,7 @@ assertion » se définissent en une proposition si rien n'indique qu'il les conn
 tableau des tiers, backlog, conventions du skill généré, portage d'un skill Desktop.
 
 1. Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
-   (`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter
+   (`vault`, `projet`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter
    jusqu'à un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
    `~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé.
 2. Si `mode` n'est pas `vault`, placer le skill où l'utilisateur le demande (par défaut

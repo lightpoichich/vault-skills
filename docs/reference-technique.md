@@ -1,11 +1,11 @@
 # Référence technique
 
-Cette page complète le [README](../README.md) pour la personne qui installe, règle ou fait évoluer le plugin. Elle décrit les hooks, leurs réglages, la liaison entre un dépôt de code et sa fiche projet, et la description de chaque skill.
+Cette page complète le [README](../README.md) pour la personne qui installe, règle ou fait évoluer le plugin. Elle décrit les hooks, leurs réglages, la liaison entre un dossier de travail et sa fiche projet, et la description de chaque skill.
 
 ## Dépendances
 
 - **bash et python3** : les hooks et le script `hooks/vault-resolve.py` en dépendent. `jq` n'est pas requis.
-- **git** : nécessaire pour relier un dépôt de code à sa fiche projet.
+- **git** : nécessaire pour relier un dépôt de code à sa fiche par `repo:`. Un dossier sans git se relie par `dossier-travail:`.
 
 ## Installation manuelle
 
@@ -18,7 +18,7 @@ Relancer ensuite Claude Code. Cette voie installe les skills seuls. Les quatre h
 
 ## Cycle de vie d'un vault
 
-Les skills couvrent trois phases. L'amorçage se fait une fois, dans l'ordre, et chaque skill consomme la sortie du précédent. L'usage quotidien suit une boucle ouverte le matin par `brief-du-jour` et refermée en fin de session par `sync-vault` ou `sync-repo`. L'entretien répond à un événement, à l'exception d'`audit-vault`, prévu en rituel mensuel.
+Les skills couvrent trois phases. L'amorçage se fait une fois, dans l'ordre, et chaque skill consomme la sortie du précédent. L'usage quotidien suit une boucle ouverte le matin par `brief-du-jour` et refermée en fin de session par `sync-vault`. L'entretien répond à un événement, à l'exception d'`audit-vault`, prévu en rituel mensuel.
 
 | Phase | Skill | Déclencheur | Résultat |
 |---|---|---|---|
@@ -28,33 +28,33 @@ Les skills couvrent trois phases. L'amorçage se fait une fois, dans l'ordre, et
 | Amorçage | `vault-skill-creator` | routine récurrente d'une persona | skill rangé dans la persona ou à la racine du vault |
 | Usage quotidien | `brief-du-jour` | le matin | brief daté : priorités, alertes, agenda, todos, éléments à valider |
 | Usage quotidien | `import-note` | note, URL ou document à ranger | note classée dans la zone PARA adéquate |
-| Usage quotidien | `nouveau-projet` | ouverture d'un chantier | fiche projet reliée à son area et à son dépôt de code |
-| Usage quotidien | `sync-vault` | fin de session dans le vault | décisions, statuts et todos répercutés dans les fiches |
-| Usage quotidien | `sync-repo` | fin de session dans un dépôt de code | même répercussion, limitée à la fiche projet du dépôt |
+| Usage quotidien | `nouveau-projet` | ouverture d'un chantier | fiche projet reliée à son area et à son dossier de travail |
+| Usage quotidien | `sync-vault` | fin de session dans le vault ou dans un dossier de travail relié | décisions, statuts et todos répercutés dans les fiches ; depuis un dossier de travail, dans la seule fiche projet |
 | Entretien | `extraire-trame` | pratique répétée au moins deux fois | trame réutilisable dans `30-Resources/` |
 | Entretien | `gerer-area` | responsabilité créée, scindée, fusionnée ou disparue | area créée, renommée, scindée, fusionnée ou archivée |
 | Entretien | `audit-vault` | rituel mensuel | rapport daté dans `00-Inbox/`, puis traitement par lots après validation |
 
 `brief-du-jour` ne figure pas dans `skills/`. Il est livré dans les assets de `kickstart-vault`, qui le dépose dans la persona Chief of Staff au moment du scaffold. Il ne s'active que depuis cette persona.
 
-## Travail depuis un dépôt de code
+## Travail depuis un dossier de travail
 
-Les skills d'usage quotidien fonctionnent aussi depuis un dossier situé hors du vault, par exemple le dépôt de code d'un projet client. Le script `hooks/vault-resolve.py` localise le vault et la fiche projet correspondante, en lecture seule.
+Les skills d'usage quotidien fonctionnent aussi depuis un dossier situé hors du vault : le dépôt de code d'un projet client, ou un dossier sans git (OneDrive, Documents). Le script `hooks/vault-resolve.py` localise le vault et la fiche projet correspondante, en lecture seule.
 
 - **Localisation du vault** : le script lit d'abord les `@imports` du `CLAUDE.md` du dossier et de ses dossiers parents, puis les `@imports` et les chemins absolus cités dans `~/.claude/CLAUDE.md`, puis `~/vault`.
-- **Localisation de la fiche projet** : dans `10-Projects/`, le script retient d'abord la fiche dont le champ `repo:` correspond au remote `origin` du dépôt, puis celle dont le champ `dossier-travail:` correspond au dossier, puis celle dont le slug correspond au nom du dossier.
+- **Localisation de la fiche projet** : dans `10-Projects/`, le script retient d'abord la fiche dont le champ `repo:` correspond au remote `origin` du dépôt, puis celle dont le champ `dossier-travail:` contient le dossier ou un de ses parents, puis, dans un dépôt git seulement, celle dont le slug correspond au nom du dossier. Hors git, seul `dossier-travail:` relie : un dossier nommé comme une fiche ne s'y relie pas par hasard.
 - **Liaison** : `nouveau-projet` pose les champs `repo:` et `dossier-travail:` dans la fiche. Un projet situé dans un sous-dossier du dépôt porte le suffixe `#sous-dossier`, par exemple `https://github.com/org/repo#apps/api`.
+- **Plusieurs postes** : `dossier-travail:` accepte une liste, un chemin par poste, par exemple `dossier-travail: [/Users/x/OneDrive/Client, /mnt/c/Users/x/OneDrive/Client]`. Lancé depuis un nouveau poste, `nouveau-projet` ajoute le chemin courant. Un chemin égal au dossier personnel ou à l'un de ses parents est ignoré.
 
 ## Hooks du plugin
 
-Le plugin installe quatre hooks, actifs dans toute session Claude Code. Hors d'un vault ou d'un dépôt relié à un vault, ils ne produisent rien.
+Le plugin installe quatre hooks, actifs dans toute session Claude Code. Hors d'un vault ou d'un dossier relié à un vault, ils ne produisent rien.
 
 | Hook | Événement | Rôle |
 |---|---|---|
 | `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`) et supprime les fichiers `.DS_Store` |
 | `vault-approve-imports.sh` | démarrage de session | approuve pour le dossier courant les imports du vault, que Claude Code ignorerait sinon comme imports externes |
 | `vault-note-guard.sh` | après l'écriture d'une note | renseigne `created` et `updated` dans un frontmatter existant, signale un frontmatter absent ou un nom de fichier hors kebab-case |
-| `vault-sync-nudge.sh` | fin de tour | demande une fois `sync-vault` depuis le vault, ou `sync-repo` depuis un dépôt relié, quand les seuils de volume et de durée sont atteints ; aucun rappel depuis un worktree git lié |
+| `vault-sync-nudge.sh` | fin de tour | demande une fois `sync-vault` depuis le vault ou depuis un dossier de travail relié, quand les seuils de volume et de durée sont atteints ; aucun rappel depuis un worktree git lié |
 
 ### Réglages des hooks
 
@@ -97,8 +97,7 @@ Chaque entrée reprend mot pour mot la description du `SKILL.md`, c'est-à-dire 
 - **`brief-du-jour`** : Produit le brief du jour dans 00-Inbox/briefs/{date}.md (Priorités, Alertes, Agenda, Todos, À valider) à partir du vault et des sources déclarées dans _Meta/sources.md, en dégradant proprement si une source manque. S'utilise quand l'utilisateur dit « mon brief », « le point du matin », « qu'est-ce que j'ai aujourd'hui ». Pour faire entrer une note, voir import-note.
 - **`import-note`** : Fait entrer une note ou un contenu externe dans le vault, une note à la fois : détecte la nature de l'entrée (URL, page Notion, fichier local, texte collé), l'acquiert, puis la classe dans la zone PARA adéquate avec frontmatter conforme au Schema et wikilinks. Pose un renvoi plutôt qu'une copie pour le sensible et le vivant. S'utilise quand l'utilisateur dit « importe cette note », « range cette page Notion / cet article dans le vault », « fais entrer ce doc », « ajoute ça à mon projet X », ou colle un texte à ranger. Pour capitaliser une pratique déjà dans le vault, voir extraire-trame.
 - **`nouveau-projet`** : Crée un projet dans un vault Obsidian déjà structuré, ou complète un projet encore vide : pose 10-Projects/{slug}/{slug}.md avec un frontmatter type: project conforme au Schema, relie l'Area parente et le dossier de travail, puis rattache le contexte réel existant (note d'inbox, réunion, fil d'emails) via import-note, sans rien inventer. S'utilise quand l'utilisateur dit « lancer un nouveau projet », « créer le projet X », « ouvrir un chantier », « complète le projet X », « le projet X est vide ». Pour faire entrer une note isolée sans créer de projet, voir import-note.
-- **`sync-vault`** : Met à jour et consolide les fiches du vault à partir de la conversation en cours : décisions, statuts, todos, faits nouveaux, sections « À répercuter », sas 00-Inbox/_drafts/ et mémoire native de Claude Code. Agit sans validation et réécrit plutôt qu'empiler. S'utilise quand l'utilisateur dit « sync le vault », « mets à jour le vault », « répercute ce qu'on a décidé », « allège le vault », ou sur rappel du hook Stop en fin de tour. Depuis un dépôt de code, sync-repo s'applique à la place.
-- **`sync-repo`** : Répercute une session menée depuis un dépôt de code dans la seule fiche projet du vault qui lui correspond : avancement, décisions, todos, statut, à partir de la conversation et des commits récents. Ce qui concerne d'autres fiches est déposé dans la section « À répercuter » de la fiche projet, que sync-vault traite ensuite. Ne crée jamais de fiche. S'utilise quand l'utilisateur, dans un dépôt, dit « mets à jour la fiche projet », « répercute dans le vault », « sync le projet », ou sur rappel du hook Stop en fin de tour. Depuis l'intérieur du vault, sync-vault s'applique à la place.
+- **`sync-vault`** : Met à jour et consolide les fiches du vault à partir de la conversation en cours. Depuis le vault : décisions, statuts, todos, sections « À répercuter », sas 00-Inbox/_drafts/ et mémoire native de Claude Code. Depuis un dossier de travail relié à un projet, dépôt de code ou dossier sans git : la seule fiche projet, le reste déposé en « À répercuter ». Agit sans validation et réécrit plutôt qu'empiler. S'utilise quand l'utilisateur dit « sync le vault », « sync le projet », « mets à jour la fiche projet », « répercute ce qu'on a décidé », ou sur rappel du hook Stop en fin de tour.
 
 ### Entretien
 

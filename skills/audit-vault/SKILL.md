@@ -28,7 +28,7 @@ Trois phases séparées : détecter en lecture seule, rapporter dans un fichier,
 
 ### 1. Localiser le vault et détecter
 Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
-(`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
+(`vault`, `projet`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
 un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
 `~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé : il fixe les types et les
 champs requis.

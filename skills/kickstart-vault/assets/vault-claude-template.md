@@ -52,7 +52,7 @@ Quatre automatismes veillent sur le vault ; rien à lancer (réglages : `_Meta/h
 - **Quand une note est écrite** : dates `created`/`updated` posées seules ; rappel si frontmatter
   absent ou nom hors kebab-case.
 - **En fin de tour** : si la session a assez de matière, rappel de répercuter ce qui a bougé
-  (`sync-vault` depuis le vault, `sync-repo` depuis un dossier de code relié à un projet).
+  (`sync-vault`, depuis le vault ou depuis un dossier de travail relié à un projet).
 
 Ce sont des rappels et de petites corrections sans risque, pas des blocages.
 

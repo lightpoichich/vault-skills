@@ -2,17 +2,17 @@
 # vault-sync-nudge.sh — hook plugin H4 · événement Stop
 #
 # Rappel de répercussion en fin de tour, quand la session a produit assez de matière :
-#   - cwd dans un vault            → bloque l'arrêt UNE fois et demande d'invoquer `sync-vault` ;
-#   - cwd dans un dépôt git relié  → idem avec `sync-repo`, ciblé sur la fiche projet résolue
-#                                    (`repo:` = remote origin, sinon `dossier-travail:`, sinon slug — voir vault-resolve.py) ;
-#   - ailleurs                     → no-op silencieux.
+#   - cwd dans un vault                 → bloque l'arrêt UNE fois et demande d'invoquer `sync-vault` ;
+#   - cwd dans un dossier projet relié  → idem, `sync-vault` en mode projet, ciblé sur la fiche résolue
+#                                         (dépôt git ou dossier sans git relié par `dossier-travail:` — voir vault-resolve.py) ;
+#   - ailleurs                          → no-op silencieux.
 # Au Stop suivant (stop_hook_active=true), on laisse passer et on pose la nouvelle base.
 #
 # Seuils, lus dans `{vault}/_Meta/hooks.conf` : SYNC_MIN_KB (40) de transcript écrits depuis le dernier sync ET
-# SYNC_MIN_MINUTES (20) écoulées. Opt-out : SYNC_NUDGE=0 (plus rien) ou SYNC_NUDGE=vault (pas depuis les dépôts).
+# SYNC_MIN_MINUTES (20) écoulées. Opt-out : SYNC_NUDGE=0 (plus rien) ou SYNC_NUDGE=vault (pas depuis les dossiers de travail).
 # Depuis un worktree git lié (sous-agent de ticket), pas de rappel sauf SYNC_NUDGE_WORKTREES=1.
 # Marqueur par session : ${XDG_CACHE_HOME:-~/.cache}/second-cerveau/sync-nudge/<session_id>
-# (contenu = taille du transcript au dernier sync, mtime = quand). Dépendances : bash + python3 (+ git côté dépôt).
+# (contenu = taille du transcript au dernier sync, mtime = quand). Dépendances : bash + python3 (+ git dans un dépôt).
 
 . "$(dirname "$0")/vault-lib.sh"
 HOOK_INPUT="$(cat 2>/dev/null || true)"
@@ -25,7 +25,7 @@ except Exception: print("0")' 2>/dev/null)"
 
 DIR="${CLAUDE_PROJECT_DIR:-}"; [ -n "$DIR" ] || DIR="$(stdin_field cwd)"; [ -n "$DIR" ] || exit 0
 eval "$(python3 "$(dirname "$0")/vault-resolve.py" --shell "$DIR" 2>/dev/null)" || exit 0
-case "${MODE:-none}" in vault|repo) ;; *) exit 0 ;; esac
+case "${MODE:-none}" in vault|projet) ;; *) exit 0 ;; esac
 
 case "$(vault_conf "$VAULT" SYNC_NUDGE 1)" in
   0|off|false|no|non) exit 0 ;;
@@ -35,7 +35,7 @@ esac
 # Worktree git lié (sous-agent de ticket : Paseo `~/.paseo/worktrees/`, `.claude/worktrees/`) : pas de rappel.
 # Plusieurs builders parallèles écriraient la même fiche projet ; l'orchestrateur, dans le checkout principal,
 # synchronise une fois. SYNC_NUDGE_WORKTREES=1 rétablit le rappel dans les worktrees.
-if [ "$MODE" = repo ] && [ "$(vault_conf "$VAULT" SYNC_NUDGE_WORKTREES 0)" != 1 ]; then
+if [ "$MODE" = projet ] && [ "$(vault_conf "$VAULT" SYNC_NUDGE_WORKTREES 0)" != 1 ]; then
   gd="$(git -C "$DIR" rev-parse --git-dir 2>/dev/null)"; gcd="$(git -C "$DIR" rev-parse --git-common-dir 2>/dev/null)"
   if [ -n "$gd" ] && [ -n "$gcd" ] && [ "$(cd "$DIR" && cd "$gd" && pwd -P)" != "$(cd "$DIR" && cd "$gcd" && pwd -P)" ]; then exit 0; fi
 fi
@@ -57,7 +57,9 @@ grown_kb=$(( (size - base) / 1024 )); elapsed_min=$(( (now - mtime) / 60 ))
 if [ "$MODE" = vault ]; then
   reason="Garde-fou vault : cette session a produit du travail depuis le dernier sync (${grown_kb} Ko de transcript, ${elapsed_min} min). Avant de rendre la main, invoque le skill sync-vault pour répercuter dans le vault ce qui a bougé dans cette conversation (décisions, statuts, todos, faits, contacts) et alléger les fiches touchées. Si rien de substantiel n'a bougé, dis-le en une ligne et termine."
 else
-  reason="Garde-fou vault : cette session dans le dépôt ${REPO:-$DIR} a produit du travail depuis le dernier sync (${grown_kb} Ko de transcript, ${elapsed_min} min). Avant de rendre la main, invoque le skill sync-repo pour mettre à jour la fiche projet ${SHEET} (avancement, décisions, todos, statut) à partir de cette conversation et des commits récents — cette fiche seulement, le reste va dans sa section « À répercuter ». Si rien de substantiel n'a bougé, dis-le en une ligne et termine."
+  if git -C "$DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then where="dans le dépôt ${REPO:-$DIR}"; from="de cette conversation et des commits récents"
+  else where="dans le dossier $DIR"; from="de cette conversation"; fi
+  reason="Garde-fou vault : cette session $where a produit du travail depuis le dernier sync (${grown_kb} Ko de transcript, ${elapsed_min} min). Avant de rendre la main, invoque le skill sync-vault (mode projet) pour mettre à jour la fiche projet ${SHEET} (avancement, décisions, todos, statut) à partir $from : cette fiche seulement, le reste va dans sa section « À répercuter ». Si rien de substantiel n'a bougé, dis-le en une ligne et termine."
 fi
 printf '%s' "$reason" | python3 -c 'import json,sys; print(json.dumps({"decision":"block","reason":sys.stdin.read()}, ensure_ascii=False))'
 exit 0

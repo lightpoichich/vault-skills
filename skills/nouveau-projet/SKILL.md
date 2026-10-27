@@ -21,12 +21,12 @@ description: >-
 
 ### 1. Localiser le vault
 Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
-(`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
+(`vault`, `projet`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
 un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
 `~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé : son contrat `type: project`
 fixe les champs à poser.
 
-Si le dossier courant est hors du vault (`mode` égal à `repo` ou `none`), noter son chemin absolu :
+Si le dossier courant est hors du vault (`mode` égal à `projet` ou `none`), noter son chemin absolu :
 c'est le dossier de travail à relier à l'étape 4. Lancé depuis l'intérieur du vault, il n'y a pas de
 dossier de travail et les champs `repo:` et `dossier-travail:` sont omis.
 
@@ -60,7 +60,7 @@ Demander à l'utilisateur, en une fois, ce qui remplit le frontmatter `type: pro
   `## Décisions`.
 - Relier le dossier de travail noté à l'étape 1 : suivre la checklist de
   `references/liaison-depot.md`. En mode compléter, elle s'applique aussi à une fiche sans `repo:`
-  ni `dossier-travail:`.
+  ni `dossier-travail:`, ou reliée depuis un autre poste.
 
 ### 5. Nourrir
 Proposer de rattacher le contexte réel du projet : une note de `00-Inbox/` où l'idée a germé, la

@@ -37,7 +37,7 @@ chaque geste réécrit ces rattachements.
 
 ### 1. Localiser le vault
 Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
-(`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
+(`vault`, `projet`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
 un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
 `~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé.
 

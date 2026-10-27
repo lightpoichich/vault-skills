@@ -1,25 +1,30 @@
 #!/usr/bin/env python3
 """vault-resolve.py — depuis un dossier quelconque, retrouve le vault et la fiche projet qui lui correspondent.
 
-Utilisé par le hook Stop `vault-sync-nudge.sh` et par le skill `sync-repo` (règle de liaison, côté déterministe).
+Utilisé par le hook Stop `vault-sync-nudge.sh` et par les skills `sync-vault` et `nouveau-projet` (règle de
+liaison, côté déterministe).
 
   vault-resolve.py [dossier]            → JSON  {"mode", "vault", "sheet", "repo", "subpath", "match"}
   vault-resolve.py --shell [dossier]    → lignes MODE=… VAULT=… SHEET=… REPO=… MATCH=… (à `eval`)
 
 mode :
   vault  — le dossier est dans un vault (un ancêtre contient `_Meta/`) ; `sheet` vide.
-  repo   — le dossier est dans un dépôt git hors vault, relié à une fiche `type: project` d'un vault.
-  none   — ni l'un ni l'autre (pas de dépôt, pas de vault joignable, ou aucune fiche reliée).
+  projet — le dossier est hors vault et relié à une fiche `type: project` d'un vault ; `repo` (remote origin)
+           est vide hors dépôt git.
+  none   — ni l'un ni l'autre (pas de vault joignable, ou aucune fiche reliée).
 
-Vault(s) candidats depuis un dépôt, dans l'ordre : cibles des `@imports` des CLAUDE.md du dossier et de ses
-ancêtres (règle de liaison : le dépôt importe `@~/vault/…`), puis `~/.claude/CLAUDE.md` (ses `@imports` et tout
+Vault(s) candidats depuis un dossier, dans l'ordre : cibles des `@imports` des CLAUDE.md du dossier et de ses
+ancêtres (règle de liaison : le dossier importe `@~/vault/…`), puis `~/.claude/CLAUDE.md` (ses `@imports` et tout
 chemin absolu cité en clair, comme le « Le vault est à {VAULT_ABS} » du gabarit kickstart-vault), puis `~/vault`.
 Fiche : dans `{vault}/10-Projects/`, par ordre de priorité —
   1. `repo:` = remote `origin` du dépôt (URL normalisée : sans schéma, sans `user@`, sans `.git`, insensible à la
      casse ; suffixe optionnel `#sous-dossier` quand le projet vit dans un sous-dossier du dépôt) ;
-  2. `dossier-travail:` = le dossier (ou un de ses ancêtres jusqu'à la racine du dépôt) ;
-  3. slug de la fiche = nom du dossier (ou de la racine du dépôt).
-Dépendances : python3 + git. Jamais d'écriture.
+  2. `dossier-travail:` = le dossier ou un de ses ancêtres (jusqu'à la racine du dépôt dans un dépôt git). Le champ
+     accepte un chemin ou une liste (`[a, b]` ou une puce `- a` par ligne), un chemin par poste. Un chemin égal à
+     `~` ou à l'un de ses ancêtres est ignoré ;
+  3. slug de la fiche = nom du dossier (ou de la racine du dépôt). Dans un dépôt git seulement : hors git, un
+     dossier nommé comme une fiche ne s'y relie pas par hasard.
+Dépendances : python3 (+ git dans un dépôt). Jamais d'écriture.
 """
 import os, re, sys, json, shlex, subprocess
 
@@ -136,12 +141,28 @@ def frontmatter(path):
     end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
     if end is None:
         return None
-    fm = {}
+    fm, key = {}, None
     for ln in lines[1:end]:
         m = re.match(r"^([A-Za-z0-9_-]+):\s*(.*?)\s*$", ln)
         if m:
-            fm[m.group(1)] = m.group(2).strip().strip('"').strip("'")
+            key, val = m.group(1), m.group(2)
+            if val.startswith("[") and val.endswith("]"):
+                fm[key] = [unquote(x) for x in val[1:-1].split(",") if x.strip()]
+            else:
+                fm[key] = unquote(val)
+            continue
+        m = re.match(r"^\s*-\s+(.*?)\s*$", ln)   # puce d'une liste en bloc, sous une clé restée vide
+        if m and key and (fm.get(key) == "" or isinstance(fm.get(key), list)):
+            fm[key] = (fm[key] or []) + [unquote(m.group(1))]
     return fm
+
+
+def unquote(v):
+    return v.strip().strip('"').strip("'")
+
+
+def as_list(v):
+    return v if isinstance(v, list) else ([v] if v else [])
 
 
 def project_sheets(vault):
@@ -165,6 +186,19 @@ def under(path, root):
     return path == root or path.startswith(root + os.sep)
 
 
+def work_dirs(fm):
+    """Chemins de `dossier-travail:` exploitables : gabarit `{…}` écarté, `~` et ses ancêtres écartés."""
+    home = os.path.realpath(HOME)
+    out = []
+    for dt in as_list(fm.get("dossier-travail")):
+        if not dt or dt.startswith("{"):
+            continue
+        dt = os.path.realpath(os.path.expanduser(dt))
+        if not under(home, dt):
+            out.append(dt)
+    return out
+
+
 def resolve(d):
     d = os.path.realpath(os.path.abspath(os.path.expanduser(d or os.getcwd())))
     res = {"mode": "none", "vault": "", "sheet": "", "repo": "", "subpath": "", "match": ""}
@@ -173,21 +207,21 @@ def resolve(d):
         res.update(mode="vault", vault=v)
         return res
     top = git("rev-parse", "--show-toplevel", cwd=d)
-    if not top:
-        return res
-    top = os.path.realpath(top)
-    remote = git("remote", "get-url", "origin", cwd=top)
-    key = repo_key(remote)
-    sub = os.path.relpath(d, top).replace(os.sep, "/")
-    sub = "" if sub == "." else sub
-    res.update(repo=remote, subpath=sub)
+    top = os.path.realpath(top) if top else ""
+    key = sub = ""
+    if top:
+        remote = git("remote", "get-url", "origin", cwd=top)
+        key = repo_key(remote)
+        sub = os.path.relpath(d, top).replace(os.sep, "/")
+        sub = "" if sub == "." else sub
+        res.update(repo=remote, subpath=sub)
 
     for vault in candidate_vaults(d):
         best = None  # (rang, -spécificité, chemin)
         for p, fm in project_sheets(vault):
-            # 1. repo
+            # 1. repo (dépôt git seulement)
             val = fm.get("repo", "")
-            if key and val:
+            if key and isinstance(val, str) and val:
                 url, _, frag = val.partition("#")
                 frag = frag.strip("/")
                 if repo_key(url) == key and (not frag or sub == frag or sub.startswith(frag + "/")):
@@ -195,23 +229,21 @@ def resolve(d):
                     if best is None or cand[:2] < best[:2]:
                         best = cand
                     continue
-            # 2. dossier-travail (le dossier ou un ancêtre, jusqu'à la racine du dépôt)
-            dt = fm.get("dossier-travail", "")
-            if dt and not dt.startswith("{"):
-                dt = os.path.realpath(os.path.expanduser(dt))
-                if under(d, dt) and under(dt, top):
-                    cand = (2, -len(dt), p, "dossier-travail")
-                    if best is None or cand[:2] < best[:2]:
-                        best = cand
-                    continue
-            # 3. slug
+            # 2. dossier-travail (le dossier ou un ancêtre ; dans un dépôt, jusqu'à sa racine)
+            dts = [dt for dt in work_dirs(fm) if under(d, dt) and (not top or under(dt, top))]
+            if dts:
+                cand = (2, -max(len(dt) for dt in dts), p, "dossier-travail")
+                if best is None or cand[:2] < best[:2]:
+                    best = cand
+                continue
+            # 3. slug (dépôt git seulement)
             slug = os.path.basename(p)[:-3]
-            if slug in (os.path.basename(d), os.path.basename(top)):
+            if top and slug in (os.path.basename(d), os.path.basename(top)):
                 cand = (3, 0 if slug == os.path.basename(d) else 1, p, "slug")
                 if best is None or cand[:2] < best[:2]:
                     best = cand
         if best:
-            res.update(mode="repo", vault=vault, sheet=best[2], match=best[3])
+            res.update(mode="projet", vault=vault, sheet=best[2], match=best[3])
             return res
     return res
 

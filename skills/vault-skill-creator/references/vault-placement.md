@@ -6,7 +6,7 @@ respecter les conventions du skill généré, porter un skill existant.
 ## 1. Détecter la racine du vault
 
 Localiser le vault : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-resolve.py" "$PWD"` rend `mode`
-(`vault`, `repo`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
+(`vault`, `projet`, `none`) et `vault` (racine). Si `CLAUDE_PLUGIN_ROOT` est inconnu, remonter jusqu'à
 un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré dans
 `~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé.
 

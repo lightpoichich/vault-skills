@@ -40,8 +40,8 @@ tags: [area]
 
 ### `project`
 Effort avec une fin et un livrable. `repo` et `dossier-travail`, optionnels, relient la fiche à un
-dossier de travail hors vault ; l'outillage (`nouveau-projet`, `sync-repo`, hook Stop) résout par
-`repo`, puis `dossier-travail`, puis le slug.
+dossier de travail hors vault, dépôt git ou dossier sans git ; l'outillage (`nouveau-projet`,
+`sync-vault`, hook Stop) résout par `repo`, puis `dossier-travail`, puis le slug (dépôt git seulement).
 ```yaml
 type: project
 status: { active | done }
@@ -50,7 +50,7 @@ livrable: { ... }
 parties-prenantes: [ ... ]
 area: "[[{area liée}]]"
 repo: { URL du remote git[#sous-dossier] }        # optionnel, clé portable entre machines
-dossier-travail: { chemin absolu sur le poste }    # optionnel, propre à une machine
+dossier-travail: { chemin absolu | [chemin, chemin] }  # optionnel, un chemin par poste
 tags: [project]
 ```
 

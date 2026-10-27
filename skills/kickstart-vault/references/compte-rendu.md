@@ -77,15 +77,16 @@ Travailler depuis un dossier hors de l'espace :
 Le vault (ta mémoire) est à {VAULT_ABS}. Tu travailles souvent dans des dossiers de travail hors
 vault. Au démarrage dans un tel dossier :
 1. cherche dans {VAULT_ABS}/10-Projects/ une fiche dont `repo` = le remote origin de ce dépôt, ou
-   dont `dossier-travail` = ce dossier ; si trouvée, charge-la comme contexte ;
+   dont `dossier-travail` contient ce dossier ; si trouvée, charge-la comme contexte ;
 2. sinon, si on fait clairement du travail projet, propose de lier (projet existant, ou
    `nouveau-projet`) ;
 3. trace décisions et avancées dans la fiche ; pas de copie des livrables (renvoi, jamais copie) ;
-4. `sync-repo` en fin de session (la fiche projet seule ; le hook Stop du plugin le rappelle quand la
-   session a assez de matière) ; `sync-vault` se lance depuis le vault pour le reste ;
+4. `sync-vault` en fin de session (depuis un dossier de travail, la fiche projet seule ; le hook Stop
+   du plugin le rappelle quand la session a assez de matière) ; lancé depuis le vault, il traite le
+   reste ;
 5. hors vault, utilise toujours le chemin absolu ci-dessus pour lire et écrire le vault.
 ```
 ````
 
 La phrase « Le vault (ta mémoire) est à {VAULT_ABS} » reste telle quelle : `vault-resolve.py` la lit
-dans le `CLAUDE.md` global pour retrouver le vault depuis un dépôt de code.
+dans le `CLAUDE.md` global pour retrouver le vault depuis un dossier de travail.

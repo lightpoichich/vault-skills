@@ -35,7 +35,7 @@ Les demandes se font en langage courant. La colonne du milieu donne une formulat
 | Faire le point du matin, depuis `cos` | « mon brief » | Brief du jour dans `00-Inbox/briefs/` |
 | Ranger une note, une page web ou un document | « importe cette note » | Note classée dans le bon dossier |
 | Ouvrir un projet | « créer le projet X » | Fiche projet dans `10-Projects/` |
-| Enregistrer les décisions de la session | « sync le vault », ou « sync le projet » depuis un dossier de code | Décisions, statuts et tâches reportés dans les fiches |
+| Enregistrer les décisions de la session | « sync le vault », ou « sync le projet » depuis un dossier de travail | Décisions, statuts et tâches reportés dans les fiches |
 | Transformer une pratique répétée en modèle | « fais-en une trame » | Modèle dans `30-Resources/` |
 | Créer, renommer ou archiver un domaine de responsabilité | « crée une area » | Dossier dans `20-Areas/` |
 | Ajouter un assistant spécialisé | « nouvelle persona » | Assistant lancé par son propre raccourci |
@@ -63,7 +63,7 @@ En fin de tour, après au moins 20 minutes de travail, Claude lance de lui-même
 
 ## Pour l'équipe technique
 
-Les hooks et leurs réglages, la liaison entre un dépôt de code et sa fiche projet, l'installation manuelle et la description complète de chaque skill sont dans [docs/reference-technique.md](docs/reference-technique.md).
+Les hooks et leurs réglages, la liaison entre un dossier de travail et sa fiche projet, l'installation manuelle et la description complète de chaque skill sont dans [docs/reference-technique.md](docs/reference-technique.md).
 
 `vault-skill-creator` adapte le `skill-creator` d'Anthropic. Sa licence est dans `skills/vault-skill-creator/LICENSE.txt`.
 

@@ -8,9 +8,9 @@
 #   EXCLUDE=20-Areas/donnees-importees,outillage     chemins relatifs (préfixes) ignorés par H1 santé et H2 garde-fou écriture
 #   INBOX_STALE_DAYS=14             seuil d'ancienneté d'une note d'Inbox (H1)
 #   APPROVE_EXTERNAL_IMPORTS=0      H3 : ne plus approuver soi-même les imports du vault dans ~/.claude.json
-#   SYNC_MIN_KB=40                  H4 : Ko de transcript écrits depuis le dernier sync avant de rappeler sync-vault / sync-repo
+#   SYNC_MIN_KB=40                  H4 : Ko de transcript écrits depuis le dernier sync avant de rappeler sync-vault
 #   SYNC_MIN_MINUTES=20             H4 : minutes écoulées depuis le dernier sync (les deux seuils doivent être atteints)
-#   SYNC_NUDGE=0|vault              H4 : 0 = aucun rappel ; vault = rappel depuis le vault seulement, pas depuis les dépôts
+#   SYNC_NUDGE=0|vault              H4 : 0 = aucun rappel ; vault = rappel depuis le vault seulement, pas depuis les dossiers de travail
 #   SYNC_NUDGE_WORKTREES=1          H4 : rappeler aussi depuis un worktree git lié (par défaut, un worktree de ticket ne rappelle pas)
 
 # vault_root <chemin> → imprime la racine du vault contenant <chemin>, rien si aucune. Remonte jusqu'à /.
