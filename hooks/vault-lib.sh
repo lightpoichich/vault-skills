@@ -17,6 +17,9 @@
 #   JOURNAL_MAX_KB=30               budget des autres types, seulement pour une fiche qui a une section de journal
 #   JOURNAL_SECTIONS=Journal        sections rotables (liste blanche) ; tout le reste de la fiche est protégé
 #   JOURNAL_KEEP=5                  entrées les plus récentes jamais déplacées, par section
+#   MEMORY_MAX_LINES=120            vault-memory.py : budget de l'index MEMORY.md en lignes (plafond Claude Code : 200)
+#   MEMORY_MAX_KB=16                budget de l'index en milliers de caractères (plafond Claude Code : 25 000) ; H1 signale le dépassement
+#   MEMORY_CURATION_DAYS=30         curation complète due par sync-vault au-delà de ce délai depuis la dernière sauvegarde
 
 # vault_root <chemin> → imprime la racine du vault contenant <chemin>, rien si aucune. Remonte jusqu'à /.
 vault_root() {

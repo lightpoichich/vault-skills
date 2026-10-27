@@ -187,3 +187,7 @@ Sans backlog, omettre la ligne Backlog et les deux derniers blocs.
   bon fichier.
 - **`~/.claude.json` absent ou `CLAUDE_PLUGIN_ROOT` indisponible** (étape 7bis) : ne pas modifier
   le fichier à la main ; indiquer la voie interactive.
+- **Persona lancée en subagent** plutôt que par son alias : elle ne charge pas la mémoire native de
+  la session principale. Ce qu'elle doit savoir au démarrage va dans son prompt de subagent ou dans
+  le vault ; son champ `memory` (portée projet) lui donne une mémoire
+  propre, versionnée avec le vault (`sync-vault/references/memoire-claude-code.md`).

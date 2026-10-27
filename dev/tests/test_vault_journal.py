@@ -6,7 +6,9 @@
 Chaque test monte un vault temporaire. Toute rotation écrite est suivie d'un contrôle de non-perte : chaque ligne
 non vide d'avant se retrouve, à l'identique, dans la fiche ou ses journaux. Dépendances : python3, git, bash.
 """
-import hashlib, importlib.util, json, os, subprocess, sys, tempfile, unittest
+import sys
+sys.dont_write_bytecode = True
+import hashlib, importlib.util, json, os, subprocess, tempfile, unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SCRIPT = os.path.join(ROOT, "hooks", "vault-journal.py")

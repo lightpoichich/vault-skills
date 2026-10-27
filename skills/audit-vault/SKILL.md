@@ -1,13 +1,12 @@
 ---
 name: audit-vault
 description: >-
-  Contrôle technique d'un vault Obsidian PARA : wikilinks cassés, fiches orphelines, frontmatter
-  hors Schema, noms hors kebab-case, pollution, Inbox stale, projets à archiver, areas mortes ou
-  sans consommateur, personas invalides, fiches trop lourdes. Produit un rapport daté dans
-  00-Inbox/ puis propose le traitement par lots, sans écrire avant validation. S'utilise quand
-  l'utilisateur dit « audit du vault », « fais le ménage », « c'est le bazar », « wikilinks
-  cassés », « cette fiche est trop lourde », ou sur rituel mensuel. Pour
-  répercuter la session en cours dans les fiches, voir sync-vault.
+  Contrôle technique d'un vault Obsidian PARA : wikilinks cassés, orphelines, frontmatter hors
+  Schema, nommage, Inbox stale, projets à archiver, areas mortes, personas invalides, fiches trop
+  lourdes, mémoire native de Claude Code. Produit un rapport daté dans 00-Inbox/ puis propose le
+  traitement par lots, sans écrire avant validation. S'utilise quand l'utilisateur dit « audit du
+  vault », « fais le ménage », « c'est le bazar », « cette fiche est trop lourde », « fais le point
+  sur la mémoire », ou sur rituel mensuel. Pour répercuter la session en cours, voir sync-vault.
 ---
 
 # Audit vault
@@ -33,13 +32,15 @@ un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré
 `~/.claude/CLAUDE.md`. Lire ensuite `_Meta/Schema.md` du vault trouvé : il fixe les types et les
 champs requis.
 
-Dérouler les quatre groupes de checks de `references/checks.md` :
+Dérouler les cinq groupes de checks de `references/checks.md` :
 1. **Intégrité structurelle** : liens, orphelines, frontmatter, nommage, structure, pollution.
 2. **Fraîcheur et archivage** : Inbox stale, projets à archiver, briefs et audits anciens, index
    désynchronisés.
 3. **Areas et personas** : areas mortes, obèses ou sans consommateur, zones de personas invalides.
 4. **Taille des fiches** : fiches au-dessus de leur budget, rotables ou bloquées, skills qui écrivent
    un récit daté hors journal.
+5. **Mémoire native** : tous les dossiers mémoire de la machine, budget, sensible apparent, pointeurs
+   vers le vault, règles répétées. Lecture seule ; le rapport ne cite jamais le contenu d'une mémoire.
 
 ### 2. Écrire le rapport, donner la synthèse
 Rapport `00-Inbox/audit-vault-{YYYY-MM-DD}.md`, écrasé si l'audit est relancé le même jour :

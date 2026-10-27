@@ -36,7 +36,9 @@ Règles (rien ne bouge en cas de doute) :
     un vault git, commit des seuls chemins touchés, avant (s'ils étaient modifiés) et après.
 Dépendances : python3 (+ git si le vault en est un).
 """
-import datetime as dt, importlib.util, json, os, re, shutil, stat, subprocess, sys, tempfile, unicodedata
+import sys
+sys.dont_write_bytecode = True                             # pas de __pycache__ dans le dossier du plugin
+import datetime as dt, importlib.util, json, os, re, shutil, stat, subprocess, tempfile, unicodedata
 from collections import Counter
 
 _spec = importlib.util.spec_from_file_location("vault_resolve", os.path.join(os.path.dirname(os.path.abspath(__file__)), "vault-resolve.py"))

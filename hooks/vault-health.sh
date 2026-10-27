@@ -10,6 +10,7 @@
 # Dépendances : bash + python3. Pas de jq.
 
 . "$(dirname "$0")/vault-lib.sh"
+HOOKS_DIR="$(cd "$(dirname "$0")" && pwd)"
 HOOK_INPUT="$(cat 2>/dev/null || true)"
 
 VAULT="$(vault_root "${CLAUDE_PROJECT_DIR:-}")" || VAULT="$(vault_root "$(stdin_field cwd)")" || exit 0
@@ -20,9 +21,12 @@ DSSTORE=$(find . -type f -name '.DS_Store' 2>/dev/null | wc -l | tr -d ' ')
 [ "${DSSTORE:-0}" -gt 0 ] && find . -type f -name '.DS_Store' -delete 2>/dev/null
 
 # Fiches au-dessus de leur budget de taille (rotation des journaux, voir vault-journal.py) : signalement seul.
-JOURNAL_SUMMARY="$(python3 "$(dirname "$0")/vault-journal.py" check --vault "$VAULT" --summary 2>/dev/null)"
+JOURNAL_SUMMARY="$(python3 "$HOOKS_DIR/vault-journal.py" check --vault "$VAULT" --summary 2>/dev/null)"
+# Mémoire native du dossier de lancement (budget de l'index, sensible apparent, voir vault-memory.py) : signalement seul.
+LAUNCH_DIR="${CLAUDE_PROJECT_DIR:-$(stdin_field cwd)}"; [ -d "$LAUNCH_DIR" ] || LAUNCH_DIR="$VAULT"
+MEMORY_SUMMARY="$(cd "$LAUNCH_DIR" 2>/dev/null && python3 "$HOOKS_DIR/vault-memory.py" check --vault "$VAULT" --summary 2>/dev/null)"
 
-DSSTORE="$DSSTORE" JOURNAL_SUMMARY="$JOURNAL_SUMMARY" \
+DSSTORE="$DSSTORE" JOURNAL_SUMMARY="$JOURNAL_SUMMARY" MEMORY_SUMMARY="$MEMORY_SUMMARY" \
 INBOX_STALE_DAYS="$(vault_conf "$VAULT" INBOX_STALE_DAYS 14)" \
 EXCLUDE="$(vault_conf "$VAULT" EXCLUDE "")" \
 python3 <<'PY'
@@ -87,6 +91,7 @@ if no_type: segs.append(f"{no_type} sans type")
 if stray: segs.append(f"{stray} .md égaré(s) à la racine")
 if dsstore: segs.append(f"{dsstore} .DS_Store purgé(s)")
 if os.environ.get("JOURNAL_SUMMARY"): segs.append(os.environ["JOURNAL_SUMMARY"])
+if os.environ.get("MEMORY_SUMMARY"): segs.append(os.environ["MEMORY_SUMMARY"])
 if not segs:
     raise SystemExit(0)  # vault sain : pas de bruit
 

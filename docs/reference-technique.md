@@ -51,7 +51,7 @@ Le plugin installe quatre hooks, actifs dans toute session Claude Code. Hors d'u
 
 | Hook | Événement | Rôle |
 |---|---|---|
-| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`, fiches au-dessus de leur budget de taille) et supprime les fichiers `.DS_Store` |
+| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`, fiches au-dessus de leur budget de taille, mémoire native au-dessus de son budget ou au contenu sensible apparent) et supprime les fichiers `.DS_Store` |
 | `vault-approve-imports.sh` | démarrage de session | approuve pour le dossier courant les imports du vault, que Claude Code ignorerait sinon comme imports externes |
 | `vault-note-guard.sh` | après l'écriture d'une note | renseigne `created` et `updated` dans un frontmatter existant, signale un frontmatter absent ou un nom de fichier hors kebab-case |
 | `vault-sync-nudge.sh` | fin de tour | demande une fois `sync-vault` depuis le vault ou depuis un dossier de travail relié, quand les seuils de volume et de durée sont atteints ; aucun rappel depuis un worktree git lié |
@@ -66,6 +66,7 @@ Les réglages se placent dans `{vault}/_Meta/hooks.conf`. `kickstart-vault` y co
 - **`SYNC_MIN_KB`** et **`SYNC_MIN_MINUTES`** : seuils du rappel de synchronisation, 40 Ko de transcript et 20 minutes depuis la dernière synchronisation par défaut. Les deux seuils doivent être atteints.
 - **`SYNC_NUDGE`** : la valeur `0` supprime le rappel, la valeur `vault` le limite aux sessions ouvertes dans le vault.
 - **`JOURNAL_ROTATION`**, **`JOURNAL_MAX_KB_{TYPE}`**, **`JOURNAL_MAX_KB`**, **`JOURNAL_SECTIONS`**, **`JOURNAL_KEEP`** : rotation des journaux de fiche, voir plus bas. Sans ces clés : rotation coupée, 20 Ko pour une area, 30 Ko pour un projet, section `Journal`, 5 entrées gardées. Le gabarit `hooks.conf` de `kickstart-vault` pose `JOURNAL_ROTATION=1` : un nouveau vault a la rotation active.
+- **`MEMORY_MAX_LINES`**, **`MEMORY_MAX_KB`**, **`MEMORY_CURATION_DAYS`** : budget de l'index de la mémoire native (120 lignes et 16 000 caractères par défaut, environ 60 % du plafond de Claude Code) et délai de curation complète (30 jours). Voir plus bas.
 - **`SYNC_NUDGE_WORKTREES`** : la valeur `1` rétablit le rappel dans les worktrees git liés. Par défaut, les sous-agents qui traitent des tickets en parallèle dans des worktrees ne reçoivent pas de rappel, et l'orchestrateur synchronise une seule fois depuis le checkout principal.
 
 ### Rotation des journaux de fiche
@@ -83,6 +84,16 @@ python3 "$PLUGIN/hooks/vault-journal.py" rotate --apply --all --vault ~/vault
 ```
 
 Le chemin du plugin change à chaque version, d'où la lecture de `installPath` plutôt qu'un chemin écrit en dur.
+
+### Mémoire native de Claude Code
+
+Claude Code recharge `MEMORY.md` dans chaque session lancée depuis le même dossier, personas comprises, en le tronquant à 200 lignes et 25 000 caractères. Il y écrit aussi seul en cours de session. `hooks/vault-memory.py` établit l'état de cette mémoire, en lecture seule ; `sync-vault` et `audit-vault` tranchent.
+
+- **Commandes** : `vault-memory.py where` rend le dossier mémoire du dossier courant. `inventory` liste tous les dossiers mémoire de la machine, avec leur part du plafond et les règles répétées d'un dossier à l'autre. `check {dossier}` rend le budget, l'index désynchronisé, les pointeurs vers le vault (cassés, archivés, déplacés vers un seul candidat, ambigus), le sensible apparent (fichier, ligne et type, jamais le contenu ; un pointeur reconnu comme sensible est masqué, la détection restant heuristique), les quasi-doublons et la curation due. `backup {dossier}` copie le dossier dans `${XDG_STATE_HOME:-~/.local/state}/second-cerveau/memoire/`.
+- **Depuis le vault** : `sync-vault` cure la mémoire quand `check` signale quelque chose ou tous les 30 jours. Il sauvegarde d'abord, retire le sensible, rend les faits aux fiches et ne laisse qu'un pointeur, et ne retire une règle qu'une fois promue dans sa cible (skill, canon de style, `CLAUDE.md`, gouvernance), sur validation.
+- **Depuis un dossier de travail** : `sync-vault` trie seulement la frontière. Une préférence transversale part en « À répercuter », un fait d'état va dans la fiche projet, le sensible est retiré. Rien d'autre n'est supprimé. Le savoir technique d'un dépôt a sa place durable dans `.claude/rules/` du dépôt, hors de ce plugin.
+- **Plusieurs machines** : la mémoire est locale par défaut. Pour la partager, poser sur chaque machine `"autoMemoryDirectory": "{vault}/_Meta/memoire"` dans le `.claude/settings.local.json` du vault, non versionné. Dans un dossier de confiance, Claude Code lit ce réglage dans le `settings.local.json` de la racine git, puis dans le `.claude/settings.json` du seul dossier de lancement, puis dans les réglages utilisateur ; une valeur ni absolue ni en `~/` est rejetée. Le `settings.local.json` de la racine couvre donc aussi les sessions lancées depuis une persona. La mémoire est alors publiée et versionnée avec le vault, donc sans aucun sensible. Le plugin ne pose jamais ce réglage.
+- **Subagents** : un subagent ne charge pas la mémoire de la session principale. Une persona lancée en subagent reçoit son contexte par son prompt ou par le vault ; son champ `memory` en portée projet range sa mémoire propre dans `{vault}/.claude/agent-memory/{nom}/`.
 
 ### Synchronisation git d'un vault partagé
 
@@ -120,7 +131,7 @@ Chaque entrée reprend mot pour mot la description du `SKILL.md`, c'est-à-dire 
 
 - **`extraire-trame`** : Capitalise une pratique récurrente du vault en trame réutilisable dans 30-Resources/ : retrouve les occurrences réelles, Archive comprise, en extrait la forme commune sans rien inventer, la range dans la bonne sous-zone et la lie à ses fiches sources. Propose la généralisation et attend la validation avant d'écrire. S'utilise quand l'utilisateur dit « ça, je le refais à chaque fois », « fais-en une trame », « on a déjà fait ça trois fois », « capitalise cette méthode », ou reprend un candidat signalé par sync-vault. Pour un modèle qui existe déjà hors du vault, voir import-note.
 - **`gerer-area`** : Gère le cycle de vie d'une area dans un vault déjà vivant : crée une nouvelle responsabilité (20-Areas/{slug}/ et fiche conforme au Schema), complète un shell vide, renomme, scinde, fusionne ou archive une area dont la responsabilité a disparu. Exécute un geste demandé ; le diagnostic appartient à audit-vault. S'utilise quand l'utilisateur dit « crée une area », « renomme / scinde / fusionne l'area X », « archive l'area X », « cette responsabilité n'existe plus », « l'area X est vide », ou reprend une suggestion d'audit. Pour scaffolder le vault entier, voir kickstart-vault.
-- **`audit-vault`** : Contrôle technique d'un vault Obsidian PARA : wikilinks cassés, fiches orphelines, frontmatter hors Schema, noms hors kebab-case, pollution, Inbox stale, projets à archiver, areas mortes ou sans consommateur, personas invalides, fiches trop lourdes. Produit un rapport daté dans 00-Inbox/ puis propose le traitement par lots, sans écrire avant validation. S'utilise quand l'utilisateur dit « audit du vault », « fais le ménage », « c'est le bazar », « wikilinks cassés », « cette fiche est trop lourde », ou sur rituel mensuel. Pour répercuter la session en cours dans les fiches, voir sync-vault.
+- **`audit-vault`** : Contrôle technique d'un vault Obsidian PARA : wikilinks cassés, orphelines, frontmatter hors Schema, nommage, Inbox stale, projets à archiver, areas mortes, personas invalides, fiches trop lourdes, mémoire native de Claude Code. Produit un rapport daté dans 00-Inbox/ puis propose le traitement par lots, sans écrire avant validation. S'utilise quand l'utilisateur dit « audit du vault », « fais le ménage », « c'est le bazar », « cette fiche est trop lourde », « fais le point sur la mémoire », ou sur rituel mensuel. Pour répercuter la session en cours, voir sync-vault.
 <!-- SKILLS:END -->
 
 ## Attribution

@@ -47,6 +47,31 @@ lit : une persona (`grep` du chemin de l'area dans les `_personas/*/CLAUDE.md`) 
 | Zone de persona invalide | un chemin déclaré dans les zones d'un `_personas/*/CLAUDE.md` qui ne correspond à aucun dossier | critique | C : créer l'area ou retirer la ligne ; la persona est source de vérité de son périmètre |
 | Persona sans zone | persona dont plus aucune zone ne résout | critique | C |
 
+## Mémoire native de Claude Code
+
+Sources : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-memory.py" inventory --vault {vault}` (tous les
+dossiers mémoire de la machine) et `vault-memory.py check --vault {vault} {dossier}` pour chacun. Lecture
+seule. Le rapport cite des noms de fichiers, des numéros de ligne, des compteurs et les pointeurs tels
+que le script les rend (masqués quand ils sont reconnus comme sensibles), jamais un extrait de mémoire :
+il est écrit dans le vault et peut contenir ce que la mémoire ne devait pas. Un pointeur marqué `code`
+(cité entre accents graves) et cassé ou archivé est probablement un exemple : le signaler en info ; marqué `code` et déplacé, c'est un vrai pointeur à corriger.
+
+| Check | Heuristique | Sévérité | Lot |
+|---|---|---|---|
+| Index tronqué au chargement | `truncated` : plus de 200 lignes ou 25 000 caractères, quel que soit le budget réglé | critique | B : `sync-vault` depuis le vault pour le dossier du vault ; C pour un dossier de dépôt |
+| Index au-dessus du budget | `over_budget` (`MEMORY_MAX_LINES`, `MEMORY_MAX_KB`), `alert` au-delà de 150 lignes ou 20 000 caractères | alerte | idem |
+| Sensible apparent | `sensitive[]` : secret, IBAN, téléphone, fiche confidentielle citée | critique | C : retrait après `vault-memory.py backup`, fichier par fichier, validé |
+| Pointeur déplacé | `pointers[]` de type `déplacé` : un seul fichier vivant de ce nom | info | A : corriger le chemin dans la mémoire, après sauvegarde |
+| Pointeur ambigu | `pointers[]` de type `ambigu` : plusieurs fichiers du même nom | info | C : l'humain désigne la bonne fiche |
+| Pointeur archivé ou cassé | `pointers[]` de type `archivé` ou `cassé` | alerte | C : retirer ou réécrire la mémoire |
+| Index désynchronisé | `index.missing_files` ou `index.unindexed` | info | A : retirer l'entrée orpheline, indexer le fichier |
+| Règle répétée | `duplicates[]` dans un dossier, `cross_repeats[]` d'un dossier à l'autre | alerte | C : promotion vers sa cible (`sync-vault/references/memoire-claude-code.md`, « Skill d'abord ») |
+| Curation en retard | `curation_due` sur le dossier du vault | info | B : `sync-vault` depuis le vault |
+| Mémoire déplacée ou partagée | `inventory` montre un dossier `autoMemoryDirectory` | info | constat seul : dire où vit la mémoire et si elle est versionnée |
+
+Un dossier de dépôt (`goodloop`, par exemple) qui dépasse son budget par du savoir technique légitime
+reste en lot C : sa place durable est `.claude/rules/` dans le dépôt, hors de ce plugin.
+
 ## Taille des fiches
 
 Source : `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-journal.py" check` (JSON, lecture seule). Budgets

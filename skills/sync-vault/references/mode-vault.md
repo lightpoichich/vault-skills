@@ -32,15 +32,16 @@ Tenue de registre autonome : `_index.md` cochés, wikilinks cassés réparés, l
 maintenus sur les ressources touchées par la session. Le reste (candidats à trame, orphelines,
 renvois périmés) se signale au compte rendu sans action. Détail dans `curation.md`, section 5.
 
-## 5. Alimenter la mémoire native de Claude Code
+## 5. Tenir la mémoire native de Claude Code
 Le vault est le fonds ; la mémoire native est le rappel chargé au démarrage de chaque session.
 - Vérifier que la mémoire auto est active. Si elle ne l'est pas, le signaler à l'utilisateur en une
   ligne et ne pas éditer `settings.json`.
-- Distiller dans `MEMORY.md` et ses fichiers thématiques l'essentiel transversal qu'une persona doit
-  savoir dès le démarrage : priorités courantes, statut des projets actifs en une ligne, décisions
-  et préférences durables, qui-est-qui.
-- Garder `MEMORY.md` court, même discipline que pour les fiches. Emplacement, plafond et contenu
-  attendu : `memoire-claude-code.md`.
+- Lancer `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-memory.py" check --vault {vault}`. S'il signale
+  un dépassement, du sensible, des pointeurs ou des doublons, ou si `curation_due` est vrai, dérouler
+  la curation complète de `memoire-claude-code.md` (sauvegarde d'abord). Sinon, seulement ajouter ou
+  mettre à jour l'essentiel transversal : priorités, statut des projets actifs en une ligne avec
+  pointeur, qui-est-qui.
+- Budget, cibles de promotion et règles : `memoire-claude-code.md`.
 
 ## 6. Faire tourner les journaux
 Si `_Meta/hooks.conf` porte `JOURNAL_ROTATION=1`, lancer sur les fiches écrites pendant ce passage :

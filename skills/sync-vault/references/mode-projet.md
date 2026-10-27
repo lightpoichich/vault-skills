@@ -40,12 +40,19 @@ une ligne par item, datée, cible en `[[wikilink]]` : « {date} · [[client]] : 
 (rôle) », « {date} · [[tech]] : pattern Y à capitaliser ». Le mode vault la traite et la vide à son
 prochain passage.
 
-## 5. Rendre compte
-Trois lignes au plus : ce qui a été mis à jour dans la fiche, ce qui a été déposé « À répercuter »,
-le `repo:` posé le cas échéant.
+## 5. Trier la frontière de la mémoire
+Lancer `python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-memory.py" check --vault {vault}` depuis le dossier
+courant, puis appliquer le tri de frontière de `memoire-claude-code.md` : préférence transversale en
+« À répercuter », fait d'état dans la fiche projet, sensible retiré après `vault-memory.py backup`.
+Aucune autre mémoire n'est supprimée ni réécrite.
+
+## 6. Rendre compte
+Trois lignes au plus : ce qui a été mis à jour dans la fiche, ce qui a été déposé « À répercuter »
+(mémoire comprise), le `repo:` posé le cas échéant, le sensible retiré de la mémoire avec le chemin
+de la sauvegarde.
 
 ## Garde-fous
-- Une seule fiche, `sheet`. Fiche client, area, ressource, draft, mémoire de Claude Code : une ligne
-  dans « À répercuter », pas d'écriture directe.
+- Une seule fiche, `sheet`. Fiche client, area, ressource, draft : une ligne dans « À répercuter »,
+  pas d'écriture directe. Mémoire de Claude Code : le seul geste permis est le retrait du sensible.
 - Le commit n'est pas la vérité : la conversation prime, un changement non commité est « en cours »,
   pas « fait ».
