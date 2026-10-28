@@ -2,11 +2,11 @@
 
 Le plugin `second-cerveau` installe et entretient un second cerveau : un dossier de notes, le vault, que Claude lit et met à jour pendant vos sessions de travail. L'installation pose la structure et des fiches vides ; le contenu entre ensuite au fil de l'usage.
 
-Public : dirigeants et consultants qui travaillent avec Claude Code. Guide à jour de la version 5.2.1, le 28/10/2026.
+Public : dirigeants et consultants qui travaillent avec Claude Code. Guide à jour de la version 5.2.2, le 28/10/2026.
 
 ## Le plugin en bref
 
-- **Une fois, à l'installation** : un entretien sur votre activité, un plan que vous validez, puis la structure du vault et un premier assistant, le Chief of Staff. Votre historique (projets Claude.ai, export Notion, dossiers de notes) peut y être rapatrié.
+- **Une fois, à l'installation** : un entretien sur votre activité, un plan que vous validez, puis la structure du vault et un premier assistant, le Chief of Staff. Si vous utilisez l'app Claude, sa mémoire oriente l'entretien dès le départ. Votre historique (projets Claude.ai, export Notion, dossiers de notes) peut ensuite être rapatrié.
 - **Chaque jour** : un brief le matin, des demandes en langage courant pour ranger et organiser, et une mise à jour des fiches en fin de session, lancée par Claude lui-même.
 - **Chaque mois** : un contrôle du vault, que Claude vous rappelle.
 - **À chaque nouvelle version** : la mise à jour du plugin, puis celle des fichiers du vault qu'il a posés.
@@ -30,15 +30,19 @@ Aucun connecteur (agenda, messagerie, Notion) n'est requis. Le plugin utilise ce
 
 ## Créer votre vault
 
+### Avant de commencer, si vous utilisez l'app Claude
+
+Demandez l'export de votre compte Claude.ai (démarche dans « Rapatrier vos projets Claude.ai »). Il arrive par mail. Avec lui, Claude part de ce que l'app sait déjà de vous et de vos projets : l'entretien démarre sur vos sujets réels, et vous confirmez chaque élément au lieu de tout décrire. Ses projets pourront ensuite être rapatriés à l'étape 6. Sans export, l'installation se déroule normalement, et Claude vous proposera de le demander au début de l'entretien.
+
+### Étapes
+
 1. Créez un dossier vide, par exemple `~/vault`, et lancez-y Claude Code : `cd ~/vault && claude`.
-2. Saisissez `/second-cerveau:installer`. Claude vous demande d'abord votre contexte : rôle, charge, sujets du moment, outils et chantiers en cours.
+2. Saisissez `/second-cerveau:installer`. Claude vous demande d'abord si vous avez un export Claude.ai, et le dossier où vous l'avez réuni. Il recueille ensuite votre contexte : rôle, charge, sujets du moment, outils et chantiers en cours. Avec l'export, il vous présente ce qu'il en a tiré, et vous confirmez ou corrigez chaque élément.
 3. Claude mène ensuite un entretien sur vos projets, vos domaines de responsabilité, vos ressources et vos sources d'information. Il vous fait choisir les usages prioritaires et le ton des assistants, puis écrit un plan dans `00-Inbox/plan-vault.md`.
 4. Relisez le plan et corrigez-le si besoin. Quand il vous convient, dites « c'est bon, monte le vault ». Claude crée les dossiers, les fiches vides et le Chief of Staff.
 5. Claude propose d'ajouter deux encarts à `~/.claude/CLAUDE.md`, le fichier de consignes que Claude Code lit dans toutes vos sessions. Le premier décrit votre contexte ; le second permet à Claude de retrouver le vault depuis n'importe quel dossier. Si vous refusez, les encarts restent à coller depuis `00-Inbox/compte-rendu-installation.md`.
 6. Claude propose enfin de rapatrier votre historique. Cette étape est facultative et peut se faire plus tard (voir « Importer un ensemble de documents »).
 7. Ouvrez un nouveau terminal et saisissez `cos`. Claude démarre dans le rôle de Chief of Staff.
-
-Si vous avez des projets dans l'app Claude, demandez l'export de votre compte dès l'étape 2 (voir « Rapatrier vos projets Claude.ai ») : il sera prêt pour l'étape 6, et la mémoire qu'il contient permet à Claude de préparer l'entretien.
 
 Si l'installation s'interrompt après l'écriture du plan, relancez `/second-cerveau:installer` dans le même dossier : Claude reprend à la relecture du plan.
 

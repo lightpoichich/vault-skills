@@ -47,7 +47,38 @@ Le dirigeant n'est pas un développeur. Tout ce qui s'affiche et tout texte livr
 Se présenter, poser le cadre PARA en une ou deux phrases, annoncer le déroulé : matière première,
 interview en quatre phases, irritants, profil de ton, plan. Si un `~/.claude/CLAUDE.md` global
 existe, l'utiliser pour se caler sur le contexte (rôle, charge) sans poser de question de profil.
-Vérifier que le déroulé est compris, puis demander le premier élément de matière première.
+Poser ensuite la question de l'historique Claude.ai (ci-dessous). Vérifier que le déroulé est
+compris, puis demander le premier élément de matière première.
+
+### Historique Claude.ai, avant la matière première
+
+Demander d'emblée : « as-tu des projets ou des conversations dans l'app Claude ? ». La mémoire que
+Claude.ai tient sur le dirigeant et ses projets oriente l'entretien ; ses projets nourrissent
+ensuite la migration (`references/migration.md`).
+
+**Pas encore d'export : le lancer tout de suite.** Proposer de demander l'export du compte
+maintenant. Il arrive par mail et ses liens expirent 24 heures après leur création, parfois après
+un seul usage. Démarche à donner : `ranger/references/claude-ai.md`, section 2. Le dirigeant réunit
+les archives dans un dossier hors de l'espace ; noter ce dossier dans `notes-actuelles.md`. Commencer
+la matière première sans attendre ; si les archives arrivent avant l'interview (étape 2), appliquer
+le bloc suivant à ce moment-là pour compléter et confirmer ce qui est déjà écrit. Si elles arrivent
+plus tard, elles servent à la migration.
+
+**Export disponible : préparer l'entretien.** Inventorier les archives sans vault, l'espace n'ayant
+pas encore de `_Meta/` :
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-inventory.py" scan "{dossier de l'export}" --label claude
+```
+
+Lire ensuite, dans le dossier d'extraction que donne l'inventaire, la mémoire générale et les
+fichiers de mémoire `/profile.md` et `/areas/…` (dossier `claude/memoires/`), et la section
+« Mémoire du projet » des fiches `claude/projets/`. En tirer un premier jet de `contexte.md`,
+`themes-actuels.md` et `chantiers-en-cours.md`, présenté au dirigeant fait par fait : il confirme,
+corrige ou retire chaque fait avant l'écriture, et un fait non confirmé ne s'écrit pas. Les trois
+autres éléments se demandent comme d'habitude. Pendant l'interview, les domaines et projets de la
+mémoire servent de pistes de questions, jamais de réponses. Rien d'autre n'est repris de l'export à
+ce stade.
 
 ### Étape 1. Matière première
 
@@ -68,27 +99,8 @@ La demande est ouverte, le fichier cible reste canonique : demander « où viven
 jamais « montre-moi ton OneNote », et ranger la réponse dans `notes-actuelles.md` quel que soit
 l'outil nommé. Sans matière pour un élément, écrire « néant pour l'instant » et avancer.
 
-**Projets Claude.ai : lancer l'export tout de suite.** Si l'élément 3 cite des projets dans l'app
-Claude, ou après l'avoir demandé (« as-tu des projets dans l'app Claude ? »), proposer de lancer
-l'export du compte maintenant. Il arrive par mail et ses liens expirent 24 heures après leur
-création, parfois après un seul usage : demandé au début, il est prêt pour la migration
-(`references/migration.md`). Démarche à donner : `ranger/references/claude-ai.md`, section 2. Le
-dirigeant réunit les archives dans un dossier hors de l'espace ; noter ce dossier dans
-`notes-actuelles.md`.
-
-**Export déjà disponible : pré-remplir la matière première.** Si les archives sont là avant
-l'interview, les inventorier sans vault, l'espace n'ayant pas encore de `_Meta/` :
-
-```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-inventory.py" scan "{dossier de l'export}" --label claude
-```
-
-Lire ensuite, dans le dossier d'extraction que donne l'inventaire, la mémoire générale et les
-fichiers de mémoire `/profile.md` et `/areas/…` (dossier `claude/memoires/`), et la section
-« Mémoire du projet » des fiches `claude/projets/`. En tirer un premier jet de `contexte.md`,
-`themes-actuels.md` et `chantiers-en-cours.md`, présenté au dirigeant fait par fait : il confirme,
-corrige ou retire chaque fait avant l'écriture, et un fait non confirmé ne s'écrit pas. Les trois
-autres éléments se demandent comme d'habitude. Rien d'autre n'est repris de l'export à ce stade.
+Si des projets Claude.ai apparaissent à l'élément 3 sans avoir été évoqués au cadre, appliquer
+« Historique Claude.ai » ci-dessus avant l'élément suivant.
 
 ### Étape 2. Interview en quatre phases
 

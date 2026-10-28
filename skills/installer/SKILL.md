@@ -37,9 +37,9 @@ Un dossier déjà rempli de fichiers sans rapport avec un vault se signale avant
 
 ### 2. Phase 1 : l'entretien
 Dérouler `references/entretien.md` : matière première, interview en quatre phases, cas d'usage,
-profil de ton, écriture du plan. Cette phase n'écrit que dans `00-Inbox/`. Si le dirigeant a des
-projets dans l'app Claude, l'export de son compte se demande dès la matière première, et sa mémoire
-peut pré-remplir les premiers fichiers, fait par fait confirmés.
+profil de ton, écriture du plan. Cette phase n'écrit que dans `00-Inbox/`. La question de l'historique
+Claude.ai se pose dès le cadre : l'export du compte se demande au début, et sa mémoire oriente
+l'entretien et pré-remplit les premiers fichiers, fait par fait confirmés.
 
 ### 3. Point d'arrêt : valider le plan
 Résumer le plan et demander sa relecture. Rien n'est structuré sans un go explicite du dirigeant ;
