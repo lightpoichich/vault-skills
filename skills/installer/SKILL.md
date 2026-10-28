@@ -3,15 +3,17 @@ name: installer
 description: >-
   Installe un second cerveau en une commande, dans le dossier du futur vault : entretien de
   cartographie de l'activité, plan à valider, puis structure du vault (arborescence PARA, Schema,
-  gouvernance, fiches vides, persona Chief of Staff et son brief) et encarts du CLAUDE.md global
-  posés avec accord. Reprend là où l'installation s'est arrêtée. Se lance par la commande
+  gouvernance, fiches vides, persona Chief of Staff et son brief), encarts du CLAUDE.md global
+  posés avec accord, puis rapatriement facultatif de l'historique (projets Claude.ai, exports de
+  notes). Reprend là où l'installation s'est arrêtée. Se lance par la commande
   /second-cerveau:installer.
 disable-model-invocation: true
 ---
 
 # Installer
 
-Une commande, deux phases et un point d'arrêt entre elles. L'entretien produit
+Une commande, deux phases et un point d'arrêt entre elles, puis une phase facultative de
+rapatriement de l'historique. L'entretien produit
 `00-Inbox/plan-vault.md` ; le dirigeant le relit et le valide ; la structure l'exécute. Le plan est
 le seul passage entre les deux phases : une installation coupée reprend depuis lui.
 
@@ -35,7 +37,9 @@ Un dossier déjà rempli de fichiers sans rapport avec un vault se signale avant
 
 ### 2. Phase 1 : l'entretien
 Dérouler `references/entretien.md` : matière première, interview en quatre phases, cas d'usage,
-profil de ton, écriture du plan. Cette phase n'écrit que dans `00-Inbox/`.
+profil de ton, écriture du plan. Cette phase n'écrit que dans `00-Inbox/`. Si le dirigeant a des
+projets dans l'app Claude, l'export de son compte se demande dès la matière première, et sa mémoire
+peut pré-remplir les premiers fichiers, fait par fait confirmés.
 
 ### 3. Point d'arrêt : valider le plan
 Résumer le plan et demander sa relecture. Rien n'est structuré sans un go explicite du dirigeant ;
@@ -46,7 +50,13 @@ Dérouler `references/structure.md` : arborescence, couche `_Meta`, `CLAUDE.md` 
 garde-fous, fiches vides d'areas et de projets, Resources, persona Chief of Staff, compte-rendu
 d'installation et encarts du `~/.claude/CLAUDE.md` global proposés.
 
-### 5. Passer la main
+### 5. Phase 3 : rapatrier l'historique (facultative)
+Proposer une fois de rapatrier l'historique cité dans `notes-actuelles.md` : dérouler
+`references/migration.md` (une voie par source, règles du lot tirées du plan, tableau de reprise
+validé, mode lot de `ranger`). Le dirigeant peut refuser ou reporter ; un tableau en cours se
+reprend dans une session suivante.
+
+### 6. Passer la main
 Après la synthèse, orienter vers l'usage : lancer `cos` pour le Chief of Staff et son brief ; dire
 « nouvelle persona » ou « crée un skill pour mon Chief of Staff » pour étendre l'équipe
 (`assistants`) ; dire « importe cette note » pour faire entrer un contenu (`ranger`).
@@ -66,6 +76,7 @@ Après la synthèse, orienter vers l'usage : lancer `cos` pour le Chief of Staff
 - `references/plan-vault-contract.md` : gabarit du plan et règles de remplissage, interface entre
   les deux phases.
 - `references/structure.md` : phase 2, de l'arborescence au compte-rendu.
+- `references/migration.md` : phase 3 facultative, voie par source, règles du lot tirées du plan.
 - `references/plan-vault-format.md` : lecture du plan par la phase 2, défauts quand une section
   manque.
 - `references/langue-dirigeant.md` : anglicismes à remplacer, termes internes à taire, exemples.

@@ -68,6 +68,28 @@ La demande est ouverte, le fichier cible reste canonique : demander « où viven
 jamais « montre-moi ton OneNote », et ranger la réponse dans `notes-actuelles.md` quel que soit
 l'outil nommé. Sans matière pour un élément, écrire « néant pour l'instant » et avancer.
 
+**Projets Claude.ai : lancer l'export tout de suite.** Si l'élément 3 cite des projets dans l'app
+Claude, ou après l'avoir demandé (« as-tu des projets dans l'app Claude ? »), proposer de lancer
+l'export du compte maintenant. Il arrive par mail et ses liens expirent 24 heures après leur
+création, parfois après un seul usage : demandé au début, il est prêt pour la migration
+(`references/migration.md`). Démarche à donner : `ranger/references/claude-ai.md`, section 2. Le
+dirigeant réunit les archives dans un dossier hors de l'espace ; noter ce dossier dans
+`notes-actuelles.md`.
+
+**Export déjà disponible : pré-remplir la matière première.** Si les archives sont là avant
+l'interview, les inventorier sans vault, l'espace n'ayant pas encore de `_Meta/` :
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-inventory.py" scan "{dossier de l'export}" --label claude
+```
+
+Lire ensuite, dans le dossier d'extraction que donne l'inventaire, la mémoire générale et les
+fichiers de mémoire `/profile.md` et `/areas/…` (dossier `claude/memoires/`), et la section
+« Mémoire du projet » des fiches `claude/projets/`. En tirer un premier jet de `contexte.md`,
+`themes-actuels.md` et `chantiers-en-cours.md`, présenté au dirigeant fait par fait : il confirme,
+corrige ou retire chaque fait avant l'écriture, et un fait non confirmé ne s'écrit pas. Les trois
+autres éléments se demandent comme d'habitude. Rien d'autre n'est repris de l'export à ce stade.
+
 ### Étape 2. Interview en quatre phases
 
 Consulter `references/cartographie-guide.md` pour le superset d'Areas, les heuristiques Resources

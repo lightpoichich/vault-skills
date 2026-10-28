@@ -33,7 +33,9 @@ Lire `_Meta/Schema.md`, `governance.md`, `sources.md` et la carte des projets et
 
 1. **Règles du lot** d'abord : périmètre et fenêtre de temps, correspondances générales (« tout
    `Clients/Acme/` vers [[acme]] », « les conversations du projet Claude Refonte vers [[refonte-site]] »).
-   Elles évitent de trancher ligne par ligne.
+   Elles évitent de trancher ligne par ligne. Lancé par la phase 3 d'`installer`, le lot arrive avec
+   des règles pré-remplies depuis le plan (rapprochement par le nom, à valider) : les relire plutôt
+   que les réécrire.
 2. **Chaque ligne `à décider`** : ouvrir l'élément (titre, premières lignes, échantillon pour un gros
    fichier) et remplir action et destination.
 

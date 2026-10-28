@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """vault-inventory.py · inventaire d'un lot à ranger dans le vault (mode lot de `ranger`).
 
-  vault-inventory.py scan SOURCE --vault VAULT [--label NOM] [--manifeste CHEMIN] [--max-mb 20]
+  vault-inventory.py scan SOURCE [--vault VAULT] [--label NOM] [--manifeste CHEMIN] [--max-mb 20]
 
 SOURCE est un dossier ou une archive `.zip`. Un export Claude.ai est reconnu sous ses deux formes : une
 archive unique (`conversations.json`, `projects.json`), ou le dossier qui réunit le manifeste et une
@@ -22,6 +22,9 @@ l'entrée de journal d'une fiche) : `{label}:{chemin relatif}` pour un fichier, 
 `claude:document:{uuid}`, `claude:conversation:{uuid}`, `claude:memoire:{chemin}` pour un export Claude.ai. Une clé déjà présente
 dans le vault marque l'élément comme importé : relancer le même lot ne duplique rien, à condition de
 garder le même `--label`.
+
+Sans `--vault`, le script inventorie seul, sans détection des éléments déjà importés : c'est le cas de
+l'entretien d'installation, où l'export Claude.ai se lit avant que le vault n'ait son `_Meta/`.
 
 Sortie : `inventaire.json` dans le dossier du lot (un objet par élément) et un résumé sur la sortie
 standard. Format de l'export Claude.ai non documenté par Anthropic : lecture tolérante, champs absents
@@ -374,12 +377,14 @@ def write_manifest(path, lot, source, staging, inventory_path, items):
 
 def scan(args):
     source = os.path.realpath(os.path.expanduser(args.source))
-    vault = os.path.realpath(os.path.expanduser(args.vault))
-    if not os.path.isdir(os.path.join(vault, "_Meta")):
+    # Sans --vault (entretien d'installation, vault pas encore structuré) : inventaire seul, sans
+    # détection des clés déjà importées.
+    vault = os.path.realpath(os.path.expanduser(args.vault)) if args.vault else ""
+    if vault and not os.path.isdir(os.path.join(vault, "_Meta")):
         sys.exit(f"vault introuvable : {vault} n'a pas de dossier _Meta/")
     if not (os.path.isdir(source) or zipfile.is_zipfile(source)):
         sys.exit(f"source illisible : {source} n'est ni un dossier ni une archive zip")
-    if os.path.isdir(source) and (source == vault or source.startswith(vault + os.sep)):
+    if vault and os.path.isdir(source) and (source == vault or source.startswith(vault + os.sep)):
         sys.exit("la source est dans le vault : rien à importer")
     stem = os.path.splitext(os.path.basename(source))[0]
     label = slug(args.label or stem, 40)
@@ -418,7 +423,7 @@ def scan(args):
     # Le manifeste d'un export Claude.ai porte des liens de téléchargement : jamais un élément du lot.
     items = [it for it in items if not is_claude_manifest(it["chemin"])]
 
-    keys = vault_keys(vault)
+    keys = vault_keys(vault) if vault else {}
     seen = {}
     max_bytes = args.max_mb * 1024 * 1024
     for n, it in enumerate(items, 1):
@@ -474,7 +479,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("scan", help="inventorier un dossier ou une archive")
     s.add_argument("source")
-    s.add_argument("--vault", required=True)
+    s.add_argument("--vault", help="racine du vault ; sans elle, pas de détection des éléments déjà importés")
     s.add_argument("--label", help="préfixe des clés de fichier ; le garder identique pour relancer un lot")
     s.add_argument("--lot", help="identifiant du lot (défaut : AAAA-MM-JJ-{label})")
     s.add_argument("--manifeste", help="chemin du squelette de manifeste à écrire, dans 00-Inbox/ du vault")
