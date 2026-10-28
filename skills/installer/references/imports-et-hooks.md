@@ -40,7 +40,7 @@ silencieux et instantanés.
 
 | Hook | Événement | Ce qu'il fait | Réglage dans `hooks.conf` |
 |---|---|---|---|
-| Bilan de santé (`vault-health.sh`) | `SessionStart` | Inbox qui traîne, notes sans `type`, `.DS_Store` purgés. | `INBOX_STALE_DAYS`, `EXCLUDE` |
+| Bilan de santé (`vault-health.sh`) | `SessionStart` | Inbox qui traîne, notes sans `type`, `.DS_Store` purgés, mise à niveau du vault disponible (`references/mise-a-niveau.md`). | `INBOX_STALE_DAYS`, `EXCLUDE`, `UPGRADE_REMINDER` |
 | Garde-fou d'écriture (`vault-note-guard.sh`) | `PostToolUse` sur Write et Edit | Pose `created` et `updated` ; rappel si frontmatter absent ou nom hors kebab-case. La racine est déduite du fichier écrit : une note du vault modifiée depuis un autre dossier est gardée aussi. | `EXCLUDE` |
 | Approbation des imports (`vault-approve-imports.sh`) | `SessionStart` | Quand le dossier de lancement hérite d'un `CLAUDE.md` dont les `@imports` sortent du cwd et se résolvent dans un vault, pose `hasClaudeMdExternalIncludesApproved` pour ce dossier. Rien pour un import hors vault. | `APPROVE_EXTERNAL_IMPORTS=0` pour couper |
 | Rappel de sync (`vault-sync-nudge.sh`) | `Stop` | Quand le transcript a grossi de `SYNC_MIN_KB` Ko et que `SYNC_MIN_MINUTES` minutes ont passé depuis le dernier sync, retient l'arrêt une fois et demande `sync-vault`, depuis le vault ou depuis un dossier de travail relié à une fiche projet (dépôt git par `repo:`, `dossier-travail:` ou slug ; dossier sans git par `dossier-travail:` seul). Ailleurs, rien. | `SYNC_MIN_KB`, `SYNC_MIN_MINUTES` ; `SYNC_NUDGE=0` coupe, `SYNC_NUDGE=vault` garde le rappel depuis le vault seulement |

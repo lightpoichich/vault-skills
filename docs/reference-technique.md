@@ -47,7 +47,7 @@ Le plugin installe quatre hooks, actifs dans toute session Claude Code. Hors d'u
 
 | Hook | Événement | Rôle |
 |---|---|---|
-| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`, fiches au-dessus de leur budget de taille, mémoire native au-dessus de son budget ou au contenu sensible apparent, dernier audit trop ancien) et supprime les fichiers `.DS_Store` |
+| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`, fiches au-dessus de leur budget de taille, mémoire native au-dessus de son budget ou au contenu sensible apparent, dernier audit trop ancien, mise à niveau du vault disponible) et supprime les fichiers `.DS_Store` |
 | `vault-approve-imports.sh` | démarrage de session | approuve pour le dossier courant les imports du vault, que Claude Code ignorerait sinon comme imports externes |
 | `vault-note-guard.sh` | après l'écriture d'une note | renseigne `created` et `updated` dans un frontmatter existant, signale un frontmatter absent ou un nom de fichier hors kebab-case |
 | `vault-sync-nudge.sh` | fin de tour | demande une fois `sync-vault` depuis le vault ou depuis un dossier de travail relié, quand les seuils de volume et de durée sont atteints ; un `sync-vault` lancé à la main, ou une fiche projet écrite directement depuis son dossier de travail, repart les seuils à zéro ; aucun rappel depuis un worktree git lié |
@@ -62,6 +62,7 @@ Les réglages se placent dans `{vault}/_Meta/hooks.conf`. `installer` y copie le
 - **`SYNC_MIN_KB`** et **`SYNC_MIN_MINUTES`** : seuils du rappel de synchronisation, 40 Ko de transcript et 20 minutes depuis la dernière synchronisation par défaut. Les deux seuils doivent être atteints.
 - **`SYNC_NUDGE`** : la valeur `0` supprime le rappel, la valeur `vault` le limite aux sessions ouvertes dans le vault.
 - **`AUDIT_REMINDER_DAYS`** : délai, en jours, au-delà duquel le bilan de santé signale le dernier rapport `audit-vault-{date}.md` (30 par défaut, `0` coupe le rappel). Sans aucun rapport, le délai court depuis la première session ouverte sur ce vault par la machine.
+- **`UPGRADE_REMINDER`** : la valeur `0` coupe le signal de mise à niveau disponible (tampon `_Meta/installation.md` absent, ou unité remplaçable, en fusion ou nouvelle, ou migration en attente). Voir « Mise à niveau des vaults installés ».
 - **`JOURNAL_ROTATION`**, **`JOURNAL_MAX_KB_{TYPE}`**, **`JOURNAL_MAX_KB`**, **`JOURNAL_SECTIONS`**, **`JOURNAL_KEEP`** : rotation des journaux de fiche, voir plus bas. Sans ces clés : rotation coupée, 20 Ko pour une area, 30 Ko pour un projet, section `Journal`, 5 entrées gardées. Le gabarit `hooks.conf` de `installer` pose `JOURNAL_ROTATION=1` : un nouveau vault a la rotation active.
 - **`MEMORY_MAX_LINES`**, **`MEMORY_MAX_KB`**, **`MEMORY_CURATION_DAYS`** : budget de l'index de la mémoire native (120 lignes et 16 000 caractères par défaut, environ 60 % du plafond de Claude Code) et délai de curation complète (30 jours). Voir plus bas.
 - **`SYNC_NUDGE_WORKTREES`** : la valeur `1` rétablit le rappel dans les worktrees git liés. Par défaut, les sous-agents qui traitent des tickets en parallèle dans des worktrees ne reçoivent pas de rappel, et l'orchestrateur synchronise une seule fois depuis le checkout principal.
@@ -106,6 +107,17 @@ python3 hooks/vault-inventory.py scan {dossier ou archive.zip} --vault {vault} -
 - **Clés** : `{label}:{chemin relatif}` pour un fichier, `claude:projet:{uuid}`, `claude:document:{uuid}`, `claude:conversation:{uuid}`, `claude:memoire:{chemin}` pour un export Claude.ai. La clé est posée en `source:` de la note écrite, ou en sous-ligne `source :` d'une entrée de journal. Une clé déjà présente dans le vault marque l'élément comme importé ; un même `--label` est donc requis pour relancer un lot.
 - **Signalements** : doublons de contenu dans le lot, éléments vides, éléments au-delà de `--max-mb` (20 par défaut), noms de fichier évoquant une donnée sensible (indice à juger, pas une détection).
 - **Sorties** : `inventaire.json` dans le dossier du lot, résumé sur la sortie standard, squelette du manifeste dans le vault. Un manifeste existant n'est réécrit qu'avec `--force` : il porte l'état du lot.
+
+### Mise à niveau des vaults installés
+
+`hooks/vault-upgrade.py` apporte à un vault installé les changements des gabarits d'`installer`, sans modèle de langage. Procédure complète : `skills/installer/references/mise-a-niveau.md`.
+
+- **Commandes** : `check` rend l'état en JSON (`--summary` : une ligne, rien s'il n'y a rien à faire). `stamp`, `apply` et `accept {unité}` simulent par défaut et écrivent avec `--apply`.
+- **Tampon** : `_Meta/installation.md` (`type: moc`) porte la version du plugin intégrée, les migrations appliquées et, par unité, l'empreinte du gabarit intégré. `installer` le pose en dernière écriture de la phase de structure.
+- **Unités** : copies telles quelles (`_personas/cos/.claude/skills/brief-du-jour/`, `_Meta/hooks.conf`) et blocs entre `<!-- socle second-cerveau : début {id} -->` et `<!-- socle second-cerveau : fin {id} -->` (`CLAUDE.md` racine, `_Meta/Schema.md`, `_personas/cos/CLAUDE.md`). Le texte hors balises n'est jamais lu ni touché. `capacites-a-construire.md` n'est pas géré.
+- **Cas** : à jour, remplaçable (jamais modifié depuis l'intégration, gabarit changé), personnalisé, fusion à proposer (modifié et gabarit changé, jamais écrit par le script), nouveau, absent, retiré du gabarit, inconnu (pas d'empreinte), balises absentes. `apply` ne remplace que le remplaçable et ajoute le nouveau, après copie des fichiers touchés dans `${XDG_STATE_HOME:-~/.local/state}/second-cerveau/mise-a-niveau/`. `accept` déclare une fusion faite, ou une version personnelle conservée.
+- **Migrations** : déclarées dans le script (identifiant, version, contrôle, action), idempotentes, inscrites au tampon. `5.0.0-noms-skills` réécrit les noms retirés, entre accents graves, dans le `CLAUDE.md` racine, ceux des personas et les fichiers des skills du vault ; sa table concorde avec celle d'`audit-vault`, vérifiée par les tests.
+- **Vault sans tampon** : la première mise à niveau note intégrées les unités identiques au gabarit, laisse les autres inconnues et n'écrase rien.
 
 ### Synchronisation git d'un vault partagé
 

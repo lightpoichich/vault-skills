@@ -36,6 +36,17 @@ La version 5.0.0 regroupe dix skills en six. Les phrases habituelles restent val
 
 Après cette mise à jour, dites « audit du vault ». L'audit repère les assistants de votre vault dont une procédure appelle encore un ancien nom, et propose la correction.
 
+### Mettre à niveau votre vault
+
+Une nouvelle version du plugin peut améliorer les fichiers posés à l'installation : le Chief of Staff, son brief, les règles communes du vault. Le bilan de démarrage signale qu'une mise à niveau est disponible. Saisissez alors `/second-cerveau:installer` dans le vault.
+
+- Un fichier que vous n'avez jamais modifié est remplacé par sa nouvelle version.
+- Un fichier que vous avez personnalisé n'est jamais écrasé : Claude vous montre l'écart et propose une version qui garde vos ajouts, appliquée seulement avec votre accord.
+- Dans le `CLAUDE.md` du vault, le `Schema` et le `CLAUDE.md` du Chief of Staff, seul le texte placé entre les balises `socle second-cerveau` appartient au plugin. Ce que vous écrivez en dehors n'est jamais touché.
+- Les changements de règles d'une version, comme les noms de skills de la 5.0.0, sont appliqués au passage.
+
+Avant toute écriture, Claude propose un commit git du vault et garde une copie des fichiers modifiés hors du vault. Un vault installé avant la version 5.2.0 reçoit d'abord un état des lieux, sans aucun remplacement.
+
 ## Créer votre vault
 
 1. Créez un dossier vide, par exemple `~/vault`, et lancez-y Claude Code : `cd ~/vault && claude`.
@@ -131,7 +142,7 @@ L'export ne relie pas les conversations à leur projet : Claude propose le ratta
 
 Quatre automatismes tournent dans vos sessions, sans commande à lancer. Hors d'un vault ou d'un dossier relié, ils ne font rien.
 
-- **Bilan de démarrage** : au lancement, Claude reçoit l'état du vault. Il signale les notes de `00-Inbox/` non triées depuis plus de 14 jours, les notes sans type, les fiches au-dessus de leur taille cible, une mémoire de Claude Code trop chargée et un dernier audit de plus de 30 jours.
+- **Bilan de démarrage** : au lancement, Claude reçoit l'état du vault. Il signale les notes de `00-Inbox/` non triées depuis plus de 14 jours, les notes sans type, les fiches au-dessus de leur taille cible, une mémoire de Claude Code trop chargée, un dernier audit de plus de 30 jours et une mise à niveau disponible.
 - **Contrôle des notes** : à chaque écriture, les dates de création et de modification sont tenues à jour ; un en-tête absent ou un nom de fichier non conforme est signalé.
 - **Accès aux règles du vault** : un assistant ou un dossier de projet lit les règles de `_Meta/` sans demande d'autorisation à chaque session.
 - **Rappel de synchronisation** : décrit dans la section « En fin de session : la synchronisation ».
@@ -156,6 +167,7 @@ Les réglages se placent dans `_Meta/hooks.conf`, une ligne `CLÉ=valeur` par r�
 | `SYNC_MIN_MINUTES` | Durée minimale entre deux synchronisations automatiques | 20 |
 | `INBOX_STALE_DAYS` | Âge, en jours, à partir duquel une note de `00-Inbox/` est signalée | 14 |
 | `AUDIT_REMINDER_DAYS` | Âge, en jours, du dernier audit avant rappel ; `0` supprime le rappel | 30 |
+| `UPGRADE_REMINDER=0` | Supprime le signal de mise à niveau disponible | signal actif |
 | `JOURNAL_ROTATION=0` | Suspend l'allègement automatique des fiches | actif dans un vault créé par le plugin |
 
 Les autres réglages sont décrits dans la [référence technique](docs/reference-technique.md).

@@ -4,6 +4,7 @@
 # Bilan de santé du vault, injecté dans le contexte au démarrage de session.
 # Capteur déterministe (proxies de fichiers) + auto-fix inerte (.DS_Store). Jamais de blocage.
 # Rappel du rituel d'audit : dernier rapport audit-vault-{date}.md plus vieux que AUDIT_REMINDER_DAYS (30).
+# Mise à niveau disponible : tampon `_Meta/installation.md` absent, ou gabarits changés (vault-upgrade.py check).
 #
 # Portée : le plugin est actif dans toute session Claude Code → racine = vault contenant le cwd
 # (CLAUDE_PROJECT_DIR, sinon "cwd" du JSON stdin), en remontant jusqu'à trouver `_Meta/`.
@@ -26,8 +27,14 @@ JOURNAL_SUMMARY="$(python3 "$HOOKS_DIR/vault-journal.py" check --vault "$VAULT" 
 # Mémoire native du dossier de lancement (budget de l'index, sensible apparent, voir vault-memory.py) : signalement seul.
 LAUNCH_DIR="${CLAUDE_PROJECT_DIR:-$(stdin_field cwd)}"; [ -d "$LAUNCH_DIR" ] || LAUNCH_DIR="$VAULT"
 MEMORY_SUMMARY="$(cd "$LAUNCH_DIR" 2>/dev/null && python3 "$HOOKS_DIR/vault-memory.py" check --vault "$VAULT" --summary 2>/dev/null)"
+# Mise à niveau du vault (tampon absent, ou gabarits du plugin changés depuis l'intégration, voir vault-upgrade.py) :
+# signalement seul, rien quand il n'y a rien à faire. UPGRADE_REMINDER=0 coupe le signal.
+UPGRADE_SUMMARY=""
+if [ "$(vault_conf "$VAULT" UPGRADE_REMINDER 1)" != 0 ]; then
+  UPGRADE_SUMMARY="$(python3 "$HOOKS_DIR/vault-upgrade.py" check --vault "$VAULT" --summary 2>/dev/null)"
+fi
 
-DSSTORE="$DSSTORE" JOURNAL_SUMMARY="$JOURNAL_SUMMARY" MEMORY_SUMMARY="$MEMORY_SUMMARY" \
+DSSTORE="$DSSTORE" JOURNAL_SUMMARY="$JOURNAL_SUMMARY" MEMORY_SUMMARY="$MEMORY_SUMMARY" UPGRADE_SUMMARY="$UPGRADE_SUMMARY" \
 INBOX_STALE_DAYS="$(vault_conf "$VAULT" INBOX_STALE_DAYS 14)" \
 AUDIT_REMINDER_DAYS="$(vault_conf "$VAULT" AUDIT_REMINDER_DAYS 30)" \
 EXCLUDE="$(vault_conf "$VAULT" EXCLUDE "")" \
@@ -99,6 +106,7 @@ if stray: segs.append(f"{stray} .md égaré(s) à la racine")
 if dsstore: segs.append(f"{dsstore} .DS_Store purgé(s)")
 if os.environ.get("JOURNAL_SUMMARY"): segs.append(os.environ["JOURNAL_SUMMARY"])
 if os.environ.get("MEMORY_SUMMARY"): segs.append(os.environ["MEMORY_SUMMARY"])
+if os.environ.get("UPGRADE_SUMMARY"): segs.append(os.environ["UPGRADE_SUMMARY"])
 
 # Rituel d'audit : dernier rapport audit-vault-{date}.md plus vieux que AUDIT_REMINDER_DAYS (0 coupe le rappel).
 # Sans aucun rapport, le délai court depuis la première session vue sur ce vault par cette machine.

@@ -52,6 +52,11 @@ Anglicismes à remplacer et exemples avant/après : `references/langue-dirigeant
 
 ### 4. Générer la couche `_Meta`
 Cette couche se pose avant toute fiche.
+- Les blocs entre balises `<!-- socle second-cerveau : début {id} -->` et
+  `<!-- socle second-cerveau : fin {id} -->` des gabarits (`schema-template.md` ici, le gabarit du
+  `CLAUDE.md` racine à l'étape 5) se recopient mot pour mot, balises comprises : la mise à niveau du
+  vault les remplacera (`references/mise-a-niveau.md`). Rien de propre au dirigeant ne s'écrit entre
+  les balises.
 - `_Meta/Schema.md` depuis `assets/schema-template.md`. Garder les types de la section *Conventions
   frontmatter* du plan et ceux que la section *Compétences à construire* lit ou écrit. Les types
   d'outillage `moc`, `note`, `brief`, `draft` et `audit` restent toujours : les fichiers `_Meta/`,
@@ -154,6 +159,13 @@ suit les conventions du geste « créer une persona » d'`assistants` et sert d'
   manque). Si la phrase « Le vault (ta mémoire) est à » y figure déjà, ne rien dupliquer et signaler
   un écart de chemin. Sur refus, les encarts restent à coller depuis le compte-rendu.
 - Afficher une synthèse au dirigeant, dans la langue de la section « Langue du dirigeant ».
+
+### 14. Poser le tampon d'installation
+Dernière écriture de la phase :
+`python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-upgrade.py" stamp --vault "$VAULT_ABS" --apply`. Le tampon
+`_Meta/installation.md` note la version du plugin et l'empreinte de chaque fichier et bloc posés ;
+la mise à niveau du vault en dépend (`references/mise-a-niveau.md`). Sans `CLAUDE_PLUGIN_ROOT`, le
+signaler dans le compte-rendu : la première mise à niveau dressera l'état sans rien écraser.
 
 ## Garde-fous
 

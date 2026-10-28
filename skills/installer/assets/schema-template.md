@@ -9,6 +9,7 @@ updated: {YYYY-MM-DD}
 > Tout agent qui écrit une fiche lit d'abord ce fichier. Ajouter un type plutôt que détourner un
 > existant.
 
+<!-- socle second-cerveau : début conventions -->
 ## Conventions générales
 - **Nommage** : `kebab-case` pour tous les fichiers et dossiers.
 - **Relations** : `[[wikilinks]]` entre fiches, pas de chemins en dur.
@@ -31,6 +32,7 @@ updated: {YYYY-MM-DD}
   ajout seul, jamais de réécriture d'une entrée passée. Quand la fiche dépasse son budget de taille
   (`_Meta/hooks.conf`), les entrées anciennes sortent mot pour mot vers
   `{dossier de la fiche}/journal/{slug}-{AAAA}-T{n}.md` ; la fiche en garde l'index `## Journaux`.
+<!-- socle second-cerveau : fin conventions -->
 
 ## Types de fiches
 
