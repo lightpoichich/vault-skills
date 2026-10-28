@@ -24,15 +24,15 @@ principales d'area et de projet (le dossier les porte), briefs, rapports d'audit
 
 | Check | Heuristique | Sévérité | Lot |
 |---|---|---|---|
-| Projet à archiver | `status: active` avec deadline dépassée, ou aucune modification depuis plus de 30 jours (frontmatter `updated`, sinon date la plus récente trouvée dans la fiche) | alerte | C si le projet semble vivant ailleurs (cité dans un brief récent) : proposer de recaler la deadline. B sinon : archivage vers `40-Archive/` avec `status: done`, après accord |
-| Inbox stale | note de `00-Inbox/` (hors briefs et audits du mois) non triée depuis plus de 14 jours | alerte | C : le tri d'une capture est un jugement, proposer `import-note` |
+| Projet à archiver | `status: active` avec deadline dépassée, ou aucune modification depuis plus de 30 jours (frontmatter `updated`, sinon date la plus récente trouvée dans la fiche) | alerte | C si le projet semble vivant ailleurs (cité dans un brief récent) : proposer de recaler la deadline. B sinon, `structurer` : archivage vers `40-Archive/` avec `status: done`, après accord |
+| Inbox stale | note de `00-Inbox/` (hors briefs et audits du mois) non triée depuis plus de 14 jours | alerte | C : le tri d'une capture est un jugement, proposer `ranger` |
 | Briefs anciens | `00-Inbox/briefs/` au-delà des 7 derniers jours | info | A : purge, les briefs sont éphémères par contrat |
 | Vieux audits | rapports `audit-vault-*.md` antérieurs au jour courant | info | A : l'audit purge les siens |
 | Index à la main désynchronisé | un `MOC-*.md` ou index de liens dont les cibles diffèrent des fiches existantes de son périmètre (listées mais absentes, existantes non listées) | alerte | B si l'index est consommé et régénérable (`sync-vault` ou le script qui le génère) ; sinon C : le remplacer par une vue `.base` |
 
 ## Areas et personas
 
-C'est le diagnostic que `gerer-area` attend : l'audit détecte, `gerer-area` exécute.
+C'est le diagnostic que `structurer` attend : l'audit détecte, `structurer` exécute.
 
 Construire d'abord la carte des consommateurs. Pour chaque area de `20-Areas/`, chercher qui la
 lit : une persona (`grep` du chemin de l'area dans les `_personas/*/CLAUDE.md`) ou un projet actif
@@ -40,10 +40,10 @@ lit : une persona (`grep` du chemin de l'area dans les `_personas/*/CLAUDE.md`) 
 
 | Check | Heuristique | Sévérité | Lot |
 |---|---|---|---|
-| Area sans consommateur | ni persona ni projet actif ne la référence | alerte | B, `gerer-area` : rattacher à une persona, ou archiver |
-| Area morte | aucune fiche du dossier modifiée depuis plus de 60 jours et aucun projet actif rattaché | alerte | B, `gerer-area` pour archiver |
-| Area obèse | nombre de fiches hors de proportion avec les autres areas ; signal relatif, à dire comme tel, sans seuil absolu | info | B, `gerer-area` pour scinder, consultatif |
-| Racine d'area chargée | plus de 8 fiches environ à plat à la racine de `20-Areas/{slug}/` : des flux ou de l'historique se sont posés à côté des référentiels | info | B, `gerer-area` : sous-dossiers de flux, historique vers `40-Archive/` |
+| Area sans consommateur | ni persona ni projet actif ne la référence | alerte | B, `structurer` : rattacher à une persona, ou archiver |
+| Area morte | aucune fiche du dossier modifiée depuis plus de 60 jours et aucun projet actif rattaché | alerte | B, `structurer` pour archiver |
+| Area obèse | nombre de fiches hors de proportion avec les autres areas ; signal relatif, à dire comme tel, sans seuil absolu | info | B, `structurer` pour scinder, consultatif |
+| Racine d'area chargée | plus de 8 fiches environ à plat à la racine de `20-Areas/{slug}/` : des flux ou de l'historique se sont posés à côté des référentiels | info | B, `structurer` : sous-dossiers de flux, historique vers `40-Archive/` |
 | Zone de persona invalide | un chemin déclaré dans les zones d'un `_personas/*/CLAUDE.md` qui ne correspond à aucun dossier | critique | C : créer l'area ou retirer la ligne ; la persona est source de vérité de son périmètre |
 | Persona sans zone | persona dont plus aucune zone ne résout | critique | C |
 | Skill retiré encore cité | `grep` des noms de la table ci-dessous dans le `CLAUDE.md` racine, les `_personas/*/CLAUDE.md` et tous les `SKILL.md` du vault (`.claude/skills/`, `_personas/*/.claude/skills/`) ; une routine qui délègue à un skill retiré ne le trouve plus | critique | A si le remplaçant est unique : réécrire le nom et signaler le mode à préciser ; C sinon |
@@ -55,6 +55,14 @@ et ne se réécrit pas.
 | Nom retiré | Depuis | Remplaçant |
 |---|---|---|
 | `sync-repo` | 4.0.0 | `sync-vault`, mode projet |
+| `nouveau-projet` | 5.0.0 | `structurer` |
+| `gerer-area` | 5.0.0 | `structurer` |
+| `import-note` | 5.0.0 | `ranger` |
+| `extraire-trame` | 5.0.0 | `ranger`, mode trame |
+| `kickstart-persona` | 5.0.0 | `assistants`, créer une persona |
+| `vault-skill-creator` | 5.0.0 | `assistants`, ajouter une compétence |
+| `interview-vault` | 5.0.0 | `/second-cerveau:installer` |
+| `kickstart-vault` | 5.0.0 | `/second-cerveau:installer` |
 
 ## Mémoire native de Claude Code
 

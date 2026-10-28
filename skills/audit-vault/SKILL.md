@@ -51,8 +51,8 @@ Rapport `00-Inbox/audit-vault-{YYYY-MM-DD}.md`, écrasé si l'audit est relancé
   `references/checks.md`). Pour chacun : la fiche concernée, le constat en une ligne, l'action
   proposée et son lot :
   - **Lot A, mécanique** : restauration d'une règle sans jugement ni contenu inventé.
-  - **Lot B, délégué** : le geste appartient à un skill dédié (`gerer-area` pour archiver ou scinder
-    une area, `nouveau-projet` pour un shell à compléter, `sync-vault` pour le contenu).
+  - **Lot B, délégué** : le geste appartient à un skill dédié (`structurer` pour archiver, scinder
+    ou compléter une area ou un projet, `sync-vault` pour le contenu).
   - **Lot C, décision humaine** : recaler une deadline, trancher un lien cassé, créer ou non une
     zone de persona.
 

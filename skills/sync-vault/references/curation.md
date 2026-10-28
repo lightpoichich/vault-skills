@@ -69,7 +69,7 @@ Ce qu'il fait seul (tenue de registre) :
 
 Ce qu'il signale au compte-rendu, sans action :
 - **Candidat à trame** : une forme répétée dans au moins deux Projects ou Areas (même structure de
-  document, même checklist, même déroulé) : « candidate à `extraire-trame` ». La généralisation est
+  document, même checklist, même déroulé) : « candidate à `ranger` ». La généralisation est
   un jugement qui revient à l'utilisateur.
 - **Ressource orpheline durable** : zéro wikilink entrant et aucun usage repérable : candidate à
   l'archive. Ne pas déplacer une Resource vers `40-Archive/` seul, rien ne distingue une trame

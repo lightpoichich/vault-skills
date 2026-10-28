@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """vault-resolve.py — depuis un dossier quelconque, retrouve le vault et la fiche projet qui lui correspondent.
 
-Utilisé par le hook Stop `vault-sync-nudge.sh` et par les skills `sync-vault` et `nouveau-projet` (règle de
+Utilisé par le hook Stop `vault-sync-nudge.sh` et par les skills `sync-vault` et `structurer` (règle de
 liaison, côté déterministe).
 
   vault-resolve.py [dossier]            → JSON  {"mode", "vault", "sheet", "repo", "subpath", "match"}
@@ -15,7 +15,7 @@ mode :
 
 Vault(s) candidats depuis un dossier, dans l'ordre : cibles des `@imports` des CLAUDE.md du dossier et de ses
 ancêtres (règle de liaison : le dossier importe `@~/vault/…`), puis `~/.claude/CLAUDE.md` (ses `@imports` et tout
-chemin absolu cité en clair, comme le « Le vault est à {VAULT_ABS} » du gabarit kickstart-vault), puis `~/vault`.
+chemin absolu cité en clair, comme le « Le vault est à {VAULT_ABS} » du gabarit d'`installer`), puis `~/vault`.
 Fiche : dans `{vault}/10-Projects/`, par ordre de priorité —
   1. `repo:` = remote `origin` du dépôt (URL normalisée : sans schéma, sans `user@`, sans `.git`, insensible à la
      casse ; suffixe optionnel `#sous-dossier` quand le projet vit dans un sous-dossier du dépôt) ;
@@ -88,7 +88,7 @@ PATH_RE = re.compile(r"(?<![\w@])(~|/)[^\s`'\"<>()\[\]{},;]+")
 
 
 def paths_in(md_path):
-    """Chemins absolus (ou ~/…) cités en clair dans un .md — le gabarit global de kickstart-vault écrit
+    """Chemins absolus (ou ~/…) cités en clair dans un .md — le gabarit global d'`installer` écrit
     « Le vault (ta mémoire) est à {VAULT_ABS} » sans @import."""
     try:
         text = open(md_path, encoding="utf-8", errors="ignore").read()

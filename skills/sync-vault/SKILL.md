@@ -43,7 +43,7 @@ Lire ensuite `_Meta/Schema.md` du vault trouvé.
 - `mode: vault` : dérouler `references/mode-vault.md`.
 - `mode: projet` : dérouler `references/mode-projet.md`. Une seule fiche est écrite, `sheet` ; ce
   qui concerne une autre fiche va dans sa section `## À répercuter`.
-- `mode: none` : aucune fiche reliée. Proposer `nouveau-projet` (mode compléter si le projet existe
+- `mode: none` : aucune fiche reliée. Proposer `structurer` (mode compléter si le projet existe
   sous un autre nom, sinon naître) et s'arrêter sans rien écrire.
 
 ### 3. Curer en écrivant
@@ -62,7 +62,7 @@ rien écrire.
 - Autonome : décider et écrire sans validation préalable, rendre compte après. Écraser, fusionner et
   réécrire sont autorisés ; empiler ne l'est pas.
 - Règle du doute : un élément dont l'importance est incertaine se garde.
-- Pas de fiche inventée : sans fiche résolue en mode projet, proposer `nouveau-projet`.
+- Pas de fiche inventée : sans fiche résolue en mode projet, proposer `structurer`.
 - Le sensible 🔒 ne se copie ni dans une fiche, ni dans « À répercuter », ni en mémoire ; renvoi
   seulement (`governance.md`).
 - Respecter le contrat de `_Meta/Schema.md` pour tout frontmatter touché.
@@ -76,4 +76,4 @@ rien écrire.
   `30-Resources/` ; curation des drafts avec ses seuils.
 - `references/memoire-claude-code.md` : où vit la mémoire native, comment vérifier qu'elle est
   active, quoi y distiller, plafond de rappel.
-- `import-note/references/classement.md` : frontmatter, liens, renvoi plutôt que copie.
+- `ranger/references/classement.md` : frontmatter, liens, renvoi plutôt que copie.
