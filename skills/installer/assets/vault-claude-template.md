@@ -50,7 +50,7 @@ Une fiche tient son état courant dans ses sections et son récit daté dans `##
 seul (convention « État et journal » du Schema) : rien ne s'y résume ni ne s'y perd.
 
 ## Garde-fous automatiques
-Quatre automatismes veillent sur le vault ; rien à lancer (réglages : `_Meta/hooks.conf`).
+Les automatismes du plugin veillent sur le vault ; rien à lancer (réglages : `_Meta/hooks.conf`).
 - **Au démarrage** : un bilan rapide s'il y a de quoi (Inbox qui traîne, notes sans `type`, fiches
   au-dessus de leur budget de taille, `.DS_Store` nettoyés), et l'approbation des règles du vault pour une session lancée depuis une
   persona ou un dossier de travail.

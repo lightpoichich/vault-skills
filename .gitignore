@@ -30,3 +30,6 @@ dev/evals/**/*.db
 dev/evals/**/eval_metadata.json
 dev/evals/**/grading.json
 dev/evals/**/timing.json
+
+# Copies de travail des agents (worktrees isolés)
+.claude/worktrees/
