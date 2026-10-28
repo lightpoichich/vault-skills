@@ -11,20 +11,6 @@ Public : dirigeants et consultants qui travaillent avec Claude Code, dans le ter
 - **Chaque mois** : un contrôle du vault, que Claude vous rappelle.
 - **À chaque nouvelle version** : la mise à jour du plugin, puis celle des fichiers du vault qu'il a posés.
 
-## Les skills du vault
-
-Un skill est une procédure que Claude lance de lui-même quand votre demande lui correspond. Vous n'avez pas à retenir leurs noms : la colonne de droite donne des formulations reconnues, et une phrase proche fonctionne aussi.
-
-| Skill | Ce qu'il fait | Exemple de demande |
-|---|---|---|
-| `installer` | Installe le vault (entretien, plan, structure, Chief of Staff), rapatrie l'historique, puis met le vault à niveau à chaque version | commande `/second-cerveau:installer`, la seule à saisir vous-même |
-| `ranger` | Fait entrer un contenu : une note, un dossier entier, un export Claude.ai, ou une trame tirée d'une pratique répétée | « importe cette note », « importe ce dossier », « fais-en une trame » |
-| `structurer` | Crée, complète, renomme, scinde, fusionne ou archive un projet ou un domaine de responsabilité | « créer le projet X », « archive le projet X », « crée une area » |
-| `sync-vault` | Reporte dans les fiches les décisions, statuts, tâches et contacts de la session | « sync le vault », ou lancé seul en fin de session |
-| `audit-vault` | Contrôle le vault sans le modifier, puis propose des corrections | « audit du vault » |
-| `assistants` | Crée un assistant spécialisé et lui donne des routines | « nouvelle persona », « crée un skill pour mon Chief of Staff » |
-| `brief-du-jour` | Rédige le brief du matin ; propre au Chief of Staff | « mon brief », depuis le Chief of Staff |
-
 ## Prérequis
 
 - Claude Code, dans le terminal ou dans l'app Claude (onglet Code).
@@ -80,10 +66,24 @@ Une installation interrompue après l'écriture du plan reprend à sa relecture 
 | `_Meta/` | Règles du vault : types de fiches, confidentialité, connecteurs déclarés, réglages |
 | `_personas/` | Les assistants, dont le Chief of Staff (`_personas/cos/`) |
 
+## Les skills du vault
+
+Un skill est une procédure que Claude lance de lui-même quand votre demande lui correspond. Vous n'avez pas à retenir leurs noms : la colonne de droite donne des formulations reconnues, et une phrase proche fonctionne aussi.
+
+| Skill | Ce qu'il fait | Exemple de demande |
+|---|---|---|
+| `installer` | Installe le vault (entretien, plan, structure, Chief of Staff), rapatrie l'historique, puis met le vault à niveau à chaque version | commande `/second-cerveau:installer`, la seule à saisir vous-même |
+| `ranger` | Fait entrer un contenu : une note, un dossier entier, un export Claude.ai, ou une trame tirée d'une pratique répétée | « importe cette note », « importe ce dossier », « fais-en une trame » |
+| `structurer` | Crée, complète, renomme, scinde, fusionne ou archive un projet ou un domaine de responsabilité | « créer le projet X », « archive le projet X », « crée une area » |
+| `sync-vault` | Reporte dans les fiches les décisions, statuts, tâches et contacts de la session | « sync le vault », ou lancé seul en fin de session |
+| `audit-vault` | Contrôle le vault sans le modifier, puis propose des corrections | « audit du vault » |
+| `assistants` | Crée un assistant spécialisé et lui donne des routines | « nouvelle persona », « crée un skill pour mon Chief of Staff » |
+| `brief-du-jour` | Rédige le brief du matin ; propre au Chief of Staff | « mon brief », depuis le Chief of Staff |
+
 ## Une journée avec le vault
 
 - **Le matin** : depuis le Chief of Staff, dites « mon brief ». Le brief du jour s'écrit dans `00-Inbox/briefs/` : priorités, alertes, agenda, tâches et éléments à valider, tirés du vault et des connecteurs déclarés dans `_Meta/sources.md`.
-- **Pendant la journée** : rangez vos documents, ouvrez et clôturez vos projets par les demandes du tableau « Les skills du vault ». Un document confidentiel n'est jamais copié : le vault garde un lien, une ligne de contexte et la mention 🔒.
+- **Pendant la journée** : rangez vos documents, ouvrez et clôturez vos projets par les demandes de la section « Les skills du vault ». Un document confidentiel n'est jamais copié : le vault garde un lien, une ligne de contexte et la mention 🔒.
 - **En fin de session** : après au moins 20 minutes d'échange, Claude met les fiches à jour de lui-même, sauf si vous venez de le demander. Quand rien n'a changé, il répond « Rien à répercuter. ».
 
 ### Depuis un dossier de projet
