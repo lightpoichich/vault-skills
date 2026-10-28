@@ -22,7 +22,7 @@ Les skills couvrent trois phases. L'installation se fait une fois, par la comman
 
 | Phase | Skill | Déclencheur | Résultat |
 |---|---|---|---|
-| Installation | `installer` | commande `/second-cerveau:installer` dans le dossier du futur vault | entretien, plan validé dans `00-Inbox/plan-vault.md`, puis arborescence PARA, Schema, gouvernance, persona Chief of Staff (`cos`) |
+| Installation | `installer` | commande `/second-cerveau:installer` dans le dossier du futur vault | entretien, plan validé dans `00-Inbox/plan-vault.md`, puis arborescence PARA, Schema, gouvernance, persona Chief of Staff (`cos`), puis rapatriement facultatif de l'historique (projets Claude.ai, exports de notes) par le mode lot de `ranger` |
 | Installation et usage | `assistants` | besoin d'un assistant, ou routine récurrente d'une persona | persona dans `_personas/{slug}/`, ou skill rangé dans la persona ou à la racine du vault |
 | Usage quotidien | `brief-du-jour` | le matin, depuis `cos` | brief daté : priorités, alertes, agenda, todos, éléments à valider |
 | Usage quotidien | `ranger` | note, URL ou document à ranger ; dossier, archive ou export Claude.ai ; pratique répétée au moins deux fois | note classée dans la zone PARA adéquate ; lot importé après validation d'un manifeste ; trame réutilisable dans `30-Resources/` |
@@ -100,6 +100,7 @@ Le mode lot de `ranger` s'appuie sur `hooks/vault-inventory.py`, sans modèle de
 python3 hooks/vault-inventory.py scan {dossier ou archive.zip} --vault {vault} --label {nom} --manifeste {vault}/00-Inbox/import-{nom}.md
 ```
 
+- **Sans vault** : sans `--vault`, l'inventaire se fait seul, sans détection des éléments déjà importés. C'est le cas de l'entretien d'installation, qui lit la mémoire d'un export Claude.ai avant que le vault n'ait son `_Meta/`.
 - **Extraction** : une archive est extraite dans `${XDG_STATE_HOME:-~/.local/state}/second-cerveau/import/{lot}/`, hors du vault, en refusant les chemins absolus et les remontées. Un dossier est lu en place.
 - **Export Claude.ai** : reconnu sous ses deux formes, archive unique ou dossier réunissant le manifeste et une archive par catégorie (`projects`, `memories`, `conversations`, `light_metadata`). Découpé en un fichier markdown par projet (description, instructions, mémoire du projet, liste des documents), par document de connaissance, par fichier de mémoire hors projet et par conversation (résumé, messages, outils nommés, sans la réflexion interne). Le manifeste, qui porte les liens de téléchargement, est écarté. Lecture tolérante d'un format non documenté.
 - **Clés** : `{label}:{chemin relatif}` pour un fichier, `claude:projet:{uuid}`, `claude:document:{uuid}`, `claude:conversation:{uuid}`, `claude:memoire:{chemin}` pour un export Claude.ai. La clé est posée en `source:` de la note écrite, ou en sous-ligne `source :` d'une entrée de journal. Une clé déjà présente dans le vault marque l'élément comme importé ; un même `--label` est donc requis pour relancer un lot.
@@ -126,7 +127,7 @@ Chaque entrée reprend mot pour mot la description du `SKILL.md`, c'est-à-dire 
 <!-- SKILLS:BEGIN -->
 ### Installation
 
-- **`installer`** : Installe un second cerveau en une commande, dans le dossier du futur vault : entretien de cartographie de l'activité, plan à valider, puis structure du vault (arborescence PARA, Schema, gouvernance, fiches vides, persona Chief of Staff et son brief) et encarts du CLAUDE.md global posés avec accord. Reprend là où l'installation s'est arrêtée. Se lance par la commande /second-cerveau:installer.
+- **`installer`** : Installe un second cerveau en une commande, dans le dossier du futur vault : entretien de cartographie de l'activité, plan à valider, puis structure du vault (arborescence PARA, Schema, gouvernance, fiches vides, persona Chief of Staff et son brief), encarts du CLAUDE.md global posés avec accord, puis rapatriement facultatif de l'historique (projets Claude.ai, exports de notes). Reprend là où l'installation s'est arrêtée. Se lance par la commande /second-cerveau:installer.
 - **`assistants`** : Construit l'équipe d'assistants du vault : crée une persona (rôle, périmètre de lecture et d'écriture, garde-fous, raccourci terminal, backlog de routines) après une découverte du quotidien, puis lui ajoute une compétence, un skill placé dans la persona ou à la racine du vault avec ses sources de données. S'utilise quand l'utilisateur dit « crée-moi un agent », « nouvelle persona », « je veux un assistant RH », « crée un skill pour mon Chief of Staff », « encode mon triage-mails », ou pioche dans capacites-a-construire.md. Pour installer le vault, voir /second-cerveau:installer.
 
 ### Usage quotidien

@@ -47,8 +47,9 @@ class Inventory(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def scan(self, source, *extra, check=True):
-        r = subprocess.run([sys.executable, SCRIPT, "scan", source, "--vault", self.vault, *extra],
+    def scan(self, source, *extra, check=True, vault=True):
+        args = ["--vault", self.vault] if vault else []
+        r = subprocess.run([sys.executable, SCRIPT, "scan", source, *args, *extra],
                            env=self.env, capture_output=True, text=True)
         if check:
             self.assertEqual(r.returncode, 0, r.stderr)
@@ -191,6 +192,19 @@ class Inventory(unittest.TestCase):
         _, items = self.scan(self.export_par_categories(), "--label", "claude")
         hit = [i for i in items if i["cle"] == "claude:memoire:people-flore-md"][0]
         self.assertEqual(hit["deja_dans_vault"], os.path.join("20-Areas", "equipe", "flore.md"))
+
+    def test_sans_vault_pour_l_entretien(self):
+        # À l'entretien d'installation, le dossier n'a pas encore de _Meta/ : inventaire seul.
+        write(os.path.join(self.vault, "10-Projects", "site", "site.md"),
+              "---\ntype: project\n---\n- (source : claude:conversation:c3333333-cccc)\n")
+        dossier = os.path.join(self.home, "futur-vault")
+        os.makedirs(dossier)
+        m = os.path.join(dossier, "00-Inbox", "import-claude.md")
+        summary, items = self.scan(self.export_par_categories(), "--label", "claude", "--manifeste", m, vault=False)
+        self.assertTrue(summary["export_claude"])
+        self.assertEqual(summary["deja_dans_vault"], 0)
+        self.assertTrue(os.path.isfile(m))
+        self.assertIn("claude:memoire:generale", {i["cle"] for i in items})
 
     def test_archive_a_dossier_unique(self):
         summary, items = self.scan(self.export_zip(nested=True))

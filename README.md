@@ -39,10 +39,11 @@ Après cette mise à jour, dites « audit du vault ». L'audit repère les assis
 ## Créer votre vault
 
 1. Créez un dossier vide, par exemple `~/vault`, et lancez-y Claude Code : `cd ~/vault && claude`.
-2. Saisissez `/second-cerveau:installer`. Claude recueille d'abord six éléments de contexte : votre rôle et votre charge, les sujets qui vous occupent, l'endroit où vivent vos notes et l'information de l'équipe, les outils déjà en place et vos chantiers transverses. Il mène ensuite un entretien sur vos projets, vos domaines de responsabilité, vos ressources et vos sources, puis vous fait choisir les usages prioritaires et le ton des assistants. Il écrit enfin un plan dans `00-Inbox/plan-vault.md`.
+2. Saisissez `/second-cerveau:installer`. Claude recueille d'abord six éléments de contexte : votre rôle et votre charge, les sujets qui vous occupent, l'endroit où vivent vos notes et l'information de l'équipe, les outils déjà en place et vos chantiers transverses. Il mène ensuite un entretien sur vos projets, vos domaines de responsabilité, vos ressources et vos sources, puis vous fait choisir les usages prioritaires et le ton des assistants. Il écrit enfin un plan dans `00-Inbox/plan-vault.md`. Si vous avez des projets dans l'app Claude, Claude vous propose de demander dès ce moment l'export de votre compte : il sera prêt en fin d'installation, et la mémoire qu'il contient peut accélérer l'entretien.
 3. Relisez le plan et corrigez-le si besoin. Quand il vous convient, dites « c'est bon, monte le vault ». Claude crée les dossiers, les fiches vides et un premier assistant, le Chief of Staff.
 4. En fin d'installation, Claude propose d'ajouter deux encarts à `~/.claude/CLAUDE.md`, le fichier de consignes que Claude Code lit dans toutes vos sessions. Le premier décrit votre contexte, le second permet à Claude de retrouver le vault depuis n'importe quel dossier. Si vous refusez, les encarts restent à coller depuis `00-Inbox/compte-rendu-installation.md`.
-5. Ouvrez un nouveau terminal et saisissez `cos`. Claude démarre dans le rôle de Chief of Staff.
+5. Claude propose ensuite de rapatrier votre historique : projets Claude.ai, export Notion, dossiers de notes. Cette étape est facultative et peut se reprendre plus tard ; elle suit la démarche décrite dans « Importer un ensemble de documents ».
+6. Ouvrez un nouveau terminal et saisissez `cos`. Claude démarre dans le rôle de Chief of Staff.
 
 Si l'installation s'interrompt après l'écriture du plan, relancez `/second-cerveau:installer` dans le même dossier : Claude reprend à la relecture du plan.
 

@@ -69,3 +69,6 @@ leur résumé. Correspondances par défaut :
   conversation découpée.
 - Format non documenté par Anthropic : le script lit les champs connus et ignore les autres. Un
   élément manquant (instructions, documents) se signale dans la synthèse.
+- À l'installation, l'export se demande dès l'entretien, et sa mémoire pré-remplit la matière
+  première, fait par fait confirmée (`installer/references/entretien.md`, étape 1) ; l'import se
+  fait en phase 3 (`installer/references/migration.md`).
