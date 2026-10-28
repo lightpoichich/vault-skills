@@ -3,6 +3,7 @@
 #
 # Bilan de santé du vault, injecté dans le contexte au démarrage de session.
 # Capteur déterministe (proxies de fichiers) + auto-fix inerte (.DS_Store). Jamais de blocage.
+# Rappel du rituel d'audit : dernier rapport audit-vault-{date}.md plus vieux que AUDIT_REMINDER_DAYS (30).
 #
 # Portée : le plugin est actif dans toute session Claude Code → racine = vault contenant le cwd
 # (CLAUDE_PROJECT_DIR, sinon "cwd" du JSON stdin), en remontant jusqu'à trouver `_Meta/`.
@@ -28,9 +29,10 @@ MEMORY_SUMMARY="$(cd "$LAUNCH_DIR" 2>/dev/null && python3 "$HOOKS_DIR/vault-memo
 
 DSSTORE="$DSSTORE" JOURNAL_SUMMARY="$JOURNAL_SUMMARY" MEMORY_SUMMARY="$MEMORY_SUMMARY" \
 INBOX_STALE_DAYS="$(vault_conf "$VAULT" INBOX_STALE_DAYS 14)" \
+AUDIT_REMINDER_DAYS="$(vault_conf "$VAULT" AUDIT_REMINDER_DAYS 30)" \
 EXCLUDE="$(vault_conf "$VAULT" EXCLUDE "")" \
 python3 <<'PY'
-import os, time, json, re, glob
+import os, time, json, re, glob, hashlib
 
 vault = os.getcwd()
 stale_days = int(os.environ.get("INBOX_STALE_DAYS", "14") or 14)
@@ -70,10 +72,15 @@ if os.path.isdir(inbox):
                 inbox_count += 1
                 inbox_oldest = max(inbox_oldest, (now - os.path.getmtime(os.path.join(root, fn))) / 86400.0)
 
-# Notes sans type (hors exclusions)
+# Notes sans type (hors exclusions), et dates des rapports d'audit-vault où qu'ils soient rangés
 no_type = 0
+audit_dates = []
 for path in glob.glob(os.path.join(vault, "**", "*.md"), recursive=True):
     base = os.path.basename(path)
+    m = re.fullmatch(r"audit-vault-(\d{4}-\d{2}-\d{2})\.md", base)
+    if m:
+        try: audit_dates.append(time.mktime(time.strptime(m.group(1), "%Y-%m-%d")))
+        except ValueError: pass
     if base in ("CLAUDE.md", "README.md") or base.startswith("_") or base.endswith("-template.md"):
         continue
     if excluded(path) or has_type(path):
@@ -92,6 +99,28 @@ if stray: segs.append(f"{stray} .md égaré(s) à la racine")
 if dsstore: segs.append(f"{dsstore} .DS_Store purgé(s)")
 if os.environ.get("JOURNAL_SUMMARY"): segs.append(os.environ["JOURNAL_SUMMARY"])
 if os.environ.get("MEMORY_SUMMARY"): segs.append(os.environ["MEMORY_SUMMARY"])
+
+# Rituel d'audit : dernier rapport audit-vault-{date}.md plus vieux que AUDIT_REMINDER_DAYS (0 coupe le rappel).
+# Sans aucun rapport, le délai court depuis la première session vue sur ce vault par cette machine.
+audit_days = int(os.environ.get("AUDIT_REMINDER_DAYS", "30") or 0)
+if audit_days > 0:
+    if audit_dates:
+        age = int((now - max(audit_dates)) / 86400)
+        if age >= audit_days: segs.append(f"dernier audit il y a {age} j (audit-vault)")
+    else:
+        state = os.path.join(os.environ.get("XDG_STATE_HOME") or os.path.expanduser("~/.local/state"),
+                             "second-cerveau", "audit",
+                             hashlib.sha256(os.path.realpath(vault).encode("utf-8", "surrogatepass")).hexdigest()[:12])
+        try:
+            with open(state) as fh: first_seen = float(fh.read().strip())
+        except Exception:
+            first_seen = now
+            try:
+                os.makedirs(os.path.dirname(state), exist_ok=True)
+                with open(state, "w") as fh: fh.write(f"{int(now)}\n")
+            except OSError: pass
+        age = int((now - first_seen) / 86400)
+        if age >= audit_days: segs.append(f"aucun audit depuis {age} j (audit-vault)")
 if not segs:
     raise SystemExit(0)  # vault sain : pas de bruit
 

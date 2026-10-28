@@ -36,7 +36,8 @@ Dérouler les cinq groupes de checks de `references/checks.md` :
 1. **Intégrité structurelle** : liens, orphelines, frontmatter, nommage, structure, pollution.
 2. **Fraîcheur et archivage** : Inbox stale, projets à archiver, briefs et audits anciens, index
    désynchronisés.
-3. **Areas et personas** : areas mortes, obèses ou sans consommateur, zones de personas invalides.
+3. **Areas et personas** : areas mortes, obèses ou sans consommateur, zones de personas invalides,
+   skills retirés encore cités.
 4. **Taille des fiches** : fiches au-dessus de leur budget, rotables ou bloquées, skills qui écrivent
    un récit daté hors journal.
 5. **Mémoire native** : tous les dossiers mémoire de la machine, budget, sensible apparent, pointeurs

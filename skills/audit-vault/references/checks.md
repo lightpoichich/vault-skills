@@ -46,6 +46,15 @@ lit : une persona (`grep` du chemin de l'area dans les `_personas/*/CLAUDE.md`) 
 | Racine d'area chargée | plus de 8 fiches environ à plat à la racine de `20-Areas/{slug}/` : des flux ou de l'historique se sont posés à côté des référentiels | info | B, `gerer-area` : sous-dossiers de flux, historique vers `40-Archive/` |
 | Zone de persona invalide | un chemin déclaré dans les zones d'un `_personas/*/CLAUDE.md` qui ne correspond à aucun dossier | critique | C : créer l'area ou retirer la ligne ; la persona est source de vérité de son périmètre |
 | Persona sans zone | persona dont plus aucune zone ne résout | critique | C |
+| Skill retiré encore cité | `grep` des noms de la table ci-dessous dans le `CLAUDE.md` racine, les `_personas/*/CLAUDE.md` et tous les `SKILL.md` du vault (`.claude/skills/`, `_personas/*/.claude/skills/`) ; une routine qui délègue à un skill retiré ne le trouve plus | critique | A si le remplaçant est unique : réécrire le nom et signaler le mode à préciser ; C sinon |
+
+Skills retirés du plugin et leur remplaçant. La table s'allonge à chaque version qui retire ou
+renomme un skill ; une mention dans une fiche ordinaire (journal, décision) relève de l'historique
+et ne se réécrit pas.
+
+| Nom retiré | Depuis | Remplaçant |
+|---|---|---|
+| `sync-repo` | 4.0.0 | `sync-vault`, mode projet |
 
 ## Mémoire native de Claude Code
 

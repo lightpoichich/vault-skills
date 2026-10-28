@@ -57,7 +57,7 @@ routine récurrente, avec son input, son action, son livrable et sa fréquence.
 
 ## 4. Conventions du skill généré
 
-- Nommage en kebab-case pour le dossier et pour le `name` ; `scripts/quick_validate.py` le vérifie.
+- Nommage en kebab-case pour le dossier et pour le `name`, identiques.
 - Frontmatter natif de skill : `name`, `description`, `compatibility` si utile. Pas de frontmatter
   de note vault (`type:`, `tags:`, `status:`) : un SKILL.md n'est pas une fiche Obsidian. Sous
   `.claude/`, il est exclu des hooks du vault, donc ni stamping `created`/`updated`, ni rappel

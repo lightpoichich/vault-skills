@@ -21,8 +21,7 @@ Déroulé :
 1. Phase 0 : situer le vault, choisir le tier, lire le backlog.
 2. Capturer l'intention et les sources de données, confirmer avant d'écrire.
 3. Rédiger le SKILL.md.
-4. Tester en vrai dans la persona ; ouvrir `references/eval-loop.md` seulement si une mesure est
-   demandée.
+4. Tester en vrai dans la persona ; une mesure chiffrée passe par le `skill-creator` d'Anthropic.
 5. Améliorer, répéter.
 6. Cocher le backlog, faire le récap.
 
@@ -187,11 +186,12 @@ Défaut vault : le test live, sans JSON, benchmark ni sous-agent. Après le brou
 3. Donner une tâche réelle qui doit déclencher le skill (« fais mon triage de ce matin »).
 4. Regarder la sortie avec l'utilisateur, repérer ce qui cloche, ajuster le SKILL.md, recommencer.
 
-Ouvrir `references/eval-loop.md` seulement sur demande explicite de mesure : skill lancé tous les
-jours, comparaison de deux versions, problèmes de déclenchement. Il décrit les test cases, les runs
-avec et sans skill, le grading, le benchmark, le viewer, la comparaison en aveugle, l'optimisation
-de la description et les environnements sans sous-agents. Le présenter comme plus long, utile pour
-un skill très réutilisé.
+Une mesure chiffrée ne se propose que sur demande explicite : skill lancé tous les jours,
+comparaison de deux versions, problèmes de déclenchement. Elle passe alors par le `skill-creator`
+d'Anthropic (plugin `skill-creator` de la marketplace `claude-plugins-official`), s'il est
+installé : il porte la boucle d'évaluation complète (cas de test, runs avec et sans skill,
+benchmark, optimisation de la description) et s'applique au skill déjà placé dans le vault. La
+présenter comme plus longue, utile pour un skill très réutilisé.
 
 ## Improving the skill
 
@@ -209,13 +209,6 @@ Applies after a live test as well as after a measured run.
 
 Thinking time is not the blocker: write a draft revision, then reread it before applying. Stop when
 the user is happy, the feedback is empty, or progress stalls.
-
-## Package
-
-Packaging (`python -m scripts.package_skill <path/to/skill-folder>`) serves only to share the skill
-outside the vault or to back it up. In the vault, the skill is versioned by git and active as soon
-as the persona is relaunched. Run it only when the `present_files` tool is available, then point the
-user to the resulting `.skill` file.
 
 ## Raccord au backlog et récap
 
@@ -239,17 +232,10 @@ Prochaine routine à encoder (depuis le backlog) : {la plus rentable suivante}
 - Une routine à la fois ; pas de SKILL.md écrit sans interview ni go explicite.
 - Pas de `~/.claude/skills/` pour un skill de vault.
 - Le skill généré porte un frontmatter de skill, pas de note Obsidian.
-- Évaluation quantitative, optimisation de description et packaging seulement sur demande, jamais
-  par défaut.
+- Évaluation quantitative et optimisation de description seulement sur demande, jamais par défaut,
+  et par le `skill-creator` d'Anthropic.
 
 ## Références
 
 - `references/vault-placement.md` : détection du vault, tableau des tiers, backlog, conventions du
   skill généré, portage d'un skill Desktop.
-- `references/eval-loop.md` : boucle d'évaluation quantitative (test cases, runs, grading,
-  benchmark, viewer, comparaison en aveugle, optimisation de la description, environnements
-  Claude.ai et Cowork).
-- `references/schemas.md` : tous les JSON (evals, eval_metadata, timing, metrics, grading, feedback,
-  benchmark, notes, comparison, analysis, trigger eval set, history).
-- `agents/grader.md`, `agents/comparator.md`, `agents/analyzer.md`, `agents/analyzer-benchmark.md` :
-  consignes des sous-agents de la boucle d'évaluation, à lire au moment de les lancer.

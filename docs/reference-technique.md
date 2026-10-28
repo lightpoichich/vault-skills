@@ -51,10 +51,10 @@ Le plugin installe quatre hooks, actifs dans toute session Claude Code. Hors d'u
 
 | Hook | Événement | Rôle |
 |---|---|---|
-| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`, fiches au-dessus de leur budget de taille, mémoire native au-dessus de son budget ou au contenu sensible apparent) et supprime les fichiers `.DS_Store` |
+| `vault-health.sh` | démarrage de session | injecte un bilan de santé dans le contexte (notes d'Inbox anciennes, notes sans `type`, fiches au-dessus de leur budget de taille, mémoire native au-dessus de son budget ou au contenu sensible apparent, dernier audit trop ancien) et supprime les fichiers `.DS_Store` |
 | `vault-approve-imports.sh` | démarrage de session | approuve pour le dossier courant les imports du vault, que Claude Code ignorerait sinon comme imports externes |
 | `vault-note-guard.sh` | après l'écriture d'une note | renseigne `created` et `updated` dans un frontmatter existant, signale un frontmatter absent ou un nom de fichier hors kebab-case |
-| `vault-sync-nudge.sh` | fin de tour | demande une fois `sync-vault` depuis le vault ou depuis un dossier de travail relié, quand les seuils de volume et de durée sont atteints ; aucun rappel depuis un worktree git lié |
+| `vault-sync-nudge.sh` | fin de tour | demande une fois `sync-vault` depuis le vault ou depuis un dossier de travail relié, quand les seuils de volume et de durée sont atteints ; un `sync-vault` lancé à la main, ou une fiche projet écrite directement depuis son dossier de travail, repart les seuils à zéro ; aucun rappel depuis un worktree git lié |
 
 ### Réglages des hooks
 
@@ -65,6 +65,7 @@ Les réglages se placent dans `{vault}/_Meta/hooks.conf`. `kickstart-vault` y co
 - **`APPROVE_EXTERNAL_IMPORTS`** : la valeur `0` désactive l'approbation automatique des imports.
 - **`SYNC_MIN_KB`** et **`SYNC_MIN_MINUTES`** : seuils du rappel de synchronisation, 40 Ko de transcript et 20 minutes depuis la dernière synchronisation par défaut. Les deux seuils doivent être atteints.
 - **`SYNC_NUDGE`** : la valeur `0` supprime le rappel, la valeur `vault` le limite aux sessions ouvertes dans le vault.
+- **`AUDIT_REMINDER_DAYS`** : délai, en jours, au-delà duquel le bilan de santé signale le dernier rapport `audit-vault-{date}.md` (30 par défaut, `0` coupe le rappel). Sans aucun rapport, le délai court depuis la première session ouverte sur ce vault par la machine.
 - **`JOURNAL_ROTATION`**, **`JOURNAL_MAX_KB_{TYPE}`**, **`JOURNAL_MAX_KB`**, **`JOURNAL_SECTIONS`**, **`JOURNAL_KEEP`** : rotation des journaux de fiche, voir plus bas. Sans ces clés : rotation coupée, 20 Ko pour une area, 30 Ko pour un projet, section `Journal`, 5 entrées gardées. Le gabarit `hooks.conf` de `kickstart-vault` pose `JOURNAL_ROTATION=1` : un nouveau vault a la rotation active.
 - **`MEMORY_MAX_LINES`**, **`MEMORY_MAX_KB`**, **`MEMORY_CURATION_DAYS`** : budget de l'index de la mémoire native (120 lignes et 16 000 caractères par défaut, environ 60 % du plafond de Claude Code) et délai de curation complète (30 jours). Voir plus bas.
 - **`SYNC_NUDGE_WORKTREES`** : la valeur `1` rétablit le rappel dans les worktrees git liés. Par défaut, les sous-agents qui traitent des tickets en parallèle dans des worktrees ne reçoivent pas de rappel, et l'orchestrateur synchronise une seule fois depuis le checkout principal.
@@ -136,4 +137,4 @@ Chaque entrée reprend mot pour mot la description du `SKILL.md`, c'est-à-dire 
 
 ## Attribution
 
-`vault-skill-creator` adapte le `skill-creator` officiel d'Anthropic, publié dans la marketplace `claude-plugins-official`. L'adaptation ajoute le placement automatique dans le vault et une étape « sources de données », et rend l'évaluation optionnelle. Le moteur et les scripts d'origine sont conservés. La licence figure dans `skills/vault-skill-creator/LICENSE.txt`.
+`vault-skill-creator` adapte le `skill-creator` officiel d'Anthropic, publié dans la marketplace `claude-plugins-official`. L'adaptation ajoute le placement automatique dans le vault et une étape « sources de données », et retire la boucle d'évaluation (scripts, agents, visualiseurs) : une mesure chiffrée passe par le `skill-creator` officiel, s'il est installé. La licence figure dans `skills/vault-skill-creator/LICENSE.txt`.

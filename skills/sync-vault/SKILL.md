@@ -55,7 +55,8 @@ tête de `## Journal`, en ajout seul (`curation.md`, section 7). Les hooks du va
 
 ### 4. Rendre compte
 Résumer après coup, avec le contenu que la référence du mode demande. Si rien de substantiel n'a
-bougé et qu'aucune fiche n'a besoin d'être allégée, le dire en une ligne et ne rien écrire.
+bougé et qu'aucune fiche n'a besoin d'être allégée, répondre seulement « Rien à répercuter. » et ne
+rien écrire.
 
 ## Garde-fous
 - Autonome : décider et écrire sans validation préalable, rendre compte après. Écraser, fusionner et

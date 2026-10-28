@@ -197,5 +197,71 @@ class Nudge(Base):
         self.assertIsNotNone(self.nudge(self.vault))
 
 
+def line(kind, **kw):
+    """Une ligne de transcript Claude Code : ("filler", n), ("skill", nom), ("slash", nom), ("edit", chemin)."""
+    ts = {"timestamp": "2020-01-01T00:00:00.000Z"}
+    if kind == "filler":
+        return json.dumps({"type": "user", "message": {"content": "x" * kw["n"]}, **ts})
+    if kind == "slash":
+        return json.dumps({"type": "user", "message": {"content": f"<command-name>/{kw['name']}</command-name>"}, **ts})
+    tool = {"skill": ("Skill", {"skill": kw.get("name", "")}), "edit": ("Edit", {"file_path": kw.get("path", "")})}[kind]
+    return json.dumps({"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "name": tool[0], "input": tool[1]}]}, **ts})
+
+
+class NudgeSyncFaitSansRappel(Base):
+    """Une répercussion faite sans le rappel pose une nouvelle base : pas de rappel pour ce qui vient d'être fait."""
+
+    def setUp(self):
+        super().setUp()
+        write(os.path.join(self.vault, "_Meta", "hooks.conf"), "SYNC_MIN_KB=2\nSYNC_MIN_MINUTES=0\n")
+
+    def run_nudge(self, d, lines):
+        transcript = os.path.join(self.home, "t.jsonl")
+        write(transcript, "\n".join(lines) + "\n")
+        payload = json.dumps({"session_id": "s-" + self.id(), "transcript_path": transcript, "cwd": d})
+        r = subprocess.run(["bash", NUDGE], input=payload, env=self.env, capture_output=True, text=True)
+        return json.loads(r.stdout) if r.stdout.strip() else None
+
+    def test_sans_sync_rappel(self):
+        out = self.run_nudge(self.vault, [line("filler", n=4000)])
+        self.assertIn("Rien à répercuter.", out["reason"])
+
+    def test_skill_sync_a_la_main_silence(self):
+        self.assertIsNone(self.run_nudge(self.vault, [
+            line("filler", n=4000), line("skill", name="second-cerveau:sync-vault"), line("filler", n=200)]))
+
+    def test_commande_slash_silence(self):
+        self.assertIsNone(self.run_nudge(self.vault, [
+            line("filler", n=4000), line("slash", name="second-cerveau:sync-vault"), line("filler", n=200)]))
+
+    def test_travail_apres_sync_rappel(self):
+        out = self.run_nudge(self.vault, [
+            line("filler", n=4000), line("skill", name="second-cerveau:sync-vault"), line("filler", n=4000)])
+        self.assertIsNotNone(out)
+
+    def test_autre_skill_rappel(self):
+        out = self.run_nudge(self.vault, [line("filler", n=4000), line("skill", name="second-cerveau:audit-vault")])
+        self.assertIsNotNone(out)
+
+    def test_mode_projet_fiche_ecrite_silence(self):
+        d = self.mkdir("OneDrive", "delta")
+        sheet(self.vault, "delta", dossier_travail=d)
+        via_lien = os.path.join(self.home, "vault", "10-Projects", "delta", "delta.md")
+        self.assertIsNone(self.run_nudge(d, [line("filler", n=4000), line("edit", path=via_lien)]))
+
+    def test_mode_projet_autre_fichier_rappel(self):
+        d = self.mkdir("OneDrive", "delta")
+        sheet(self.vault, "delta", dossier_travail=d)
+        out = self.run_nudge(d, [line("filler", n=4000), line("edit", path=os.path.join(d, "notes.md"))])
+        self.assertIn("mode projet", out["reason"])
+
+    def test_mode_vault_fiche_ecrite_rappel(self):
+        # Depuis le vault, écrire une fiche n'est pas une sync : les décisions touchent souvent d'autres fiches.
+        sheet(self.vault, "delta")
+        path = os.path.join(self.vault, "10-Projects", "delta", "delta.md")
+        self.assertIsNotNone(self.run_nudge(self.vault, [line("filler", n=4000), line("edit", path=path)]))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
