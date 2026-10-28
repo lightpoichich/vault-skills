@@ -7,6 +7,10 @@ Cette page complète le [README](../README.md) pour la personne qui installe, r�
 - **bash et python3** : les hooks et le script `hooks/vault-resolve.py` en dépendent. `jq` n'est pas requis.
 - **git** : nécessaire pour relier un dépôt de code à sa fiche par `repo:`. Un dossier sans git se relie par `dossier-travail:`.
 
+## Mise à jour automatique
+
+Claude Code coupe par défaut la mise à jour automatique des marketplaces qui ne viennent pas d'Anthropic, et un plugin ne peut pas l'activer pour ses utilisateurs. Le réglage se pose une fois, en session (`/plugin`, onglet **Marketplaces**, `vault-skills`, **Enable auto-update**, qui écrit `autoUpdate` dans `~/.claude/plugins/known_marketplaces.json`), ou par `"autoUpdate": true` sur l'entrée `vault-skills` d'`extraKnownMarketplaces` dans `~/.claude/settings.json`, prioritaire. `installer` vérifie ce réglage en lecture seule en fin d'installation et guide le dirigeant s'il manque. Source : code.claude.com, « Plugin loading reference », section « When auto-update runs », consultée le 28/10/2026.
+
 ## Installation manuelle
 
 ```bash

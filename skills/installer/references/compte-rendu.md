@@ -28,6 +28,9 @@ tags: [installation]
 - {Points ouverts du plan, dont un éventuel domaine qui ressemble à un projet.}
 
 ## Prochaines étapes
+- Activer la mise à jour automatique du plugin, si ce n'est pas fait : dans une session du terminal,
+  `/plugin`, onglet Marketplaces, `vault-skills`, puis Enable auto-update. À retirer si elle est déjà
+  active.
 - Ne pas remplir les fiches à la main : le contenu entre au fil des besoins.
 - Compléter un projet quand il avance : compétence `structurer` (informations manquantes,
   contexte réel rattaché).

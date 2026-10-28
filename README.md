@@ -2,7 +2,7 @@
 
 Le plugin `second-cerveau` installe et entretient un second cerveau : un dossier de notes, le vault, que Claude lit et met à jour pendant vos sessions de travail. L'installation pose la structure et des fiches vides ; le contenu entre ensuite au fil de l'usage.
 
-Public : dirigeants et consultants qui travaillent avec Claude Code, dans le terminal ou dans l'app Claude. Guide à jour de la version 5.2.2, le 28/10/2026.
+Public : dirigeants et consultants qui travaillent avec Claude Code, dans le terminal ou dans l'app Claude. Guide à jour de la version 5.2.3, le 28/10/2026.
 
 ## Le plugin en bref
 
@@ -47,6 +47,8 @@ Aucun connecteur (agenda, messagerie, Notion) n'est requis : le plugin utilise c
 Le terminal et les sessions locales de l'app partagent les mêmes réglages : un plugin installé pour votre compte d'un côté est disponible de l'autre. Les sessions cloud de l'app ne chargent pas les plugins ; travaillez en session locale.
 
 Saisissez ensuite `/` : les commandes du plugin apparaissent avec le préfixe `second-cerveau:`.
+
+**Activez la mise à jour automatique**, une seule fois : dans une session du terminal, saisissez `/plugin`, ouvrez l'onglet **Marketplaces**, choisissez `vault-skills`, puis **Enable auto-update**. Le réglage vaut aussi pour l'app Claude. Sans lui, le plugin ne se met pas à jour seul, car Claude Code coupe cette option par défaut pour les plugins qui ne viennent pas d'Anthropic. L'installation du vault vous le rappelle si besoin.
 
 ## Créer votre vault
 
@@ -122,7 +124,7 @@ Dites « audit du vault ». Claude vérifie le vault sans le modifier (liens cas
 
 ## Mettre à jour le plugin et le vault
 
-**Le plugin** : dans un terminal, saisissez `claude plugin marketplace update vault-skills`, puis `claude plugin update second-cerveau@vault-skills`, et relancez Claude Code ou l'app. La mise à jour vaut pour les deux.
+**Le plugin** : avec la mise à jour automatique, chaque nouvelle version est téléchargée pendant une session et chargée à la suivante. Sans elle, saisissez dans un terminal `claude plugin marketplace update vault-skills`, puis `claude plugin update second-cerveau@vault-skills`, et relancez Claude Code ou l'app.
 
 **Les fichiers du vault posés par le plugin** (le Chief of Staff, son brief, les règles communes) : quand une version les améliore, Claude en est averti au démarrage. Saisissez `/second-cerveau:installer` dans le vault.
 

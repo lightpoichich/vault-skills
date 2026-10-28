@@ -61,6 +61,13 @@ Après la synthèse, orienter vers l'usage : lancer `cos` pour le Chief of Staff
 « nouvelle persona » ou « crée un skill pour mon Chief of Staff » pour étendre l'équipe
 (`assistants`) ; dire « importe cette note » pour faire entrer un contenu (`ranger`).
 
+Vérifier ensuite la mise à jour automatique du plugin, en lecture seule : clé `autoUpdate` de
+l'entrée `vault-skills` dans `~/.claude/plugins/known_marketplaces.json`, ou dans
+`extraKnownMarketplaces` de `~/.claude/settings.json`. Si elle n'est pas à `true`, guider le
+dirigeant : dans une session du terminal, `/plugin`, onglet **Marketplaces**, `vault-skills`, puis
+**Enable auto-update**. Le réglage vaut aussi pour les sessions locales de l'app Claude. Ne jamais
+écrire dans ces fichiers : le réglage reste un geste du dirigeant.
+
 ## Garde-fous
 - **Rien d'inventé** : la structure vient du plan et de la matière première du dirigeant, jamais de
   l'environnement de l'auteur du skill.
