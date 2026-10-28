@@ -2,7 +2,7 @@
 
 Le plugin `second-cerveau` installe et entretient un second cerveau : un dossier de notes, le vault, que Claude lit et met à jour pendant vos sessions de travail. L'installation pose la structure et des fiches vides ; le contenu entre ensuite au fil de l'usage.
 
-Public : dirigeants et consultants qui travaillent avec Claude Code, dans le terminal ou dans l'app Claude. Guide à jour de la version 5.2.3, le 28/10/2026.
+Public : dirigeants et consultants qui travaillent avec Claude Code, dans le terminal ou dans l'app Claude. Guide à jour de la version 5.2.4, le 28/10/2026.
 
 ## Le plugin en bref
 
@@ -65,6 +65,8 @@ Une installation interrompue après l'écriture du plan reprend à sa relecture 
 | `40-Archive/` | Projets et domaines clos, déplacés sans suppression |
 | `_Meta/` | Règles du vault : types de fiches, confidentialité, connecteurs déclarés, réglages |
 | `_personas/` | Les assistants, dont le Chief of Staff (`_personas/cos/`) |
+
+Le rôle de chaque dossier, les déplacements d'une information de l'un à l'autre et la façon dont Claude s'en sert pour trouver le bon contexte sont expliqués, schémas à l'appui, dans [Comprendre l'organisation du vault](docs/comprendre-para.md).
 
 ## Les skills du vault
 

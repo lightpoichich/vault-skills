@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Plugin Claude Code qui donne à Claude la mémoire de votre activité. Un entretien suffit pour la mettre en place, puis votre contexte reste à jour automatiquement, au fil de vos conversations. Migration possible depuis l'app Claude.",
-    "version": "5.2.3"
+    "version": "5.2.4"
   },
   "plugins": [
     {
       "name": "second-cerveau",
       "source": "./",
       "description": "Plugin Claude Code qui donne à Claude la mémoire de votre activité. Un entretien suffit pour la mettre en place, puis votre contexte reste à jour automatiquement, au fil de vos conversations. Migration possible depuis l'app Claude.",
-      "version": "5.2.3"
+      "version": "5.2.4"
     }
   ]
 }

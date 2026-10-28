@@ -12,6 +12,7 @@ updated: {YYYY-MM-DD}
 > comme ça, ou avant de changer la structure (la fin du fichier dit comment).
 > Posée au montage à partir de ce que tu as décrit lors de la cartographie. Si tu fais évoluer ton
 > espace, mets-la à jour.
+> Le principe général, avec schémas : https://github.com/lightpoichich/vault-skills/blob/main/docs/comprendre-para.md
 
 ## Les quatre familles (PARA)
 

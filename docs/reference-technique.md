@@ -129,6 +129,8 @@ python3 hooks/vault-inventory.py scan {dossier ou archive.zip} --vault {vault} -
 
 ## Principes de conception
 
+Le rationnel de l'organisation PARA, côté utilisateur, est dans [Comprendre l'organisation du vault](comprendre-para.md).
+
 - **Structure d'abord** : les skills génèrent l'arborescence, les schémas et des fiches vides. Le contenu entre dans le vault par l'usage.
 - **Import à la demande** : une note entre dans le vault quand un besoin concret la justifie. Le vault n'est pas rempli en bloc au démarrage.
 - **Un lecteur par dossier** : chaque area doit avoir un consommateur identifié. Une area sans consommateur est signalée dès sa création.
