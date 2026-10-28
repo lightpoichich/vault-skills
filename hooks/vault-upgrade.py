@@ -2,8 +2,8 @@
 """vault-upgrade.py · mise à niveau d'un vault installé par `installer`, sans modèle de langage.
 
   vault-upgrade.py check  --vault V [--summary]     état de chaque fichier ou bloc géré, migrations en attente (JSON)
-  vault-upgrade.py stamp  --vault V [--apply]       pose ou rafraîchit le tampon `_Meta/installation.md`
-  vault-upgrade.py apply  --vault V [--apply]       remplace le remplaçable, applique les migrations, met le tampon à jour
+  vault-upgrade.py stamp  --vault V [--apply]       pose ou rafraîchit la fiche d'installation `_Meta/installation.md`
+  vault-upgrade.py apply  --vault V [--apply]       remplace le remplaçable, applique les migrations, met la fiche d'installation à jour
   vault-upgrade.py accept --vault V [--apply] UNITÉ…   déclare une fusion faite : la version actuelle du gabarit est intégrée
 
 Simulation par défaut ; `--apply` écrit.
@@ -16,16 +16,16 @@ généré depuis le plan. Le texte hors balises n'est jamais lu ni touché.
             persona appartiennent à l'utilisateur ; ses règles communes sont un bloc du plugin).
 `capacites-a-construire.md` appartient à l'utilisateur dès l'installation et n'est pas géré.
 
-Le tampon garde, par unité, l'empreinte du gabarit intégré : celui posé à l'installation, ou celui retenu
+La fiche d'installation garde, par unité, l'empreinte du gabarit intégré : celui posé à l'installation, ou celui retenu
 par la dernière fusion (`accept`). Trois cas décident sans copie de référence dans le vault :
   - contenu du vault identique au gabarit intégré, gabarit changé depuis : remplaçable ;
   - contenu du vault modifié, gabarit inchangé : personnalisé, rien à faire ;
   - contenu du vault modifié, gabarit changé : fusion à proposer, jamais écrite par ce script.
-Sans tampon (vault installé avant ce mécanisme), une unité identique au gabarit est notée intégrée ; les
+Sans fiche d'installation (vault installé avant ce mécanisme), une unité identique au gabarit est notée intégrée ; les
 autres restent « inconnu » jusqu'à une fusion revue et acceptée. Rien n'est écrasé.
 
-Migrations : déclarées dans MIGRATIONS (identifiant, version, contrôle, action), idempotentes, inscrites au
-tampon une fois appliquées. Avant tout remplacement, copie des fichiers touchés dans
+Migrations : déclarées dans MIGRATIONS (identifiant, version, contrôle, action), idempotentes, inscrites dans
+la fiche d'installation une fois appliquées. Avant tout remplacement, copie des fichiers touchés dans
 ${XDG_STATE_HOME:-~/.local/state}/second-cerveau/mise-a-niveau/{horodatage}/.
 Dépendances : python3.
 """
@@ -72,7 +72,7 @@ LABELS = {
     "absent": "absent du vault",
     "nouveau": "nouveau fichier du gabarit",
     "retire": "retiré du gabarit",
-    "inconnu": "inconnu : pas d'empreinte au tampon",
+    "inconnu": "inconnu : pas d'empreinte dans la fiche d'installation",
     "balises-absentes": "balises absentes",
 }
 ACTIONABLE = {"remplacable", "fusion", "nouveau", "inconnu", "balises-absentes"}
@@ -113,7 +113,7 @@ def plugin_version():
         return ""
 
 
-# ---------- tampon
+# ---------- fiche d'installation
 
 def load_stamp(vault):
     text = read(os.path.join(vault, STAMP))
@@ -195,7 +195,7 @@ def survey(vault, stamp):
         current = read(os.path.join(vault, vrel))
         base = units.get(key, {}).get("empreinte")
         if current is None:
-            # Nouveau seulement dans un vault tamponné qui porte déjà le dossier de l'unité : un vault sans
+            # Nouveau seulement dans un vault doté d'une fiche d'installation qui porte déjà le dossier de l'unité : un vault sans
             # Chief of Staff ne reçoit pas un brief orphelin.
             fresh = stamp is not None and key not in units and os.path.isdir(os.path.join(vault, root))
             case = "nouveau" if fresh else "absent"
@@ -304,7 +304,7 @@ def cmd_check(vault, summary):
         print(json.dumps(out, ensure_ascii=False, indent=1))
         return
     if stamp is None:
-        print("vault sans tampon d'installation, mise à niveau à dresser (/second-cerveau:installer)")
+        print("le plugin ne connaît pas encore les fichiers qu'il a posés dans ce vault : saisir une fois /second-cerveau:installer pour en dresser l'état")
         return
     if not (todo_units or todo_migs):
         return

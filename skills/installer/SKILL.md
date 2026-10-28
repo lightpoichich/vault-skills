@@ -83,6 +83,6 @@ Après la synthèse, orienter vers l'usage : lancer `cos` pour le Chief of Staff
 - `references/imports-et-hooks.md` : `@imports` et leur approbation, hooks du plugin et
   `hooks.conf`, sync git facultatif.
 - `references/compte-rendu.md` : gabarit de `00-Inbox/compte-rendu-installation.md` et des encarts.
-- `references/mise-a-niveau.md` : mise à niveau d'un vault installé (tampon, cas par fichier et par
+- `references/mise-a-niveau.md` : mise à niveau d'un vault installé (fiche d'installation, cas par fichier et par
   bloc, migrations, fusion assistée).
 - `assets/` : gabarits du vault, réglages des hooks, persona Chief of Staff et `brief-du-jour`.

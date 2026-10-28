@@ -2,7 +2,7 @@
 
 Le plugin `second-cerveau` installe et entretient un second cerveau : un dossier de notes, le vault, que Claude lit et met à jour pendant vos sessions de travail. L'installation pose la structure et des fiches vides ; le contenu entre ensuite au fil de l'usage.
 
-Public : dirigeants et consultants qui travaillent avec Claude Code. Guide à jour de la version 5.2.0, le 28/10/2026.
+Public : dirigeants et consultants qui travaillent avec Claude Code. Guide à jour de la version 5.2.1, le 28/10/2026.
 
 ## Le plugin en bref
 
@@ -193,7 +193,7 @@ Les autres réglages sont décrits dans la [référence technique](docs/referenc
 | La commande `cos` est introuvable. | Ouvrez un nouveau terminal. Le raccourci ne s'applique qu'aux terminaux ouverts après l'installation. |
 | « mon brief » ne produit rien. | Lancez Claude avec `cos`. Le brief appartient à l'assistant Chief of Staff. |
 | Claude répond souvent « Rien à répercuter. ». | Augmentez `SYNC_MIN_MINUTES` dans `_Meta/hooks.conf`. |
-| Claude signale un vault sans tampon d'installation. | Saisissez une fois `/second-cerveau:installer` dans le vault : la mise à niveau dresse l'état des lieux et l'avertissement cesse. |
+| Claude indique qu'il ne connaît pas encore les fichiers posés dans le vault. | Saisissez une fois `/second-cerveau:installer` dans le vault : la mise à niveau dresse l'état des lieux et l'avertissement cesse. |
 | Autre problème | Ouvrez une [issue GitHub](https://github.com/lightpoichich/vault-skills/issues). |
 
 ## Glossaire

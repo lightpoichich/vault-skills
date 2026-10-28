@@ -206,7 +206,7 @@ class SansTampon(Base):
     def test_premiere_mise_a_niveau_n_ecrase_rien(self):
         self.install(stamp=False)
         self.append(self.brief(), "\nBrief réécrit par l'utilisateur.\n")
-        self.assertIn("sans tampon", self.run_cmd("check", "--summary"))
+        self.assertIn("ne connaît pas encore les fichiers", self.run_cmd("check", "--summary"))
         out, cases = self.check()
         self.assertFalse(out["tampon"])
         self.assertEqual(cases["_personas/cos/.claude/skills/brief-du-jour/SKILL.md"], "inconnu")
@@ -277,10 +277,10 @@ class Health(Base):
 
     def test_signal_tampon_absent_puis_silence(self):
         self.install(stamp=False)
-        self.assertIn("sans tampon d'installation", self.health())
+        self.assertIn("ne connaît pas encore les fichiers", self.health())
         self.run_cmd("apply", "--apply")
         self.assertNotIn("mise à niveau", self.health())
-        self.assertNotIn("tampon", self.health())
+        self.assertNotIn("ne connaît pas encore", self.health())
 
     def test_signal_mise_a_niveau_et_coupure(self):
         self.install()

@@ -160,10 +160,10 @@ suit les conventions du geste « créer une persona » d'`assistants` et sert d'
   un écart de chemin. Sur refus, les encarts restent à coller depuis le compte-rendu.
 - Afficher une synthèse au dirigeant, dans la langue de la section « Langue du dirigeant ».
 
-### 14. Poser le tampon d'installation
+### 14. Poser la fiche d'installation
 Dernière écriture de la phase :
-`python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-upgrade.py" stamp --vault "$VAULT_ABS" --apply`. Le tampon
-`_Meta/installation.md` note la version du plugin et l'empreinte de chaque fichier et bloc posés ;
+`python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-upgrade.py" stamp --vault "$VAULT_ABS" --apply`. La fiche
+d'installation `_Meta/installation.md` note la version du plugin et l'empreinte de chaque fichier et bloc posés ;
 la mise à niveau du vault en dépend (`references/mise-a-niveau.md`). Sans `CLAUDE_PLUGIN_ROOT`, le
 signaler dans le compte-rendu : la première mise à niveau dressera l'état sans rien écraser.
 
