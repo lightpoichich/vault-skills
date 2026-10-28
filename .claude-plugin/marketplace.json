@@ -5,14 +5,14 @@
     "email": "lucas@devlc.co"
   },
   "metadata": {
-    "description": "Pack Claude Code pour un second cerveau Obsidian : installation, usage quotidien et entretien d'un vault PARA pour dirigeants.",
+    "description": "Plugin Claude Code qui donne à Claude la mémoire de votre activité. Un entretien suffit pour la mettre en place, puis votre contexte reste à jour automatiquement, au fil de vos conversations. Migration possible depuis l'app Claude.",
     "version": "5.2.3"
   },
   "plugins": [
     {
       "name": "second-cerveau",
       "source": "./",
-      "description": "Second cerveau Obsidian pour dirigeants : installer en une commande (entretien, plan, structure, Chief of Staff et brief-du-jour), étendre l'équipe (assistants), faire vivre (ranger, structurer, sync-vault) et entretenir (audit-vault). Fonctionne sans aucun connecteur.",
+      "description": "Plugin Claude Code qui donne à Claude la mémoire de votre activité. Un entretien suffit pour la mettre en place, puis votre contexte reste à jour automatiquement, au fil de vos conversations. Migration possible depuis l'app Claude.",
       "version": "5.2.3"
     }
   ]

@@ -1,6 +1,6 @@
 {
   "name": "second-cerveau",
-  "description": "Second cerveau Obsidian pour dirigeants, piloté par Claude Code. S'installe en une commande (/second-cerveau:installer : entretien, plan à valider, structure du vault PARA, persona Chief of Staff et son brief-du-jour), étend son équipe d'assistants (assistants), vit au quotidien (ranger, structurer, sync-vault) et s'entretient (audit-vault). Fonctionne sans aucun connecteur.",
+  "description": "Plugin Claude Code qui donne à Claude la mémoire de votre activité. Un entretien suffit pour la mettre en place, puis votre contexte reste à jour automatiquement, au fil de vos conversations. Migration possible depuis l'app Claude.",
   "version": "5.2.3",
   "author": {
     "name": "Lucas Clément",
