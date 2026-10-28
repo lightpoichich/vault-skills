@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Pack Claude Code pour un second cerveau Obsidian : installation, usage quotidien et entretien d'un vault PARA pour dirigeants.",
-    "version": "5.0.0"
+    "version": "5.1.0"
   },
   "plugins": [
     {
       "name": "second-cerveau",
       "source": "./",
       "description": "Second cerveau Obsidian pour dirigeants : installer en une commande (entretien, plan, structure, Chief of Staff et brief-du-jour), étendre l'équipe (assistants), faire vivre (ranger, structurer, sync-vault) et entretenir (audit-vault). Fonctionne sans aucun connecteur.",
-      "version": "5.0.0"
+      "version": "5.1.0"
     }
   ]
 }

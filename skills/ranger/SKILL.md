@@ -2,19 +2,19 @@
 name: ranger
 description: >-
   Fait entrer un savoir dans le vault et le classe dans la bonne zone PARA, avec frontmatter
-  conforme au Schema et wikilinks : un contenu externe (URL, page Notion, fichier, texte collé), ou
-  une pratique répétée dans le vault, généralisée en trame dans 30-Resources/. Pose un renvoi
-  plutôt qu'une copie pour le sensible. S'utilise quand l'utilisateur dit « importe cette note »,
-  « range cette page Notion / cet article », « ajoute ça à mon projet X », colle un texte à ranger,
-  ou dit « fais-en une trame », « ça, je le refais à chaque fois ». Pour mettre à jour les fiches
-  après une session, voir sync-vault.
+  conforme au Schema et wikilinks : un contenu externe, un lot entier (dossier, archive, export
+  Claude.ai) validé en une fois, ou une pratique répétée généralisée en trame. Renvoi plutôt que
+  copie pour le sensible. S'utilise quand l'utilisateur dit « importe cette note », « range cette
+  page Notion », « ajoute ça à mon projet X », « importe ce dossier », « rapatrie mes projets
+  Claude », « reprends l'import », « fais-en une trame ». Pour mettre à jour les fiches après une
+  session, voir sync-vault.
 ---
 
 # Ranger
 
-Deux sources, un seul classement. Un contenu venu de l'extérieur s'importe ; une pratique déjà
-réalisée plusieurs fois dans le vault se généralise en trame. Dans les deux cas, la zone PARA, le
-frontmatter, les liens et la règle du renvoi suivent `references/classement.md`.
+Trois modes, un seul classement. Un contenu venu de l'extérieur s'importe, seul ou par lot ; une
+pratique déjà réalisée plusieurs fois dans le vault se généralise en trame. Dans tous les cas, la
+zone PARA, le frontmatter, les liens et la règle du renvoi suivent `references/classement.md`.
 
 ## Procédure
 
@@ -29,6 +29,8 @@ un dossier contenant `_Meta/`, sinon prendre le chemin absolu du vault déclaré
 | Entrée | Mode | Procédure |
 |---|---|---|
 | URL, page Notion, fichier, texte collé, modèle qui existe déjà hors du vault | import | `references/importer.md` |
+| dossier, archive `.zip`, export Claude.ai, reprise d'un manifeste `00-Inbox/import-*.md` | lot | `references/lot.md` |
+| état d'un projet Claude.ai collé depuis le prompt de passation | import, en distillation | `references/claude-ai.md`, section 1 |
 | pratique déjà faite au moins deux fois dans le vault (« fais-en une trame »), candidat signalé par `sync-vault` | trame | `references/trame.md` |
 
 Un modèle venu de l'extérieur s'importe : la trame ne se fonde que sur des occurrences réelles du
@@ -46,13 +48,16 @@ Dérouler la référence du mode, puis confirmer le chemin, la zone et les liens
   (`references/classement.md`, section 1, et `governance.md`).
 - **Non destructif** : chercher une fiche existante avant de créer, enrichir plutôt que dupliquer,
   ne rien écraser sans demander.
-- **Validation** : l'import confirme la zone cible quand elle n'est pas nommée ; la trame attend la
-  validation de sa généralisation avant d'écrire.
+- **Validation** : l'import confirme la zone cible quand elle n'est pas nommée ; le lot n'exécute
+  rien sans manifeste validé ; la trame attend la validation de sa généralisation avant d'écrire.
 
 ## Références
 - `references/importer.md` : procédure d'import, de la détection de l'entrée à la confirmation.
 - `references/acquisition.md` : détecter la nature de l'entrée et l'acquérir par type ;
   `obsidian:defuddle` en option avec repli.
+- `references/lot.md` : procédure du lot, de l'inventaire (`hooks/vault-inventory.py`) au bilan.
+- `references/claude-ai.md` : rapatrier des projets Claude.ai, par prompt de passation ou par
+  export du compte.
 - `references/trame.md` : procédure de trame, des occurrences aux liens bidirectionnels.
 - `references/generalisation.md` : critère de codification, commun, variantes et placeholders,
   inférence du rangement, garde-fous de la trame.

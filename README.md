@@ -2,7 +2,7 @@
 
 Le plugin `second-cerveau` installe et entretient un second cerveau : un dossier de notes, le vault, que Claude lit et met à jour pendant vos sessions de travail. L'installation pose la structure et des fiches vides ; le contenu entre ensuite au fil de l'usage.
 
-Public : dirigeants et consultants qui travaillent avec Claude Code. Guide à jour de la version 5.0.0, le 28/10/2026.
+Public : dirigeants et consultants qui travaillent avec Claude Code. Guide à jour de la version 5.1.0, le 28/10/2026.
 
 ## Prérequis
 
@@ -71,6 +71,7 @@ Depuis `cos`, dites « mon brief ». Claude écrit le brief du jour dans `00-Inb
 | Besoin | Phrase à dire | Résultat |
 |---|---|---|
 | Ranger une note, une page web, une page Notion ou un document | « importe cette note », suivi du lien, du fichier ou du texte | Note classée dans le bon dossier et reliée aux fiches concernées |
+| Importer un dossier, une archive ou un export complet | « importe ce dossier », suivi de son chemin | Tableau de reprise à valider, puis notes classées (voir « Importer un ensemble de documents ») |
 | Transformer une pratique répétée en modèle | « fais-en une trame » | Trame dans `30-Resources/`, construite à partir des cas réels du vault |
 | Ouvrir un projet | « créer le projet X » | Fiche projet dans `10-Projects/`, rattachée à son domaine |
 | Compléter un projet resté vide | « complète le projet X » | Champs manquants demandés puis remplis |
@@ -93,6 +94,32 @@ Le vault suit aussi le travail mené ailleurs : le dépôt de code d'un projet c
 2. En fin de session, Claude met à jour cette fiche seule. Ce qui concerne d'autres fiches est déposé dans sa section « À répercuter », traitée à la prochaine synchronisation depuis le vault.
 
 Un même projet peut être relié depuis plusieurs postes : Claude ajoute le chemin de chaque poste à la fiche.
+
+## Importer un ensemble de documents
+
+Un export Notion, un dossier Drive ou d'anciennes notes s'importent en une seule opération.
+
+1. Dites « importe ce dossier » en donnant son chemin, ou celui de l'archive `.zip`. Claude dresse l'inventaire et écrit un tableau de reprise dans `00-Inbox/import-{nom}.md` : une ligne par élément, avec l'action proposée et sa destination.
+2. Relisez le tableau et corrigez les lignes ou les règles générales du lot. Rien n'est écrit dans le vault avant votre validation.
+3. Claude exécute le tableau ligne par ligne et note l'état de chaque ligne. Une session interrompue reprend par « reprends l'import ».
+
+Quatre actions sont possibles pour chaque élément :
+
+- **Copier** : le document entre dans le vault, classé et relié à ses fiches.
+- **Distiller** : les décisions, faits, tâches et événements datés d'un échange ou d'un compte rendu sont reportés dans la fiche concernée.
+- **Renvoyer** : le vault garde un lien et une ligne de contexte, le contenu reste à sa source. C'est la règle pour tout document confidentiel.
+- **Ignorer** : l'élément n'entre pas.
+
+Relancer le même import ne crée aucun doublon. Les archives sont décompressées hors du vault. Par défaut, seul ce qui sert un projet ou un domaine actif entre dans le vault ; le reste devient un lien ou s'ignore.
+
+## Rapatrier vos projets Claude.ai
+
+Dites « rapatrie mes projets Claude ». Deux voies sont possibles, et elles se combinent.
+
+- **Un projet à la fois** : Claude vous donne un prompt de passation. Collez-le dans une nouvelle conversation de chaque projet Claude.ai, puis collez la réponse dans Claude Code : « importe cette passation dans le projet X ». L'état du projet, ses décisions, ses tâches et ses instructions entrent dans la fiche correspondante.
+- **Tous les projets d'un coup** : demandez l'export de votre compte dans Claude.ai (Settings, Privacy, « Export data », sur le web ou dans Claude Desktop). Le mail donne un fichier manifeste qui liste plusieurs archives : projets, conversations, mémoires et métadonnées. Téléchargez chaque archive en entier dès l'ouverture de son lien, qui expire au bout de 24 heures et peut ne servir qu'une fois. Réunissez-les dans un même dossier, puis dites « importe cet export » en donnant le chemin de ce dossier. L'import suit la démarche de la section précédente.
+
+L'export ne relie pas les conversations à leur projet : Claude propose le rattachement dans le tableau de reprise, et vous le validez. Le format de l'export n'est pas documenté par Anthropic ; un contenu manquant est signalé à l'inventaire.
 
 ## Étendre l'équipe d'assistants
 
@@ -154,7 +181,7 @@ Les autres réglages sont décrits dans la [référence technique](docs/referenc
 
 ## Documentation technique et licence
 
-Les automatismes et leurs réglages complets, la liaison entre un dossier de travail et sa fiche projet, l'installation manuelle et la description de chaque skill figurent dans la [référence technique](docs/reference-technique.md).
+Les automatismes et leurs réglages complets, le script d'inventaire des imports, la liaison entre un dossier de travail et sa fiche projet, l'installation manuelle et la description de chaque skill figurent dans la [référence technique](docs/reference-technique.md).
 
 Le skill `assistants` adapte en partie le `skill-creator` d'Anthropic. Sa licence figure dans `skills/assistants/LICENSE.txt`.
 
