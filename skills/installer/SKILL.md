@@ -29,7 +29,7 @@ absolu. Puis reprendre là où l'on en est :
 |---|---|
 | ni `00-Inbox/plan-vault.md` ni `_Meta/Schema.md` | phase 1, l'entretien |
 | `00-Inbox/plan-vault.md` présent, pas de `_Meta/Schema.md` | point d'arrêt : proposer de relire le plan, puis phase 2 sur go |
-| `_Meta/Schema.md` présent | vault déjà installé : proposer de compléter ce qui manque sans rien écraser (phase 2 en ré-exécution), ou `audit-vault` pour un contrôle |
+| `_Meta/Schema.md` présent | vault déjà installé : proposer la mise à niveau (`references/mise-a-niveau.md`), compléter ce qui manque sans rien écraser (phase 2 en ré-exécution), ou `audit-vault` pour un contrôle |
 
 Un dossier déjà rempli de fichiers sans rapport avec un vault se signale avant de commencer.
 
@@ -72,4 +72,6 @@ Après la synthèse, orienter vers l'usage : lancer `cos` pour le Chief of Staff
 - `references/imports-et-hooks.md` : `@imports` et leur approbation, hooks du plugin et
   `hooks.conf`, sync git facultatif.
 - `references/compte-rendu.md` : gabarit de `00-Inbox/compte-rendu-installation.md` et des encarts.
+- `references/mise-a-niveau.md` : mise à niveau d'un vault installé (tampon, cas par fichier et par
+  bloc, migrations, fusion assistée).
 - `assets/` : gabarits du vault, réglages des hooks, persona Chief of Staff et `brief-du-jour`.

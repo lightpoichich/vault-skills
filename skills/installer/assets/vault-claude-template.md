@@ -8,6 +8,7 @@
 **Périmètre** : {une ligne reprise du plan, le scope seulement, par exemple « activité
 professionnelle X uniquement ; le perso vit dans un vault séparé »}.
 
+<!-- socle second-cerveau : début carte -->
 ## Carte du vault (PARA)
 - `00-Inbox/` : capture brute, à trier.
 - `10-Projects/` : efforts avec une fin et un livrable. Un projet est un dossier `{slug}/` contenant
@@ -28,6 +29,7 @@ professionnelle X uniquement ; le perso vit dans un vault séparé »}.
   qu'il soit dans le vault. Claude ne suit pas un wikilink automatiquement : pour consulter une fiche
   liée, localiser `lien.md` par son nom et l'ouvrir.
 - Respecter `_Meta/governance.md` : confidentialité 🔒, renvoi jamais copie.
+<!-- socle second-cerveau : fin carte -->
 
 ## Ton (comment t'adresser)
 
@@ -40,6 +42,7 @@ professionnelle X uniquement ; le perso vit dans un vault séparé »}.
 - **Registre** : {sobre et factuel | chaleureux} · {tutoiement | vouvoiement} · {acquiesce |
   challenge mes décisions}.
 
+<!-- socle second-cerveau : début regles -->
 ## Règle de travail : on pose le cadre, pas le contenu
 On ne remplit pas les fiches à la main. Le contenu entre par l'usage : les personas écrivent, les
 notes externes entrent quand un besoin se présente. Une fiche vide mais bien structurée est normale.
@@ -57,6 +60,7 @@ Quatre automatismes veillent sur le vault ; rien à lancer (réglages : `_Meta/h
   (`sync-vault`, depuis le vault ou depuis un dossier de travail relié à un projet).
 
 Ce sont des rappels et de petites corrections sans risque, pas des blocages.
+<!-- socle second-cerveau : fin regles -->
 
 ## Imports
 @_Meta/Schema.md

@@ -34,6 +34,7 @@ le suivi des projets, les comptes rendus, les imports et la mise à jour des fic
 - Livrables sortants (mail, courrier, proposition) : `00-Inbox/_drafts/`, en attente de validation,
   jamais envoyés par moi.
 
+<!-- socle second-cerveau : début regles -->
 ## Avant d'écrire dans le vault
 
 1. Si le skill `obsidian:obsidian-markdown` est disponible, l'invoquer pour la syntaxe (frontmatter,
@@ -51,3 +52,4 @@ le suivi des projets, les comptes rendus, les imports et la mise à jour des fic
 - Modifier `_Meta/` ou le `CLAUDE.md` racine du vault sans demande explicite.
 - Supprimer une fiche sans validation explicite.
 - Inventer du contenu : si l'information manque, la demander ou laisser vide.
+<!-- socle second-cerveau : fin regles -->
