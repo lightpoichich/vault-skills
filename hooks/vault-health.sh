@@ -134,7 +134,9 @@ if not segs:
 
 print(json.dumps({"hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": "Santé du vault : " + " · ".join(segs) + "."
+    "additionalContext": "Santé du vault : " + " · ".join(segs) + ". Si tu en parles à l'utilisateur, "
+                         "fais-le en langage courant : ce que recouvre chaque point, pourquoi il compte, ce qui "
+                         "peut être fait, sans les termes techniques de ce bilan."
 }}, ensure_ascii=False))
 PY
 exit 0

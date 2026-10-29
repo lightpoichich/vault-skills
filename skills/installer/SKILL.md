@@ -18,8 +18,9 @@ rapatriement de l'historique. L'entretien produit
 le seul passage entre les deux phases : une installation coupée reprend depuis lui.
 
 Le dirigeant n'est pas un développeur. Chaque phase porte ses règles de langue (section « Langue »
-de `references/entretien.md`, section « Langue du dirigeant » de `references/structure.md`), avec
-les anglicismes à remplacer dans `references/langue-dirigeant.md`.
+de `references/entretien.md`, section « Langue du dirigeant » de `references/structure.md`,
+`references/changements-expliques.md` pour la mise à niveau), avec les anglicismes à remplacer dans
+`references/langue-dirigeant.md`.
 
 ## Procédure
 
@@ -92,4 +93,6 @@ dirigeant : dans une session du terminal, `/plugin`, onglet **Marketplaces**, `v
 - `references/compte-rendu.md` : gabarit de `00-Inbox/compte-rendu-installation.md` et des encarts.
 - `references/mise-a-niveau.md` : mise à niveau d'un vault installé (fiche d'installation, cas par fichier et par
   bloc, migrations, fusion assistée).
+- `references/changements-expliques.md` : comment expliquer chaque changement de la mise à niveau au
+  dirigeant, avec un texte de départ par changement.
 - `assets/` : gabarits du vault, réglages des hooks, persona Chief of Staff et `brief-du-jour`.

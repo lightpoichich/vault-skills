@@ -53,3 +53,16 @@ Ne jamais déplacer d'entrée à la main. Sans `JOURNAL_ROTATION=1`, ne rien lan
 Fiches mises à jour, consolidées et élaguées, sections « À répercuter » vidées, drafts curés,
 signalements Resources, entrées de mémoire, rotation (entrées déplacées et blocages rendus par le
 script) : chemins et nature des changements.
+
+La première fois qu'un automatisme agit dans ce vault, l'expliquer en deux ou trois phrases avant le
+détail, dans la langue du dirigeant (`installer/references/langue-dirigeant.md`) :
+- **Allègement d'une fiche**, quand la fiche n'avait pas encore de sous-dossier `journal/` : la fiche
+  dépassait son poids, ses entrées de journal les plus anciennes sont parties mot pour mot dans une
+  archive du trimestre, rangée à côté d'elle ; elle garde son état, ses cinq derniers événements et
+  un lien vers l'archive ; rien n'est résumé ni perdu.
+- **Première curation de la mémoire**, quand aucune sauvegarde n'existait : ce qu'est la mémoire de
+  Claude (des notes courtes qu'il relit à chaque session), pourquoi elle est entretenue (au-delà
+  d'une certaine longueur, les notes récentes ne se chargent plus), la sauvegarde faite avant, et ce
+  qui attend une validation.
+Un blocage se dit par sa cause et son remède (« un commentaire placé au milieu du journal empêche de
+le découper : je peux le déplacer en tête de fiche »), jamais par le message du script.

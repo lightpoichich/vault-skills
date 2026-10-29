@@ -404,6 +404,21 @@ class Migrations(Base):
         self.assertEqual(table, mod.RETIRED)
 
 
+class GuideExplications(Base):
+    def test_chaque_changement_a_son_explication(self):
+        """Toute migration et tout effet d'ajout ont une entrée dans le guide lu avant de parler au dirigeant."""
+        spec = importlib.util.spec_from_file_location("vault_upgrade", self.script)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        guide = read(os.path.join(ROOT, "skills", "installer", "references", "changements-expliques.md"))
+        for m in mod.MIGRATIONS:
+            self.assertIn(f"`{m['id']}`", guide)
+        for unit in mod.EFFECTS:
+            self.assertIn(f"`{unit}`", guide)
+        for vrel, _ in mod.BLOCK_FILES:
+            for bid in mod.blocks_of(read(os.path.join(self.assets, dict(mod.BLOCK_FILES)[vrel]))):
+                self.assertIn(f"`{bid}`", guide)
+
 class Health(Base):
     def health(self):
         hook = os.path.join(self.plugin, "hooks", "vault-health.sh")

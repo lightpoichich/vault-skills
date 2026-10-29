@@ -5,6 +5,10 @@ Cette procédure lui apporte les changements sans toucher à ce que l'utilisateu
 s'appuie sur `hooks/vault-upgrade.py`, sans modèle de langage, et sur la fiche
 d'installation `_Meta/installation.md`.
 
+Tout ce que le dirigeant lit pendant la mise à niveau suit `references/changements-expliques.md` :
+pourquoi la mise à niveau, puis, pour chaque changement, ce que c'est, ce que ça change, ce qui ne se
+perd pas et quand il le verra. Les sorties du script servent au modèle et ne se recopient jamais.
+
 ## Ce qui est géré
 
 | Unité | Mode | Pourquoi |
@@ -41,10 +45,11 @@ versions du vault et du plugin.
 
 ## 2. Présenter le plan
 
-Simulation : `vault-upgrade.py apply --vault "{vault}"`. Montrer en quelques lignes ce qui sera
-remplacé ou ajouté, avec l'`effet` que le script donne pour un ajout (`_Meta/hooks.conf` active
-notamment la rotation des journaux de fiche), les migrations et leurs fichiers, les unités à revoir.
-Attendre un go explicite. Un ajout refusé se déclare par `vault-upgrade.py accept --vault "{vault}"
+Simulation : `vault-upgrade.py apply --vault "{vault}"`. Présenter le plan selon
+`references/changements-expliques.md` : ouverture sur le pourquoi, tour des automatismes à la
+première mise à niveau d'un vault sans fiche d'installation, puis chaque changement (ajout et son
+`effet`, remplacement, migration, unité à revoir) expliqué par son effet concret. Attendre un go
+explicite. Un ajout refusé se déclare par `vault-upgrade.py accept --vault "{vault}"
 --apply {unité}` : il ne sera plus proposé.
 
 ## 3. Appliquer
@@ -59,7 +64,8 @@ python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-upgrade.py" apply --vault "{vault}" -
 
 Le script copie d'abord les fichiers touchés dans
 `${XDG_STATE_HOME:-~/.local/state}/second-cerveau/mise-a-niveau/`, remplace le remplaçable, applique
-les migrations, met la fiche d'installation à jour. Il n'écrit jamais un fichier personnalisé.
+les migrations, met la fiche d'installation à jour. Il n'écrit jamais un fichier personnalisé. Au
+dirigeant, narrer le résultat, pas l'étape.
 
 Migrations : chacune est déclarée dans le script (identifiant, version, contrôle, action),
 idempotente, et inscrite dans la fiche d'installation une fois appliquée. `5.0.0-noms-skills` réécrit les noms de
@@ -75,7 +81,8 @@ appelle : le plugin fournit ces hooks, la copie les faisait tourner deux fois. L
 Pour chaque unité en fusion, inconnue ou sans balises :
 
 1. Lire la version du vault et le gabarit actuel (`skills/installer/assets/`), montrer l'écart en
-   clair : ce que le plugin apporte, ce que l'utilisateur a personnalisé.
+   clair : ce que le plugin apporte, nommé par son effet, et ce que l'utilisateur a personnalisé
+   (`changements-expliques.md`, passages de règles).
 2. Proposer une version fusionnée qui garde les personnalisations et intègre les apports. Pour des
    balises absentes, proposer de les poser autour de la section correspondante.
 3. Écrire seulement sur validation, puis déclarer la fusion faite :
@@ -85,8 +92,9 @@ Pour chaque unité en fusion, inconnue ou sans balises :
 
 ## 5. Rendre compte
 
-Unités remplacées et ajoutées, migrations appliquées, fusions faites ou refusées, chemin de la
-sauvegarde. Un vault sans fiche d'installation en reçoit une à sa première mise à niveau : les unités
+Dans le registre de `changements-expliques.md` : ce qui a changé et où le voir, ce qui se passera
+de soi-même aux prochaines sessions, fusions faites ou refusées, et l'emplacement de la sauvegarde
+dit simplement (« une copie des fichiers modifiés est gardée hors de ton espace »). Un vault sans fiche d'installation en reçoit une à sa première mise à niveau : les unités
 identiques au gabarit y sont notées intégrées, les autres restent à revoir, rien n'est écrasé.
 
 ## Signal
