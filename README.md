@@ -134,6 +134,7 @@ Dites « audit du vault ». Claude vérifie le vault sans le modifier (liens cas
 - Un fichier personnalisé n'est jamais écrasé : Claude montre la différence et propose une version qui garde vos ajouts, appliquée avec votre accord.
 - Dans les fichiers de règles, seules les parties marquées `socle second-cerveau` appartiennent au plugin ; le reste n'est jamais touché.
 - Les assistants, Chief of Staff et brief compris, sont à vous dès l'installation : la mise à niveau ne les modifie pas.
+- Les copies des automatismes posées dans le vault par les versions d'avant la 2.7.0 sont retirées, car le plugin les fournit et elles tournaient en double.
 
 Dans un vault suivi par git, Claude propose un commit avant toute écriture ; dans tous les cas, le plugin garde hors du vault une copie des fichiers qu'il remplace. Pour un vault installé avant la version 5.2.0, la première mise à niveau dresse l'état des lieux sans remplacer aucun fichier, et propose d'ajouter `_Meta/hooks.conf` s'il manque : ce fichier active notamment l'allègement automatique des fiches.
 

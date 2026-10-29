@@ -318,6 +318,83 @@ class Migrations(Base):
         plan = json.loads(self.run_cmd("apply", "--apply"))
         self.assertEqual(plan["plan"], [])
 
+    LEGACY = {
+        "permissions": {"allow": ["Bash(git status)"]},
+        "autoMemoryEnabled": True,
+        "hooks": {
+            "SessionStart": [{"hooks": [{"type": "command",
+                                          "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/vault-health.sh",
+                                          "statusMessage": "Bilan de sante du vault..."}]}],
+            "PostToolUse": [{"matcher": "Write|Edit|MultiEdit",
+                             "hooks": [{"type": "command",
+                                        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/vault-note-guard.sh"}]}],
+            "Stop": [{"hooks": [{"type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/vault-git-sync.sh"}]}],
+        },
+    }
+
+    def setup_local_hooks(self, settings=None):
+        self.install(stamp=False)
+        claude = os.path.join(self.vault, ".claude")
+        write(os.path.join(claude, "settings.json"),
+              settings if settings is not None else json.dumps(self.LEGACY, indent=2) + "\n")
+        for name in ("vault-health.sh", "vault-note-guard.sh", "vault-git-sync.sh"):
+            write(os.path.join(claude, "hooks", name), "#!/bin/bash\n")
+        return claude
+
+    def test_migration_hooks_locaux(self):
+        claude = self.setup_local_hooks()
+        out, _ = self.check()
+        mig = [m for m in out["migrations_en_attente"] if m["id"] == "5.3.0-hooks-locaux"][0]
+        files = sorted(o["fichier"] for o in mig["occurrences"])
+        self.assertEqual(files, [".claude/hooks/vault-health.sh", ".claude/hooks/vault-note-guard.sh",
+                                 ".claude/settings.json"])
+        before = read(os.path.join(claude, "settings.json"))
+        self.run_cmd("apply")
+        self.assertEqual(read(os.path.join(claude, "settings.json")), before)
+        plan = json.loads(self.run_cmd("apply", "--apply"))
+        data = json.loads(read(os.path.join(claude, "settings.json")))
+        self.assertEqual(data["permissions"], self.LEGACY["permissions"])
+        self.assertTrue(data["autoMemoryEnabled"])
+        self.assertEqual(set(data["hooks"]), {"Stop"})
+        self.assertFalse(os.path.exists(os.path.join(claude, "hooks", "vault-health.sh")))
+        self.assertFalse(os.path.exists(os.path.join(claude, "hooks", "vault-note-guard.sh")))
+        self.assertTrue(os.path.isfile(os.path.join(claude, "hooks", "vault-git-sync.sh")))
+        saved = os.path.join(plan["sauvegarde"], ".claude")
+        self.assertTrue(os.path.isfile(os.path.join(saved, "hooks", "vault-health.sh")))
+        self.assertEqual(read(os.path.join(saved, "settings.json")), before)
+        out, _ = self.check()
+        self.assertEqual(out["migrations_en_attente"], [])
+        self.assertEqual(self.run_cmd("check", "--summary"), "")
+
+    def test_hooks_locaux_seuls_dossier_retire(self):
+        legacy = dict(self.LEGACY, hooks={k: v for k, v in self.LEGACY["hooks"].items() if k != "Stop"})
+        claude = self.setup_local_hooks(json.dumps(legacy))
+        os.remove(os.path.join(claude, "hooks", "vault-git-sync.sh"))
+        self.run_cmd("apply", "--apply")
+        data = json.loads(read(os.path.join(claude, "settings.json")))
+        self.assertNotIn("hooks", data)
+        self.assertFalse(os.path.exists(os.path.join(claude, "hooks")))
+
+    def test_hooks_locaux_encore_appeles_gardes(self):
+        claude = self.setup_local_hooks()
+        write(os.path.join(claude, "settings.local.json"),
+              json.dumps({"hooks": {"SessionStart": [{"hooks": [{"type": "command",
+                         "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/vault-health.sh"}]}]}}))
+        self.run_cmd("apply", "--apply")
+        self.assertTrue(os.path.isfile(os.path.join(claude, "hooks", "vault-health.sh")))
+        self.assertFalse(os.path.exists(os.path.join(claude, "hooks", "vault-note-guard.sh")))
+
+    def test_hooks_locaux_json_illisible_intact(self):
+        claude = self.setup_local_hooks('{"hooks": // commentaire\n}')
+        before = read(os.path.join(claude, "settings.json"))
+        self.run_cmd("apply", "--apply")
+        self.assertEqual(read(os.path.join(claude, "settings.json")), before)
+        self.assertTrue(os.path.isfile(os.path.join(claude, "hooks", "vault-health.sh")))
+
+    def test_installation_fraiche_migrations_faites(self):
+        self.install()
+        self.assertIn("5.3.0-hooks-locaux", read(os.path.join(self.vault, "_Meta", "installation.md")))
+
     def test_table_concorde_avec_audit(self):
         spec = importlib.util.spec_from_file_location("vault_upgrade", self.script)
         mod = importlib.util.module_from_spec(spec)

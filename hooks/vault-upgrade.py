@@ -274,10 +274,101 @@ def _rewrite_names(text):
     return text
 
 
+# Hooks recopiés dans le vault par `kickstart-vault` jusqu'à la 2.6.x : depuis la 2.7.0, le plugin les fournit, et une
+# copie locale les fait tourner deux fois dans une session lancée à la racine.
+LOCAL_HOOK_SCRIPTS = ("vault-health.sh", "vault-note-guard.sh")
+LOCAL_HOOK_RE = re.compile(r"(?:^|[/\"'])\.claude/hooks/(?:" + "|".join(re.escape(n) for n in LOCAL_HOOK_SCRIPTS) + r")\b")
+
+
+def _settings(vault):
+    return os.path.join(vault, ".claude", "settings.json")
+
+
+def _strip_local_hooks(text):
+    """Retire de `.claude/settings.json` les entrées qui appellent une copie locale ; rend (texte, nombre retiré).
+    Le reste du fichier (permissions, réglages, autres hooks) est gardé ; un JSON illisible n'est pas touché."""
+    try:
+        data = json.loads(text)
+    except ValueError:
+        return text, 0
+    hooks = data.get("hooks") if isinstance(data, dict) else None
+    if not isinstance(hooks, dict):
+        return text, 0
+    removed = 0
+    for event in list(hooks):
+        groups = hooks[event]
+        if not isinstance(groups, list):
+            continue
+        kept_groups = []
+        for g in groups:
+            inner = g.get("hooks") if isinstance(g, dict) else None
+            if not isinstance(inner, list):
+                kept_groups.append(g)
+                continue
+            kept = [h for h in inner if not (isinstance(h, dict) and LOCAL_HOOK_RE.search(str(h.get("command", ""))))]
+            removed += len(inner) - len(kept)
+            if kept or not inner:
+                kept_groups.append(dict(g, hooks=kept))
+        if kept_groups:
+            hooks[event] = kept_groups
+        else:
+            del hooks[event]
+    if not removed:
+        return text, 0
+    if not hooks:
+        del data["hooks"]
+    return json.dumps(data, ensure_ascii=False, indent=2) + "\n", removed
+
+
+def _local_hook_files(vault):
+    return [_settings(vault)]
+
+
+def _local_hook_scripts_to_delete(vault, writes):
+    """Copies locales que plus aucun réglage du vault n'appelle, après réécriture de `settings.json`."""
+    settings = writes.get(_settings(vault), read(_settings(vault)))
+    if settings is not None:
+        try:
+            json.loads(settings)
+        except ValueError:
+            return []                                      # réglages illisibles : impossible de savoir qui appelle quoi
+    refs = (settings or "") + (read(os.path.join(vault, ".claude", "settings.local.json")) or "")
+    out = []
+    for name in LOCAL_HOOK_SCRIPTS:
+        path = os.path.join(vault, ".claude", "hooks", name)
+        if os.path.isfile(path) and f".claude/hooks/{name}" not in refs:
+            out.append(path)
+    return out
+
+
+def _local_hook_rewrite(text):
+    return _strip_local_hooks(text)[0]
+
+
+def check_local_hooks(vault):
+    hits = []
+    text = read(_settings(vault))
+    if text is not None:
+        new, n = _strip_local_hooks(text)
+        if n:
+            hits.append({"fichier": ".claude/settings.json", "entrees_retirees": n})
+        writes = {_settings(vault): new}
+    else:
+        writes = {}
+    for path in _local_hook_scripts_to_delete(vault, writes):
+        hits.append({"fichier": os.path.relpath(path, vault).replace(os.sep, "/"), "action": "supprimé"})
+    return hits
+
+
 MIGRATIONS = [
     {"id": "5.0.0-noms-skills", "version": "5.0.0",
      "description": "noms de skills retirés, entre accents graves, réécrits vers leur remplaçant",
      "controle": check_skill_names, "action": _rewrite_names, "fichiers": _procedure_files},
+    {"id": "5.3.0-hooks-locaux", "version": "5.3.0",
+     "description": "copies locales de vault-health et vault-note-guard (installations d'avant la 2.7.0) retirées de "
+                    ".claude/settings.json puis supprimées : le plugin fournit ces hooks, la copie les doublait",
+     "controle": check_local_hooks, "action": _local_hook_rewrite, "fichiers": _local_hook_files,
+     "supprimer": _local_hook_scripts_to_delete},
 ]
 
 
@@ -386,7 +477,7 @@ def cmd_apply(vault, do_apply):
                                 f"<!-- socle second-cerveau : fin {bid} -->", text)
             writes[path] = text
             plan.append({"unite": r["unite"], "action": "bloc remplacé"})
-    done = []
+    done, deletes = [], []
     for m in pending_migrations(vault, stamp):
         mig = next(x for x in MIGRATIONS if x["id"] == m["id"])
         if m["occurrences"]:
@@ -395,15 +486,23 @@ def cmd_apply(vault, do_apply):
                 new = mig["action"](current)
                 if new != current:
                     writes[p] = new
-            plan.append({"migration": m["id"], "fichiers": [o["fichier"] for o in m["occurrences"]]})
+            if mig.get("supprimer"):
+                deletes += [p for p in mig["supprimer"](vault, writes) if p not in deletes]
+            plan.append({"migration": m["id"], "description": m["description"],
+                         "fichiers": [o["fichier"] for o in m["occurrences"]]})
         done.append(m["id"])
     left = [{"unite": r["unite"], "cas": r["cas"], "etat": r["etat"]} for r in rows
             if r["cas"] in ("fusion", "inconnu", "balises-absentes", "absent", "retire")]
     out = {"ecrit": do_apply, "plan": plan, "a_revoir": left, "sauvegarde": None}
     if do_apply:
-        out["sauvegarde"] = backup(vault, list(writes))
+        out["sauvegarde"] = backup(vault, list(writes) + deletes)
         for p, text in writes.items():
             write_atomic(p, text)
+        for p in deletes:
+            os.remove(p)
+            parent = os.path.dirname(p)
+            if parent != vault and not os.listdir(parent):     # `.claude/hooks/` vidé : retiré aussi
+                os.rmdir(parent)
         after = survey(vault, stamp)
         data = new_stamp_data(vault, stamp, after, done)
         write_atomic(os.path.join(vault, STAMP), render_stamp(data))

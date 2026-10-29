@@ -64,7 +64,11 @@ les migrations, met la fiche d'installation à jour. Il n'écrit jamais un fichi
 Migrations : chacune est déclarée dans le script (identifiant, version, contrôle, action),
 idempotente, et inscrite dans la fiche d'installation une fois appliquée. `5.0.0-noms-skills` réécrit les noms de
 skills retirés, entre accents graves, dans le `CLAUDE.md` racine, les `CLAUDE.md` des personas et les
-fichiers des skills du vault ; une fiche ordinaire garde son historique.
+fichiers des skills du vault ; une fiche ordinaire garde son historique. `5.3.0-hooks-locaux` retire
+de `.claude/settings.json` les entrées qui appellent une copie locale de `vault-health.sh` ou de
+`vault-note-guard.sh` (installations d'avant la 2.7.0), puis supprime ces copies si plus rien ne les
+appelle : le plugin fournit ces hooks, la copie les faisait tourner deux fois. Le reste du fichier
+(permissions, réglages, autres hooks) ne bouge pas, et un `settings.json` illisible n'est pas touché.
 
 ## 4. Fusion assistée
 

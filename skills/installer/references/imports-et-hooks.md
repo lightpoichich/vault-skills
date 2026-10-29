@@ -49,8 +49,8 @@ silencieux et instantanés.
   contenu.
 - Dépendances : `bash` et `python3` ; pas de `jq`.
 - Ne rien copier dans `{vault}/.claude/hooks/` ni ajouter à `{vault}/.claude/settings.json`. Un vault
-  qui porte encore `vault-health.sh` ou `vault-note-guard.sh` en local les fait tourner deux fois :
-  proposer de retirer les entrées locales et les scripts.
+  qui porte encore `vault-health.sh` ou `vault-note-guard.sh` en local les fait tourner deux fois : la
+  migration `5.3.0-hooks-locaux` de la mise à niveau (`references/mise-a-niveau.md`) les retire.
 - `{vault}/_Meta/hooks.conf` se copie depuis `assets/hooks/hooks.conf` tel quel, sans rien
   décommenter. Les exclusions (`EXCLUDE=`) sont un choix d'usage, pas de scaffold : elles servent
   quand une zone reçoit des données opérationnelles importées qu'il ne faut ni stamper ni compter.
