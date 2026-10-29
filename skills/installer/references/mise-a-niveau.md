@@ -45,7 +45,9 @@ remplacé ou ajouté, les migrations et leurs fichiers, les unités à revoir. A
 
 ## 3. Appliquer
 
-Proposer un commit git du vault, puis :
+Si le vault est un dépôt git (`git -C "{vault}" rev-parse --is-inside-work-tree` réussit), proposer
+un commit du vault. Sinon, n'en proposer aucun : le script copie de toute façon les fichiers qu'il
+touche. Puis :
 
 ```bash
 python3 "${CLAUDE_PLUGIN_ROOT}/hooks/vault-upgrade.py" apply --vault "{vault}" --apply
