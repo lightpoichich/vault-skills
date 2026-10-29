@@ -25,6 +25,8 @@ Aucun connecteur (agenda, messagerie, Notion) n'est requis : le plugin utilise c
 
 ```
 /plugin marketplace add https://github.com/lightpoichich/vault-skills
+```
+```
 /plugin install second-cerveau@vault-skills
 ```
 
