@@ -136,7 +136,8 @@ suit les conventions du geste « créer une persona » d'`assistants` et sert d'
 - Si `_personas/cos/` existe, compléter ce qui manque sans écraser, et le signaler.
 - Copier le bundle vers `{vault}/_personas/cos/`, dossier caché `.claude/skills/brief-du-jour/`
   inclus. Le `CLAUDE.md` du CoS est posé tel quel : ses zones sont au niveau PARA, valables pour tout
-  dirigeant.
+  dirigeant. Une fois posés, le CoS et son brief appartiennent au dirigeant : la mise à niveau du vault
+  ne les touche plus.
 - Poser le raccourci terminal `cos` (chemin absolu, idempotent, détection du shell) :
   ```bash
   VAULT_ABS="$(pwd)"                                  # racine du vault (étape 1)

@@ -4,17 +4,18 @@
   vault-upgrade.py check  --vault V [--summary]     état de chaque fichier ou bloc géré, migrations en attente (JSON)
   vault-upgrade.py stamp  --vault V [--apply]       pose ou rafraîchit la fiche d'installation `_Meta/installation.md`
   vault-upgrade.py apply  --vault V [--apply]       remplace le remplaçable, applique les migrations, met la fiche d'installation à jour
-  vault-upgrade.py accept --vault V [--apply] UNITÉ…   déclare une fusion faite : la version actuelle du gabarit est intégrée
+  vault-upgrade.py accept --vault V [--apply] UNITÉ…   déclare une fusion faite ou un ajout refusé : la version actuelle du gabarit est intégrée
 
 Simulation par défaut ; `--apply` écrit.
 
 Unités gérées. Une unité est un fichier copié tel quel à l'installation, ou un bloc entre balises
 `<!-- socle second-cerveau : début {id} -->` et `<!-- socle second-cerveau : fin {id} -->` dans un fichier
 généré depuis le plan. Le texte hors balises n'est jamais lu ni touché.
-  - copie : `_personas/cos/.claude/skills/brief-du-jour/**`, `_Meta/hooks.conf` ;
-  - bloc  : `CLAUDE.md` racine, `_Meta/Schema.md`, `_personas/cos/CLAUDE.md` (le rôle et les zones de la
-            persona appartiennent à l'utilisateur ; ses règles communes sont un bloc du plugin).
-`capacites-a-construire.md` appartient à l'utilisateur dès l'installation et n'est pas géré.
+  - copie : `_Meta/hooks.conf`, posé aussi dans un vault qui ne l'a jamais eu ;
+  - bloc  : `CLAUDE.md` racine, `_Meta/Schema.md`.
+La persona Chief of Staff (`_personas/cos/`, brief compris) appartient à l'utilisateur dès l'installation, comme tout
+`_personas/` : elle se personnalise dès l'usage. Gérée jusqu'à la 5.2.x, ses empreintes héritées sortent de la fiche
+d'installation sans signal.
 
 La fiche d'installation garde, par unité, l'empreinte du gabarit intégré : celui posé à l'installation, ou celui retenu
 par la dernière fusion (`accept`). Trois cas décident sans copie de référence dans le vault :
@@ -39,14 +40,20 @@ STAMP = "_Meta/installation.md"
 
 # (chemin dans le vault, chemin dans assets/) ; un dossier gère tous ses fichiers, présents et futurs.
 COPY_UNITS = [
-    ("_personas/cos/.claude/skills/brief-du-jour", "persona-chief-of-staff/.claude/skills/brief-du-jour"),
     ("_Meta/hooks.conf", "hooks/hooks.conf"),
 ]
 BLOCK_FILES = [
     ("CLAUDE.md", "vault-claude-template.md"),
     ("_Meta/Schema.md", "schema-template.md"),
-    ("_personas/cos/CLAUDE.md", "persona-chief-of-staff/CLAUDE.md"),
 ]
+# Préfixes rendus à l'utilisateur : une empreinte héritée sous l'un d'eux est ignorée à la lecture de la fiche
+# d'installation, puis retirée à sa prochaine écriture.
+RELEASED = ("_personas/",)
+# Effet d'un ajout, montré dans le plan avant le go : poser un fichier de réglages change le comportement du vault.
+EFFECTS = {
+    "_Meta/hooks.conf": "réglages par défaut des automatismes, dont la rotation des journaux de fiche "
+                        "(JOURNAL_ROTATION=1) ; refus durable par `accept`",
+}
 BLOCK_RE = re.compile(r"<!-- socle second-cerveau : début ([a-z0-9-]+) -->\n(.*?)<!-- socle second-cerveau : fin \1 -->",
                       re.S)
 
@@ -124,7 +131,7 @@ def load_stamp(vault):
         data = json.loads(m.group(1)) if m else {}
     except ValueError:
         data = {}
-    data.setdefault("unites", {})
+    data["unites"] = {k: v for k, v in (data.get("unites") or {}).items() if not k.startswith(RELEASED)}
     data.setdefault("migrations", [])
     return data
 
@@ -195,9 +202,9 @@ def survey(vault, stamp):
         current = read(os.path.join(vault, vrel))
         base = units.get(key, {}).get("empreinte")
         if current is None:
-            # Nouveau seulement dans un vault doté d'une fiche d'installation qui porte déjà le dossier de l'unité : un vault sans
-            # Chief of Staff ne reçoit pas un brief orphelin.
-            fresh = stamp is not None and key not in units and os.path.isdir(os.path.join(vault, root))
+            # Jamais intégré (aucune empreinte, fiche d'installation absente comprise) et dossier présent : à ajouter.
+            # Intégré puis supprimé, ou refusé par `accept` : choix de l'utilisateur, respecté.
+            fresh = not units.get(key, {}).get("empreinte") and os.path.isdir(os.path.join(vault, root))
             case = "nouveau" if fresh else "absent"
         else:
             case = decide(current, template, base)
@@ -367,7 +374,10 @@ def cmd_apply(vault, do_apply):
         path = os.path.realpath(os.path.join(vault, r["fichier"]))
         if r["mode"] == "copie" and r["cas"] in ("remplacable", "nouveau"):
             writes[path] = r["_template"]
-            plan.append({"unite": r["unite"], "action": "remplacé" if r["cas"] == "remplacable" else "ajouté"})
+            step = {"unite": r["unite"], "action": "remplacé" if r["cas"] == "remplacable" else "ajouté"}
+            if r["cas"] == "nouveau" and r["unite"] in EFFECTS:
+                step["effet"] = EFFECTS[r["unite"]]
+            plan.append(step)
         elif r["mode"] == "bloc" and r["cas"] == "remplacable":
             text = writes.get(path, read(path))
             bid = r["bloc"]

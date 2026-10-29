@@ -9,14 +9,14 @@ d'installation `_Meta/installation.md`.
 
 | Unité | Mode | Pourquoi |
 |---|---|---|
-| `_personas/cos/.claude/skills/brief-du-jour/` (tous ses fichiers) | copie | posé tel quel ; une amélioration du brief doit arriver dans le vault |
-| `_Meta/hooks.conf` | copie | posé tel quel ; ses commentaires documentent les nouveaux réglages |
+| `_Meta/hooks.conf` | copie | posé tel quel ; ses commentaires documentent les nouveaux réglages ; ajouté à un vault qui ne l'a jamais eu |
 | `CLAUDE.md` racine, blocs `carte` et `regles` | bloc | le périmètre et le ton viennent du plan, la carte et les règles du plugin |
 | `_Meta/Schema.md`, bloc `conventions` | bloc | les types viennent du plan, les conventions générales du plugin |
-| `_personas/cos/CLAUDE.md`, bloc `regles` | bloc | le rôle et les zones s'ajustent à l'usage ; les règles d'écriture et le hors-périmètre restent ceux du plugin |
 
-`_personas/cos/capacites-a-construire.md` appartient à l'utilisateur dès l'installation et n'est
-pas géré. Le texte hors des balises `socle second-cerveau` n'est jamais lu ni touché.
+Les assistants de `_personas/`, Chief of Staff et `brief-du-jour` compris, appartiennent à
+l'utilisateur dès l'installation : ils se personnalisent à l'usage, et la mise à niveau ne les touche
+pas (seule une migration de noms de skills les parcourt). Le texte hors des balises
+`socle second-cerveau` n'est jamais lu ni touché.
 
 ## 1. Dresser l'état
 
@@ -31,17 +31,21 @@ versions du vault et du plugin.
 |---|---|---|
 | à jour | identique au gabarit actuel | rien |
 | remplaçable | jamais modifié depuis l'intégration, gabarit changé | remplacé par `apply` |
-| nouveau | fichier ajouté au gabarit, dossier présent dans le vault | ajouté par `apply` |
+| nouveau | fichier jamais intégré au vault (pas d'empreinte), dossier présent | ajouté par `apply`, avec son effet |
 | personnalisé, gabarit inchangé | modifié par l'utilisateur, rien de neuf côté plugin | rien |
 | fusion à proposer | modifié par l'utilisateur et gabarit changé | fusion assistée, étape 4 |
 | inconnu | pas d'empreinte dans la fiche d'installation (vault installé avant ce mécanisme) | revue assistée, étape 4 |
 | balises absentes | bloc introuvable dans le fichier du vault | revue assistée, étape 4 |
-| absent, retiré du gabarit | fichier supprimé par l'utilisateur, ou plus fourni par le plugin | signalé, jamais recréé ni supprimé |
+| absent | fichier intégré puis supprimé par l'utilisateur, ou ajout refusé | signalé, jamais recréé |
+| retiré du gabarit | fichier plus fourni par le plugin | signalé, jamais supprimé |
 
 ## 2. Présenter le plan
 
 Simulation : `vault-upgrade.py apply --vault "{vault}"`. Montrer en quelques lignes ce qui sera
-remplacé ou ajouté, les migrations et leurs fichiers, les unités à revoir. Attendre un go explicite.
+remplacé ou ajouté, avec l'`effet` que le script donne pour un ajout (`_Meta/hooks.conf` active
+notamment la rotation des journaux de fiche), les migrations et leurs fichiers, les unités à revoir.
+Attendre un go explicite. Un ajout refusé se déclare par `vault-upgrade.py accept --vault "{vault}"
+--apply {unité}` : il ne sera plus proposé.
 
 ## 3. Appliquer
 

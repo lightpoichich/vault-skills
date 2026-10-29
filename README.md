@@ -2,7 +2,7 @@
 
 Le plugin `second-cerveau` installe et entretient un second cerveau : un dossier de notes, le vault, que Claude lit et met à jour pendant vos sessions de travail. L'installation pose la structure et des fiches vides ; le contenu entre ensuite au fil de l'usage.
 
-Public : dirigeants et consultants qui travaillent avec Claude Code, dans le terminal ou dans l'app Claude. Guide à jour de la version 5.2.5, le 29/10/2026.
+Public : dirigeants et consultants qui travaillent avec Claude Code, dans le terminal ou dans l'app Claude. Guide à jour de la version 5.3.0, le 29/10/2026.
 
 ## Le plugin en bref
 
@@ -128,13 +128,14 @@ Dites « audit du vault ». Claude vérifie le vault sans le modifier (liens cas
 
 **Le plugin** : avec la mise à jour automatique, chaque nouvelle version est téléchargée pendant une session et chargée à la suivante. Sans elle, saisissez dans un terminal `claude plugin marketplace update vault-skills`, puis `claude plugin update second-cerveau@vault-skills`, et relancez Claude Code ou l'app.
 
-**Les fichiers du vault posés par le plugin** (le Chief of Staff, son brief, les règles communes) : quand une version les améliore, Claude en est averti au démarrage. Saisissez `/second-cerveau:installer` dans le vault.
+**Les fichiers du vault posés par le plugin** (les règles communes du vault et les réglages des automatismes) : quand une version les améliore, Claude en est averti au démarrage. Saisissez `/second-cerveau:installer` dans le vault.
 
 - Un fichier jamais modifié est remplacé par sa nouvelle version.
 - Un fichier personnalisé n'est jamais écrasé : Claude montre la différence et propose une version qui garde vos ajouts, appliquée avec votre accord.
 - Dans les fichiers de règles, seules les parties marquées `socle second-cerveau` appartiennent au plugin ; le reste n'est jamais touché.
+- Les assistants, Chief of Staff et brief compris, sont à vous dès l'installation : la mise à niveau ne les modifie pas.
 
-Dans un vault suivi par git, Claude propose un commit avant toute écriture ; dans tous les cas, le plugin garde hors du vault une copie des fichiers qu'il remplace. Pour un vault installé avant la version 5.2.0, la première mise à niveau dresse l'état des lieux sans remplacer aucun fichier.
+Dans un vault suivi par git, Claude propose un commit avant toute écriture ; dans tous les cas, le plugin garde hors du vault une copie des fichiers qu'il remplace. Pour un vault installé avant la version 5.2.0, la première mise à niveau dresse l'état des lieux sans remplacer aucun fichier, et propose d'ajouter `_Meta/hooks.conf` s'il manque : ce fichier active notamment l'allègement automatique des fiches.
 
 La version 5.0.0 a renommé les skills ; les phrases habituelles restent valables.
 
