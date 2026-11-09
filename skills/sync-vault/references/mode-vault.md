@@ -24,8 +24,8 @@ jour, sections réécrites ou fusionnées, élagages.
 
 ## 3. Curer le sas `00-Inbox/_drafts/`
 Les drafts sont des livrables sortants, pas du savoir. `sync-vault` gère leur sortie du sas
-(archiver l'envoyé en trace sur son `lien`, archiver l'abandonné), jamais leur validation ni leur
-envoi. États, seuils et gestes : `curation.md`, section 6.
+(constater un envoi prouvé, archiver l'envoyé en trace sur son `lien`, archiver l'abandonné), jamais
+leur validation ni leur envoi. États, seuils et gestes : `curation.md`, section 6.
 
 ## 4. Veiller sur `30-Resources/`
 Tenue de registre autonome : `_index.md` cochés, wikilinks cassés réparés, liens bidirectionnels
