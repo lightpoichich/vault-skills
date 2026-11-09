@@ -130,8 +130,10 @@ date: {YYYY-MM-DD}                          # requis : date de création, sert �
 statut: { en-attente | validé | envoyé | archivé | abandonné }
 sensibilité: { normal | confidentiel }
 ```
-Cycle de vie : `en-attente`, puis `validé` (humain), puis `envoyé` (humain), puis `archivé` comme
-trace sur `lien`, ou `abandonné` si périmé. `_drafts/` ne garde pas d'état terminal : `sync-vault`
+Cycle de vie : `en-attente`, puis `validé` (humain), puis `envoyé`, puis `archivé` comme trace sur
+`lien`, ou `abandonné` si périmé. `envoyé` constate un fait : Claude le pose sur preuve de l'envoi
+(message trouvé dans les envois du canal, ou envoi confirmé par l'humain) et note la preuve dans le
+draft ; il n'envoie jamais lui-même. `_drafts/` ne garde pas d'état terminal : `sync-vault`
 l'en sort.
 
 ### `note`

@@ -88,13 +88,16 @@ s'accumule pas.
 | État repéré | Geste |
 |-------------|-------|
 | `statut: envoyé` | Archiver en trace : sortir la fiche de `_drafts/` vers le dossier de son `lien` (projet ou client), passer `statut: archivé`. Le vault garde « ce qui a été communiqué le {date} ». |
+| `statut: en-attente` ou `validé`, envoi prouvé | Passer `statut: envoyé` et noter la preuve en commentaire dans le draft (date, destinataire, source : message trouvé dans les envois du canal, ou envoi confirmé par l'humain en session), puis archiver en trace comme ci-dessus. |
 | `statut: en-attente`, `date` de plus de 14 jours environ | Laisser remonter dans le brief (« À valider ») ; ne rien archiver tant que l'humain peut encore agir. |
-| `statut: en-attente`, `date` de plus de 30 jours environ | Archiver `abandonné` dans `40-Archive/`. Un draft ne se supprime pas sans trace. |
+| `statut: en-attente`, `date` de plus de 30 jours environ | Chercher d'abord une preuve d'envoi (ligne ci-dessus) ; sans preuve, archiver `abandonné` dans `40-Archive/`. Un draft ne se supprime pas sans trace. |
 | `statut: validé`, pas encore envoyé | Ne rien faire ; il attend l'envoi par l'humain, le brief le remonte. |
 
 Garde-fous propres aux drafts :
-- Ne pas faire avancer un statut côté humain : ni `en-attente` vers `validé`, ni `validé` vers
-  `envoyé`.
+- Ne jamais poser `validé` : c'est le jugement de l'humain sur le livrable.
+- Ne poser `envoyé` que sur preuve de l'envoi ; sans preuve, le statut ne bouge pas. `envoyé`
+  constate un fait, il ne se décide pas.
+- Ne jamais envoyer soi-même.
 - Ne pas archiver un livrable encore `en-attente` ou `validé` : il peut encore partir.
 - Un draft sans `lien` exploitable ne peut pas être classé en trace : le signaler au compte-rendu
   plutôt que deviner une destination.
